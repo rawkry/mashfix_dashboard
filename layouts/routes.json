@@ -1,0 +1,56 @@
+[
+  {
+    "type": "singular",
+    "title": "Dashboard",
+    "url": "/",
+    "icon": "fa-solid fa-gauge-high",
+    "spacer": "bottom"
+  },
+
+  {
+    "type": "card",
+    "title": "Repair",
+    "icon": "fa-solid fa-building",
+    "links": [
+      {
+        "title": "List",
+        "url": "/repair",
+        "icon": "fa-regular fa-rectangle-list"
+      },
+      {
+        "title": "Add New",
+        "url": "/repair/add",
+        "icon": "fa-solid fa-circle-plus"
+      }
+    ]
+  },
+  {
+    "type": "card",
+    "title": "Service type",
+    "icon": "fa-solid fa-tools",
+    "links": [
+      {
+        "title": "List",
+        "url": "/service-type",
+        "icon": "fa-regular fa-rectangle-list"
+      },
+      {
+        "title": "Add New",
+        "url": "/service-type/add",
+        "icon": "fa-solid fa-circle-plus"
+      }
+    ]
+  },
+  {
+    "type": "card",
+    "title": "Quotes ",
+    "icon": "fa-solid fa-message",
+    "links": [
+      {
+        "title": "List",
+        "url": "/quotes",
+        "icon": "fa-regular fa-rectangle-list"
+      }
+    ]
+  }
+]
