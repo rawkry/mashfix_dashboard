@@ -72,7 +72,7 @@ body {
   backdrop-filter: blur(5px);
 }
 .text-zapp {
-  background: -webkit-linear-gradient(#2e2c2c, #2e2c2c);
+  background: -webkit-linear-gradient(#4f4fdd, #a0e206);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   -webkit-filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.1));

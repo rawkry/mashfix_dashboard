@@ -12,13 +12,13 @@
   -moz-transition: all 0.3s linear;
   -webkit-transition: all 0.3s linear;
   transition: all 0.3s linear;
-  color: #4d45ee;
+  color: #1e1c1c;
 }
 .rotate.full {
   -moz-transform: scale(0.9) rotate(-180deg);
   -webkit-transform: scale(0.9) rotate(-180deg);
   transform: scale(0.9) rotate(-180deg);
-  color: #7a73ef;
+  color: #050505;
 }
 
 .menuBtn {
