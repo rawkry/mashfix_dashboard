@@ -1,6 +1,7 @@
-import { Card, Form } from "react-bootstrap";
+import { Card, Col, Form, InputGroup, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 
 import { Button } from "@/ui";
 import { Main } from "@/layouts";
@@ -11,13 +12,14 @@ import {
 } from "@/helpers/clients";
 import getMyProfile from "@/helpers/server/getMyProfile";
 import { callFetch } from "@/helpers/server";
+import { IssuesFormFields } from "@/reuseables";
 
 export async function getServerSideProps(context) {
   try {
     const myProfile = await getMyProfile(context);
     const [status, { serviceTypes }] = await callFetch(
       context,
-      `/serviceType?active=true`,
+      `/serviceTypes?active=true`,
       "GET"
     );
 
@@ -35,30 +37,73 @@ export async function getServerSideProps(context) {
     };
   }
 }
+
 export default function Add({ __state, myProfile, serviceTypes }) {
+  const [issuesWithPrice, setIssuesWithPrice] = useState({});
   const onSubmit = async (data) => {
     try {
       __state.loading = true;
 
+      const issueswithprice = Object.entries(issuesWithPrice).map(
+        ([key, issue]) => ({
+          description: issue.description,
+          quantity: issue.quantity,
+          rate: issue.rate,
+          price: issue.price,
+        })
+      );
+
+      const customer = {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        address: data.address,
+      };
+      const customerResponse = await fetch(`/api`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          path: `/customers`,
+          method: "POST",
+          body: customer,
+        }),
+      });
+      let customerJson;
+      if (customerResponse.status === 400) {
+        const json = await customerResponse.json();
+        customerJson = json.customer;
+      } else {
+        customerJson = await customerResponse.json();
+      }
+
+      console.log("customerJson", customerJson);
       const response = await fetch(`/api`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          path: `/repair`,
+          path: `/repairs`,
           method: "POST",
-          body: data,
+          body: {
+            serviceTypeId: data.serviceTypeId,
+            customer: customerJson.id,
+            device: data.device,
+            brand: data.brand,
+            problemDescription: data.problemDescription,
+          },
         }),
       });
 
       const json = await response.json();
-      if (response.status === 201) {
-        toast.success(`Repair  has been successfully added`);
-        reset();
-      } else {
-        toast.error(json.message);
+      if (!response.ok) {
+        return toast.error(json.message);
       }
+
+      toast.success(`Repair  has been successfully added`);
+      reset();
     } catch (e) {
       toast.error(e.message);
     } finally {
@@ -101,7 +146,7 @@ export default function Add({ __state, myProfile, serviceTypes }) {
               <Form.Control
                 type="text"
                 placeholder="Enter name"
-                {...register("customerName", {
+                {...register("name", {
                   required: true,
                   setValueAs: (value) => value.trim(),
                 })}
@@ -116,7 +161,7 @@ export default function Add({ __state, myProfile, serviceTypes }) {
               <Form.Control
                 type="email"
                 placeholder="Enter  Customer email"
-                {...register("customerEmail", {
+                {...register("email", {
                   required: true,
 
                   setValueAs: (value) => value.trim().toLowerCase(),
@@ -132,7 +177,7 @@ export default function Add({ __state, myProfile, serviceTypes }) {
               <Form.Control
                 type="text"
                 placeholder="Enter phone number"
-                {...register("customerPhone", {
+                {...register("phone", {
                   required: true,
                 })}
               />
@@ -140,33 +185,48 @@ export default function Add({ __state, myProfile, serviceTypes }) {
                 <span className="text-danger">Provide valid phone number</span>
               )}
             </Form.Group>
+
+            <Form.Group className="mb-3" controlId="name">
+              <Form.Label>Address</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter customer address"
+                {...register("address", {
+                  required: true,
+                  setValueAs: (value) => value.trim(),
+                })}
+              />
+              {errors.address && (
+                <span className="text-danger">Address cannot be empty</span>
+              )}
+            </Form.Group>
             <Form.Group className="mb-3" controlId="name">
               <Form.Label>Device Name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter customer phone"
-                {...register("deviceName", {
+                placeholder="Enter device name"
+                {...register("device", {
                   required: true,
                   setValueAs: (value) => value.trim(),
                 })}
               />
-              {errors.deviceName && (
+              {errors.device && (
                 <span className="text-danger">Device Name cannot be empty</span>
               )}
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="name">
-              <Form.Label>Model</Form.Label>
+            <Form.Group className="mb-3" controlId="brand">
+              <Form.Label>Brand</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter customer phone"
-                {...register("model", {
+                placeholder="Enter device brand name"
+                {...register("brand", {
                   required: true,
                   setValueAs: (value) => value.trim(),
                 })}
               />
-              {errors.model && (
-                <span className="text-danger">Model Name cannot be empty</span>
+              {errors.brand && (
+                <span className="text-danger">Brand Name cannot be empty</span>
               )}
             </Form.Group>
             <Form.Group className="mb-3" controlId="name">
@@ -182,40 +242,6 @@ export default function Add({ __state, myProfile, serviceTypes }) {
               {errors.problemDescription && (
                 <span className="text-danger">
                   Problem Description cannot be empty
-                </span>
-              )}
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="name">
-              <Form.Label>Expected service Charge</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Enter customer phone"
-                {...register("expectedServiceCharge", {
-                  required: true,
-                  setValueAs: (value) => value.trim(),
-                })}
-              />
-              {errors.expectedServiceCharge && (
-                <span className="text-danger">
-                  Expected Service Charge cannot be empty
-                </span>
-              )}
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="name">
-              <Form.Label>Expected date of compilation</Form.Label>
-              <Form.Control
-                type="date"
-                placeholder="Enter customer phone"
-                {...register("expectedCompleteDte", {
-                  required: true,
-                  setValueAs: (value) => value.trim(),
-                })}
-              />
-              {errors.expectedCompleteDte && (
-                <span className="text-danger">
-                  Expected Service Charge cannot be empty
                 </span>
               )}
             </Form.Group>

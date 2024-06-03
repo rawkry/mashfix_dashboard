@@ -1,89 +1,86 @@
-import { Card, Form } from "react-bootstrap";
+import { Card, Col, Form, InputGroup, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/router";
+import { useState } from "react";
 
 import { Button } from "@/ui";
-import { callFetch } from "@/helpers/server";
 import { Main } from "@/layouts";
+import {
+  generateFakeEmail,
+  generateFakeNumber,
+  generateFakePan,
+} from "@/helpers/clients";
 import getMyProfile from "@/helpers/server/getMyProfile";
-import { IsoDateString } from "@/helpers/clients";
+import { callFetch } from "@/helpers/server";
+import { IssuesFormFields } from "@/reuseables";
 
 export async function getServerSideProps(context) {
   try {
     const myProfile = await getMyProfile(context);
+    const [[service_status, { serviceTypes }], [customer_status, customer]] =
+      await Promise.all([
+        callFetch(context, `/serviceTypes?active=true`, "GET"),
+        callFetch(context, `/customers/${context.params.id}`, "GET"),
+      ]);
 
-    const response = await Promise.all([
-      callFetch(context, `/repairs/${context.params.id}`, "GET"),
-      callFetch(context, `/serviceTypes?active=true`, "GET"),
-    ]);
-
-    const [[partner_status, repair], [serviceType_status, { serviceTypes }]] =
-      response;
-
-    if (partner_status !== 200 || serviceType_status !== 200) {
+    if (service_status !== 200 || customer_status !== 200) {
       return {
         props: {
           fetched: false,
-          repair: {},
-          serviceTypes: [],
         },
       };
     }
 
     return {
       props: {
-        repair,
-        serviceType: serviceTypes,
+        serviceTypes,
+        customer,
         fetched: true,
+        myProfile,
       },
     };
-  } catch (err) {
-    toast.error(`Error: ${err.message}.`);
+  } catch (e) {
     return {
       props: {
-        repair: [],
-        serviceType: [],
         fetched: false,
       },
     };
   }
 }
 
-export default function Edit({ __state, repair, serviceType }) {
-  const router = useRouter();
-  console.log(repair);
-  const defaultValues = {
-    serviceTypeId: repair.serviceTypeId.id,
-    customer: repair.customer.id,
-    device: repair.device,
-    brand: repair.brand,
-    problemDescription: repair.problemDescription,
-  };
-
+export default function Add({ __state, myProfile, serviceTypes, customer }) {
+  console.log(serviceTypes);
   const onSubmit = async (data) => {
     try {
       __state.loading = true;
-      console.log("data", data);
+
       const response = await fetch(`/api`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          path: `/repairs/${repair.id}`,
-          method: "PUT",
-          body: data,
+          path: `/repairs`,
+          method: "POST",
+          body: {
+            serviceTypeId: data.serviceTypeId,
+            customer: customer.id,
+            deviceName: data.deviceName,
+            model: data.model,
+            problemDescription: data.problemDescription,
+          },
         }),
       });
+
       const json = await response.json();
-      if (response.status === 200) {
-        toast.success("Repair updated successfully");
-      } else {
-        toast.error(`Error (${response.status}): ${json.message}.`);
+      if (!response.ok) {
+        return toast.error(json.message);
       }
-    } catch (err) {
-      toast.error(err.message);
+
+      toast.success(`Repair  has been successfully added`);
+      reset();
+    } catch (e) {
+      toast.error(e.message);
     } finally {
       __state.loading = false;
     }
@@ -91,26 +88,17 @@ export default function Edit({ __state, repair, serviceType }) {
 
   const {
     watch,
+    reset,
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    defaultValues: defaultValues,
-  });
+  } = useForm();
   return (
     <Main
-      title={`Repair: ${repair.customer.name} || Edit `}
+      title={`Repair || Add - ${customer.name} `}
       icon="fa-solid fa-users"
+      profile={myProfile}
     >
-      <div className="container-fluid pb-3 ">
-        <Button
-          variant="outline-primary"
-          size="md"
-          onClick={() => router.back()}
-        >
-          <i className="fa-solid fa-arrow-left mr-2"></i>Back
-        </Button>
-      </div>
       <div>
         <Card className="shadow-sm p-4">
           <Form onSubmit={handleSubmit(onSubmit)}>
@@ -121,7 +109,8 @@ export default function Edit({ __state, repair, serviceType }) {
                   required: true,
                 })}
               >
-                {serviceType.map((service) => (
+                <option value="">Select Service Type</option>
+                {serviceTypes.map((service) => (
                   <option key={service.id} value={service.id}>
                     {service.name}
                   </option>
@@ -136,8 +125,8 @@ export default function Edit({ __state, repair, serviceType }) {
               <Form.Label>Device Name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter device name"
-                {...register("device", {
+                placeholder="Enter customer phone"
+                {...register("deviceName", {
                   required: true,
                   setValueAs: (value) => value.trim(),
                 })}
@@ -148,11 +137,11 @@ export default function Edit({ __state, repair, serviceType }) {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="name">
-              <Form.Label>Brand</Form.Label>
+              <Form.Label>Model</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter device brand"
-                {...register("brand", {
+                placeholder="Enter customer phone"
+                {...register("model", {
                   required: true,
                   setValueAs: (value) => value.trim(),
                 })}
@@ -180,7 +169,7 @@ export default function Edit({ __state, repair, serviceType }) {
 
             <div className="d-flex justify-content-end">
               <Button className="shadow" type="submit">
-                Update Repair
+                Submit Repair
               </Button>
             </div>
           </Form>

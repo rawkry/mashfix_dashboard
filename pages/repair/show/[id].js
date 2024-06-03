@@ -1,17 +1,19 @@
 import { callFetch } from "@/helpers/server";
 import { Main } from "@/layouts";
 import ReactHtmlParser from "react-html-parser";
-import React, { use, useEffect, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import getMyProfile from "@/helpers/server/getMyProfile";
-import { Table } from "react-bootstrap";
+import { Modal, Table } from "react-bootstrap";
 import { toHuman } from "@/helpers/clients";
+import { useReactToPrint } from "react-to-print";
+import { PrintPage } from "@/components";
 
 export async function getServerSideProps(context) {
   const myProfile = await getMyProfile(context);
 
   const [status, repair] = await callFetch(
     context,
-    `/repair/${context.params.id}`,
+    `/repairs/${context.params.id}`,
     "GET"
   );
 
@@ -30,6 +32,13 @@ export async function getServerSideProps(context) {
 }
 
 const index = ({ repair, myProfile }) => {
+  console.log(repair);
+  const [showReceipt, setShowReceipt] = useState(false);
+  const componentRef = useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
   return (
     <Main
       title={`Repairs ||  ${repair.trackId}`}
@@ -49,28 +58,16 @@ const index = ({ repair, myProfile }) => {
             <td>{repair.trackId}</td>
           </tr>
           <tr className="align-middle">
-            <th>Name</th>
-            <td>{repair.customerName}</td>
-          </tr>
-          <tr className="align-middle">
-            <th>Email</th>
-            <td>{repair.customerEmail} </td>
-          </tr>
-          <tr className="align-middle">
-            <th>Phone</th>
-            <td>{repair.customerPhone ? repair.customerPhone : "N/A"}</td>
-          </tr>
-          <tr className="align-middle">
             <th>Selected Service</th>
             <td>{repair.serviceTypeId?.name}</td>
           </tr>
           <tr className="align-middle">
             <th>Device Name</th>
-            <td>{repair.deviceName}</td>
+            <td>{repair.device}</td>
           </tr>
           <tr className="align-middle">
-            <th>Device Model</th>
-            <td>{repair.model}</td>
+            <th>Brand</th>
+            <td>{repair.brand}</td>
           </tr>
           <tr className="align-middle">
             <th>Device Issue</th>
@@ -81,25 +78,15 @@ const index = ({ repair, myProfile }) => {
             <th>Requested for</th>
             <td>{repair.onSiteRepair ? "Onsite" : "In Shop"}</td>
           </tr>
-          <tr className="align-middle">
-            <th>Discount</th>
-            <td>{repair.discount}</td>
-          </tr>
-          <tr className="align-middle">
-            <th>Expected Service Charge</th>
-            <td>{repair.expectedServiceCharge}</td>
-          </tr>
-          <tr className="align-middle">
-            <th>Expected Complete Date</th>
-            <td>{toHuman(repair.expectedCompleteDte)}</td>
-          </tr>
+
           <tr className="align-middle">
             <th>Created At</th>
             <td>{toHuman(repair.createdAt)}</td>
-            <td></td>
           </tr>
         </tbody>
       </Table>
+
+      {/* <PrintPage data={repair} /> */}
     </Main>
   );
 };

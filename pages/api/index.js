@@ -9,6 +9,7 @@ export default async function handler(req, res) {
     if (req.method.toLowerCase() !== "post") {
       return res.status(405).json({ message: "Method not allowed" });
     }
+
     const { path, method, body } = req.body;
 
     const response = await fetch(`${baseService.url}${path}`, {

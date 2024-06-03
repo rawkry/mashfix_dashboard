@@ -34,7 +34,7 @@ export default function Add({ __state, myProfile }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          path: `/serviceType`,
+          path: `/serviceTypes`,
           method: "POST",
           body: data,
         }),

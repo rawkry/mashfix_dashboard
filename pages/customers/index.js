@@ -15,8 +15,8 @@ import { callFetch } from "@/helpers/server";
 import * as ExcelJS from "exceljs";
 
 import { Main } from "@/layouts";
-import { DateRange, Limit, Pagination } from "@/components";
-import { isoDate, searchRedirect, toHuman, toTrend } from "@/helpers/clients";
+import { Limit, Pagination } from "@/components";
+import { searchRedirect, toHuman } from "@/helpers/clients";
 import { toast } from "react-toastify";
 import getMyProfile from "@/helpers/server/getMyProfile";
 import { IssuesFormFields } from "@/reuseables";
@@ -25,15 +25,15 @@ export async function getServerSideProps(context) {
   try {
     const myProfile = await getMyProfile(context);
     const { limit = 10 } = context.query;
-    const [status, { repairs, total, currentPage, pages }] = await callFetch(
+    const [status, { customers, total, currentPage, pages }] = await callFetch(
       context,
-      `/repairs?limit=${limit}&${querystring.stringify(context.query)}`,
+      `/customers?limit=${limit}&${querystring.stringify(context.query)}`,
       "GET"
     );
 
     return {
       props: {
-        repairs,
+        customers,
         total,
         currentPage,
         pages,
@@ -51,7 +51,7 @@ export async function getServerSideProps(context) {
 }
 const { url, headers } = JSON.parse(process.env.NEXT_PUBLIC_BASE_SERVICE);
 export default function Index({
-  repairs: repairFromServer,
+  customers: customersFromServer,
   currentPage,
   limit,
   pages,
@@ -62,15 +62,13 @@ export default function Index({
 }) {
   const router = useRouter();
 
-  const [repair, setrepair] = useState(repairFromServer);
-  console.log(repairFromServer);
+  const [customers, setcustomers] = useState(customersFromServer);
+  console.log(customersFromServer);
   const [showIssue, setShowIssue] = useState({
     id: "",
     show: false,
   });
   const [issuesWithPrice, setIssuesWithPrice] = useState({});
-  const [activemodalShow, setActiveModalShow] = useState(false);
-  const [dates, setDates] = useState({});
 
   const exportToExcel = () => {
     const workbook = new ExcelJS.Workbook();
@@ -96,7 +94,7 @@ export default function Index({
       cell.font = { bold: true };
     });
 
-    repair.forEach((item) => {
+    customers.forEach((item) => {
       const row = [
         item.trackId || "-",
         item.customerName || "-",
@@ -122,10 +120,39 @@ export default function Index({
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "Repairlist.xlsx";
+      a.download = "customerslist.xlsx";
       a.click();
       window.URL.revokeObjectURL(url);
     });
+  };
+  const handleDelete = async (id) => {
+    try {
+      __state.loading = true;
+
+      const response = await fetch(`/api`, {
+        method: "POST",
+        body: JSON.stringify({
+          path: `/forms/career/${id}`,
+          method: "DELETE",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.status === 200) {
+        toast.info(`Career  deleted successfully`);
+        setcareers((prev) => prev.filter((customer) => customer.id !== id));
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      __state.loading = false;
+    }
   };
 
   const handleStatusChange = async (id, status) => {
@@ -135,7 +162,7 @@ export default function Index({
       const response = await fetch(`/api`, {
         method: "POST",
         body: JSON.stringify({
-          path: `/repairs/${id}/update-status`,
+          path: `/customers/${id}/update-status`,
           method: "PATCH",
           body: { status },
         }),
@@ -147,7 +174,7 @@ export default function Index({
       const data = await response.json();
 
       if (response.status === 200) {
-        toast.info(`Repair status updated successfully`);
+        toast.info(`customers status updated successfully`);
       } else {
         toast.error(data.message);
       }
@@ -176,7 +203,7 @@ export default function Index({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          path: `/repair/${showIssue.id}/update-issuesWithPrice`,
+          path: `/customers/${showIssue.id}/update-issuesWithPrice`,
           method: "PATCH",
           body: { issuesWithPrice: issueswithprice },
         }),
@@ -185,7 +212,7 @@ export default function Index({
       const data = await response.json();
 
       if (response.status === 200) {
-        toast.info(`Repair issues updated successfully`);
+        toast.info(`customers issues updated successfully`);
       } else {
         toast.error(data.message);
       }
@@ -196,55 +223,16 @@ export default function Index({
     }
   };
 
-  const handleDateChange = (startDate, endDate) => {
-    if (startDate === null || endDate === null) {
-      return;
-    }
-    const from_date = isoDate(startDate);
-    const to_date = isoDate(endDate);
-
-    const { ...query } = router.query;
-    router.push({
-      pathname: router.pathname,
-      query: {
-        ...query,
-        fromDate: from_date,
-        toDate: to_date,
-      },
-    });
-  };
-
   useEffect(() => {
-    setrepair(repairFromServer);
-  }, [repairFromServer]);
+    setcustomers(customersFromServer);
+  }, [customersFromServer]);
 
   return (
     <Main
-      title={`Repairs (${!fetched ? "" : total})`}
+      title={`customers (${!fetched ? "" : total})`}
       icon="fa-solid fa-useres"
       profile={myProfile}
     >
-      <Modal
-        title={"Select Last Active Date Range"}
-        show={activemodalShow}
-        onHide={() => {
-          setActiveModalShow(false);
-        }}
-      >
-        <DateRange dates={dates} setDates={setDates} />
-        <div className="d-flex justify-content-end gap-4 mt-4">
-          <div>
-            <Button
-              onClick={() => {
-                handleDateChange(dates.from_date, dates.to_date);
-                setActiveModalShow(false);
-              }}
-            >
-              Ok
-            </Button>
-          </div>
-        </div>
-      </Modal>
       {!fetched ? (
         <div
           style={{
@@ -283,13 +271,13 @@ export default function Index({
                 />
                 <Form.Control
                   type="search"
-                  placeholder="Search by phone..."
+                  placeholder="Search by email..."
                   defaultValue={router.query.email || ""}
                   onChange={debounce(
                     (e) =>
                       searchRedirect(
                         router.pathname,
-                        "phone",
+                        "email",
                         e.target.value,
                         router
                       ),
@@ -300,43 +288,6 @@ export default function Index({
             </Form>
 
             <div className="d-flex gap-2 mb-2">
-              <div>
-                <Form.Label className="font-zapp-bold mb-0">
-                  Requested Date
-                </Form.Label>
-                <Form.Group>
-                  <div className="d-flex align-items-center  justify-content-center">
-                    <div
-                      onClick={() => {
-                        setActiveModalShow(true);
-                      }}
-                      className="border-zapp-alt p-2 text-zapp hover"
-                    >
-                      <i className="fas fa-calendar-alt"></i>
-                      {router.query.fromDate && toTrend(router.query.fromDate)}
-                      <small className="font-zapp-bold "> - To - </small>
-                      <i className="fas fa-calendar-alt"></i>
-                      {router.query.toDate && toTrend(router.query.toDate)}
-                    </div>
-                    {(router.query.fromDate || router.query.toDate) && (
-                      <span
-                        className="m-2"
-                        onClick={() => {
-                          const { fromDate, toDate, ...query } = router.query;
-                          router.push({
-                            pathname: router.pathname,
-                            query: { ...query },
-                          });
-                        }}
-                      >
-                        <i className="fas fa-times-circle text-danger hover ">
-                          {" "}
-                        </i>
-                      </span>
-                    )}
-                  </div>
-                </Form.Group>
-              </div>
               <FloatingLabel controlId="floatingSelect" label="Status">
                 <select
                   className="form-select form-select-sm"
@@ -399,78 +350,31 @@ export default function Index({
           <Table responsive="xl" bordered striped className="shadow">
             <thead className="bg-secondary shadow">
               <tr className="align-middle">
-                <th>Track Id</th>
                 <th>Full Name</th>
                 <th>Number</th>
-                <th>Device</th>
-                <th>Brand</th>
-                <th>Description</th>
-                <th>Service </th>
-                <th>Status</th>
-                <th>Requested Date</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Created At</th>
                 <th>Options</th>
               </tr>
             </thead>
             <tbody style={{ overflowY: "auto" }}>
-              {repair.length > 0 ? (
-                repair.map((repair) => (
-                  <tr key={repair._id} className="align-middle">
-                    <td>{repair.trackId}</td>
-                    <td>{repair.customer.name}</td>
+              {customers.length > 0 ? (
+                customers.map((customer) => (
+                  <tr key={customer.id} className="align-middle">
+                    <td>{customer.name}</td>
 
                     <td>
-                      <a href={`tel:${repair.customer.phone}`}>
-                        {repair.customer.phone}
-                      </a>
+                      <a href={`tel:${customer.phone}`}>{customer.phone}</a>
                     </td>
-                    <td>{repair.device}</td>
-                    <td>{repair.brand}</td>
+                    <td>{customer.email}</td>
+                    <td>{customer.address}</td>
 
-                    <td>
-                      {repair.problemDescription &&
-                        repair.problemDescription
-                          .split(" ")
-                          .slice(0, 10)
-                          .join(" ")}
-                      ...
-                    </td>
-                    <td>{repair.servicetype.name}</td>
-                    <td>
-                      <Form.Group controlId="active">
-                        <FloatingLabel
-                          controlId="floatingSelect"
-                          className="mb-3"
-                        >
-                          <select
-                            className="form-select form-select-sm"
-                            defaultValue={repair.status}
-                            onChange={(e) => {
-                              handleStatusChange(repair._id, e.target.value);
-                            }}
-                          >
-                            {[
-                              "requested",
-                              "working",
-                              "completed",
-                              "pickedup",
-                            ].map((item, index) => (
-                              <option
-                                key={index}
-                                value={item}
-                                style={{ width: "100%" }}
-                              >
-                                {item}
-                              </option>
-                            ))}
-                          </select>
-                        </FloatingLabel>
-                      </Form.Group>
-                    </td>
-                    <td>{toHuman(repair.createdAt)}</td>
+                    <td>{toHuman(customer.createdAt)}</td>
 
                     <td>
                       <ButtonGroup size="sm">
-                        <Link href={`/repair/show/${repair._id}`}>
+                        <Link href={`/customers/show/${customer.id}`}>
                           <Button size="sm">
                             <i className="fas fa-eye me-1"></i> View
                           </Button>
@@ -480,34 +384,17 @@ export default function Index({
                           size="sm"
                           variant="warning"
                           as={Link}
-                          href={`/repair/edit/${repair._id}`}
+                          href={`/customers/edit/${customer.id}`}
                         >
                           <i className="fas fa-pen me-1"></i> Edit
                         </Button>
                         <Button
-                          as={Link}
-                          href={`/repair/${repair._id}/edit-receipt`}
                           size="sm"
                           variant="success"
-                        >
-                          <i
-                            className="fas fa-money-bill me-1
-                          "
-                          ></i>{" "}
-                          Cost Update
-                        </Button>
-
-                        <Button
-                          size="sm"
-                          variant="danger"
                           as={Link}
-                          href={`/repair/${repair._id}/view-receipt`}
+                          href={`/customers/${customer.id}/create-repair`}
                         >
-                          <i
-                            className="fas fa-print me-1
-                          "
-                          ></i>{" "}
-                          View Receipt
+                          <i className="fas fa-gear me-1"></i> Add Repair
                         </Button>
                       </ButtonGroup>
                     </td>
@@ -515,7 +402,7 @@ export default function Index({
                 ))
               ) : (
                 <tr>
-                  <td colSpan="10" className="text-center">
+                  <td colSpan="9" className="text-center">
                     No data found
                   </td>
                 </tr>

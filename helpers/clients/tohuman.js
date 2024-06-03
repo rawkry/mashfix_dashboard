@@ -5,8 +5,6 @@ export default function IsoDateString(dateStr) {
     year: "numeric",
     month: "long",
     day: "2-digit",
-    hour: "numeric",
-    minute: "numeric",
   };
   return new Date(dateStr).toLocaleString("en-US", options);
 }

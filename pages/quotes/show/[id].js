@@ -1,7 +1,6 @@
 import { callFetch } from "@/helpers/server";
 import { Main } from "@/layouts";
-import ReactHtmlParser from "react-html-parser";
-import React, { use, useEffect, useState } from "react";
+import React from "react";
 import getMyProfile from "@/helpers/server/getMyProfile";
 import { Table } from "react-bootstrap";
 import { toHuman } from "@/helpers/clients";
@@ -11,7 +10,7 @@ export async function getServerSideProps(context) {
 
   const [status, quote] = await callFetch(
     context,
-    `/quote/${context.params.id}`,
+    `/quotes/${context.params.id}`,
     "GET"
   );
 
@@ -30,6 +29,7 @@ export async function getServerSideProps(context) {
 }
 
 const index = ({ quote, myProfile }) => {
+  console.log("quote", quote);
   return (
     <Main
       title={`Quote ||  ${quote.customerName}`}
@@ -58,15 +58,19 @@ const index = ({ quote, myProfile }) => {
           </tr>
           <tr className="align-middle">
             <th>Selected Service</th>
-            <td>{quote.kindOfService.name}</td>
+            <td>{quote.service.name}</td>
           </tr>
           <tr className="align-middle">
             <th>Device Name</th>
-            <td>{quote.deviceName}</td>
+            <td>{quote.device}</td>
           </tr>
           <tr className="align-middle">
-            <th>Device Model</th>
-            <td>{quote.model}</td>
+            <th>Device Brand</th>
+            <td>{quote.brand}</td>
+          </tr>
+          <tr className="align-middle">
+            <th>Required Date</th>
+            <td>{toHuman(quote.requiredDate)}</td>
           </tr>
           <tr className="align-middle">
             <th>Device Issue</th>

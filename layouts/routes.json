@@ -6,7 +6,23 @@
     "icon": "fa-solid fa-gauge-high",
     "spacer": "bottom"
   },
-
+  {
+    "type": "card",
+    "title": "Customers",
+    "icon": "fa-solid fa-user",
+    "links": [
+      {
+        "title": "List",
+        "url": "/customers",
+        "icon": "fa-regular fa-rectangle-list"
+      },
+      {
+        "title": "Add New",
+        "url": "/customers/add",
+        "icon": "fa-solid fa-circle-plus"
+      }
+    ]
+  },
   {
     "type": "card",
     "title": "Repair",

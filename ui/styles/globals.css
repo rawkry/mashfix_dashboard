@@ -1,6 +1,6 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css");
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;700;800&display=swap");
-@import url("https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/morph/bootstrap.min.css");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/lumen/bootstrap.min.css");
 
 body {
   background: #ffffff;
@@ -9,6 +9,9 @@ body {
 .font-zapp-thin {
   font-family: "Montserrat", sans-serif;
   font-weight: 200;
+}
+p {
+  margin-bottom: 0.2rem;
 }
 
 .font-zapp {
@@ -60,19 +63,19 @@ body {
 }
 
 .bg-zapp-gradient {
-  background: -webkit-linear-gradient(45deg, #2e2c2c, #2e2c2c);
-  background: linear-gradient(45deg, #2e2c2c, #2e2c2c);
+  background: -webkit-linear-gradient(45deg, #2a2a78, #4a5b26);
+  background: linear-gradient(45deg, #2a2a78, #4a5b26);
 }
 .bg-zapp-gradient-alt {
-  background: -webkit-linear-gradient(45deg, #2e2c2c, #2e2c2c);
-  background: linear-gradient(45deg, #2e2c2c, #2e2c2c);
+  background: -webkit-linear-gradient(45deg, #2a2a78, #4a5b26);
+  background: linear-gradient(45deg, #2a2a78, #4a5b26);
 }
 .bg-blur {
   opacity: 0.8;
   backdrop-filter: blur(5px);
 }
 .text-zapp {
-  background: -webkit-linear-gradient(#4f4fdd, #a0e206);
+  background: -webkit-linear-gradient(#59598f, #a9b86b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   -webkit-filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.1));
@@ -118,4 +121,26 @@ h3{
 }
 .ql-indent-2{
   background-color: red
+}
+@media print {
+  .doted {
+    border-top: 1px dashed #000;
+    width: 100%;
+  }
+  .print_container {
+    color: #232122;
+   display: flex;
+    justify-content: center;
+
+    height: 100vh;
+  }
+  h2{
+    color:#232122
+  }
+
+    .d-none {
+      display: block !important;
+      width: 100%;
+        padding: 50px;
+    }
 }

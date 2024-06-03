@@ -21,7 +21,7 @@ export async function getServerSideProps(context) {
     const [status, { serviceTypes, total, currentPage, pages }] =
       await callFetch(
         context,
-        `/serviceType?limit=${limit}&${querystring.stringify(context.query)}`,
+        `/serviceTypes?limit=${limit}&${querystring.stringify(context.query)}`,
         "GET"
       );
 

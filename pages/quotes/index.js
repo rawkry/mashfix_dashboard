@@ -20,7 +20,7 @@ export async function getServerSideProps(context) {
     const { limit = 10 } = context.query;
     const [status, { quotes, total, currentPage, pages }] = await callFetch(
       context,
-      `/quote?limit=${limit}&${querystring.stringify(context.query)}`,
+      `/quotes?limit=${limit}&${querystring.stringify(context.query)}`,
       "GET"
     );
 
@@ -112,61 +112,47 @@ export default function Index({
   //     window.URL.revokeObjectURL(url);
   //   });
   // };
-  const handleDelete = async (id) => {
+
+  const handleApprovedChange = async (quote) => {
     try {
+      console.log(quote);
       __state.loading = true;
 
       const response = await fetch(`/api`, {
         method: "POST",
-        body: JSON.stringify({
-          path: `/forms/career/${id}`,
-          method: "DELETE",
-        }),
         headers: {
           "Content-Type": "application/json",
         },
-      });
-
-      const data = await response.json();
-
-      if (response.status === 200) {
-        toast.info(`Career  deleted successfully`);
-        setcareers((prev) =>
-          prev.filter((project_inquiry) => project_inquiry.id !== id)
-        );
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      __state.loading = false;
-    }
-  };
-
-  const handleApprovedChange = async (id) => {
-    try {
-      __state.loading = true;
-
-      const response = await fetch(`/api`, {
-        method: "POST",
         body: JSON.stringify({
-          path: `/quote/approve/${id}`,
+          path: `/quotes/approve/${quote.id}`,
           method: "PATCH",
-          body: { expectedQuoteCharge: 10, expectedCompleteDte: new Date() },
         }),
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
 
       const data = await response.json();
 
       if (response.status === 200) {
+        const response = await fetch(`/api`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            path: `/repairs`,
+            method: "POST",
+            body: {
+              serviceTypeId: quote.service,
+              customer: data.id,
+              device: quote.device,
+              brand: quote.brand,
+              problemDescription: quote.problemDescription,
+            },
+          }),
+        });
         toast.info(`quotes status updated successfully`);
         setquotes((prev) =>
           prev.map((project_inquiry) =>
-            project_inquiry.id === id
+            project_inquiry.id === quote.id
               ? { ...project_inquiry, approved: !project_inquiry.approved }
               : project_inquiry
           )
@@ -271,8 +257,9 @@ export default function Index({
                 <th>Email</th>
                 <th>Number</th>
                 <th>DeviceName</th>
+                <th>Brand</th>
                 <th>Description</th>
-                <th>Reuested for</th>
+                <th>Reqested for</th>
                 <th>Approved</th>
                 <th>Submited Date</th>
                 <th>Options</th>
@@ -290,7 +277,8 @@ export default function Index({
                         {project_inquiry.customerPhone}
                       </a>
                     </td>
-                    <td>{project_inquiry.deviceName}</td>
+                    <td>{project_inquiry.device}</td>
+                    <td>{project_inquiry.brand}</td>
                     <td>
                       {project_inquiry.problemDescription &&
                         project_inquiry.problemDescription
@@ -314,7 +302,7 @@ export default function Index({
                                 "Are you sure, you want to change  status of this quote?"
                               )
                             ) {
-                              handleApprovedChange(project_inquiry.id);
+                              handleApprovedChange(project_inquiry);
                             }
                           }}
                         />

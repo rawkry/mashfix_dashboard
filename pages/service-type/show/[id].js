@@ -11,7 +11,7 @@ export async function getServerSideProps(context) {
 
   const [status, service] = await callFetch(
     context,
-    `/serviceType/${context.params.id}`,
+    `/serviceTypes/${context.params.id}`,
     "GET"
   );
 
