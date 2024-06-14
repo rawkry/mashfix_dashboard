@@ -5,6 +5,8 @@ import React from "react";
 import getMyProfile from "@/helpers/server/getMyProfile";
 import { Table } from "react-bootstrap";
 import { toHuman } from "@/helpers/clients";
+import { Button } from "@/ui";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
   const myProfile = await getMyProfile(context);
@@ -30,12 +32,22 @@ export async function getServerSideProps(context) {
 }
 
 const index = ({ service, myProfile }) => {
+  const router = useRouter();
   return (
     <Main
       title={`Service Type ||  ${service.name.toUpperCase()}`}
       icon="fa-solid fa-quotees"
       profile={myProfile}
     >
+      <div className="container-fluid pb-3 ">
+        <Button
+          variant="outline-primary"
+          size="md"
+          onClick={() => router.back()}
+        >
+          <i className="fa-solid fa-arrow-left mr-2"></i>Back
+        </Button>
+      </div>
       <Table
         responsive="xl"
         bordered

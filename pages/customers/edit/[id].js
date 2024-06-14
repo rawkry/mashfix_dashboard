@@ -13,6 +13,7 @@ import {
 import getMyProfile from "@/helpers/server/getMyProfile";
 import { callFetch } from "@/helpers/server";
 import { IssuesFormFields } from "@/reuseables";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
   try {
@@ -48,7 +49,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function Add({ __state, myProfile, customer }) {
-  console.log(customer);
+  const router = useRouter();
   const onSubmit = async (data) => {
     try {
       __state.loading = true;
@@ -99,6 +100,15 @@ export default function Add({ __state, myProfile, customer }) {
       icon="fa-solid fa-users"
       profile={myProfile}
     >
+      <div className="container-fluid pb-3 ">
+        <Button
+          variant="outline-primary"
+          size="md"
+          onClick={() => router.back()}
+        >
+          <i className="fa-solid fa-arrow-left mr-2"></i>Back
+        </Button>
+      </div>
       <div>
         <Card className="shadow-sm p-4">
           <Form onSubmit={handleSubmit(onSubmit)}>

@@ -97,7 +97,7 @@ export default function Index({
       const response = await fetch(`/api`, {
         method: "POST",
         body: JSON.stringify({
-          path: `/serviceType/update-status/${id}`,
+          path: `/serviceTypes/update-status/${id}`,
           method: "PATCH",
           body: { active: status },
         }),
@@ -251,6 +251,11 @@ export default function Index({
                         <Link href={`/service-type/show/${service.id}`}>
                           <Button size="sm">
                             <i className="fas fa-eye me-1"></i> View
+                          </Button>
+                        </Link>
+                        <Link href={`/service-type/edit/${service.id}`}>
+                          <Button size="sm" variant="info">
+                            <i className="fas fa-edit me-1"></i> Edit
                           </Button>
                         </Link>
 

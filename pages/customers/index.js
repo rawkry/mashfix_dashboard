@@ -288,47 +288,6 @@ export default function Index({
             </Form>
 
             <div className="d-flex gap-2 mb-2">
-              <FloatingLabel controlId="floatingSelect" label="Status">
-                <select
-                  className="form-select form-select-sm"
-                  defaultValue={router.query.status || "All"}
-                  onChange={(e) => {
-                    const { value } = e.target;
-
-                    if (value === "All") {
-                      const { status, ...query } = router.query;
-                      router.push({
-                        pathname: router.pathname,
-                        query,
-                      });
-                      return;
-                    }
-
-                    router.push({
-                      pathname: router.pathname,
-                      query: {
-                        ...router.query,
-                        status: value,
-                      },
-                    });
-                  }}
-                >
-                  <option value="All">All</option>
-                  {["requested", "working", "completed", "pickedup"].map(
-                    (item, index) => (
-                      <option
-                        key={index}
-                        value={item}
-                        style={{
-                          width: "100%",
-                        }}
-                      >
-                        {item}
-                      </option>
-                    )
-                  )}
-                </select>
-              </FloatingLabel>
               <div>
                 <Limit limit={limit} />
               </div>

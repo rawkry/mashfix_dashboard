@@ -15,6 +15,7 @@ import { callFetch } from "@/helpers/server";
 import { IssuesFormFields } from "@/reuseables";
 import { useReactToPrint } from "react-to-print";
 import { PrintPage } from "@/components";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
   try {
@@ -42,6 +43,7 @@ export async function getServerSideProps(context) {
 
 export default function Add({ __state, myProfile, receipt }) {
   console.log(receipt);
+  const router = useRouter();
   const [issuesWithPrice, setIssuesWithPrice] = useState(
     receipt.issuesWithPrice
   );
@@ -72,7 +74,16 @@ export default function Add({ __state, myProfile, receipt }) {
       icon="fa-solid fa-users"
       profile={myProfile}
     >
-      <Row className="g-4 m-3">
+      <div className="container-fluid pb-3 ">
+        <Button
+          variant="outline-primary"
+          size="md"
+          onClick={() => router.back()}
+        >
+          <i className="fa-solid fa-arrow-left mr-2"></i>Back
+        </Button>
+      </div>
+      <Row className=" mb-3">
         {/* Customer Details Card */}
         <Col md={6} sm={12}>
           <Card className="shadow bg-light">

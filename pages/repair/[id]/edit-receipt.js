@@ -13,6 +13,7 @@ import {
 import getMyProfile from "@/helpers/server/getMyProfile";
 import { callFetch } from "@/helpers/server";
 import { IssuesFormFields } from "@/reuseables";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
   try {
@@ -40,6 +41,7 @@ export async function getServerSideProps(context) {
 
 export default function Add({ __state, myProfile, receipt }) {
   console.log(receipt);
+  const router = useRouter();
   const [issuesWithPrice, setIssuesWithPrice] = useState(
     receipt.issuesWithPrice
   );
@@ -103,7 +105,16 @@ export default function Add({ __state, myProfile, receipt }) {
       icon="fa-solid fa-users"
       profile={myProfile}
     >
-      <Row className="g-4 m-3">
+      <div className="container-fluid pb-3 ">
+        <Button
+          variant="outline-primary"
+          size="md"
+          onClick={() => router.back()}
+        >
+          <i className="fa-solid fa-arrow-left mr-2"></i>Back
+        </Button>
+      </div>
+      <Row className="mb-3">
         {/* Customer Details Card */}
         <Col md={6} sm={12}>
           <Card className="shadow bg-light">
@@ -135,18 +146,19 @@ export default function Add({ __state, myProfile, receipt }) {
             <Card.Header as="h5" className="bg-primary text-white">
               Service Details
             </Card.Header>
-            <Card.Body>
+            <Card.Body className="fw-bold">
               <Card.Title className="m-2 ">
-                {receipt.repair.deviceName}
+                {receipt.repair.serviceTypeId.name}
               </Card.Title>
               <Card.Text className="m-2">
-                Model: {receipt.repair.model}
+                Device: {receipt.repair.device}
               </Card.Text>
+              <Card.Text className="m-2">
+                Brand: {receipt.repair.brand}
+              </Card.Text>
+
               <Card.Text className="m-2">
                 Problem: {receipt.repair.problemDescription}
-              </Card.Text>
-              <Card.Text className="m-2">
-                Service Type: {receipt.repair.serviceTypeId.name}
               </Card.Text>
             </Card.Body>
           </Card>

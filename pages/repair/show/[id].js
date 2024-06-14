@@ -7,6 +7,8 @@ import { Modal, Table } from "react-bootstrap";
 import { toHuman } from "@/helpers/clients";
 import { useReactToPrint } from "react-to-print";
 import { PrintPage } from "@/components";
+import { Button } from "@/ui";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
   const myProfile = await getMyProfile(context);
@@ -32,7 +34,7 @@ export async function getServerSideProps(context) {
 }
 
 const index = ({ repair, myProfile }) => {
-  console.log(repair);
+  const router = useRouter();
   const [showReceipt, setShowReceipt] = useState(false);
   const componentRef = useRef(null);
   const handlePrint = useReactToPrint({
@@ -45,6 +47,15 @@ const index = ({ repair, myProfile }) => {
       icon="fa-solid fa-useres"
       profile={myProfile}
     >
+      <div className="container-fluid pb-3 ">
+        <Button
+          variant="outline-primary"
+          size="md"
+          onClick={() => router.back()}
+        >
+          <i className="fa-solid fa-arrow-left mr-2"></i>Back
+        </Button>
+      </div>
       <Table
         responsive="xl"
         bordered

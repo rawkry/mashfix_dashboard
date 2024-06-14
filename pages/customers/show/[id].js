@@ -24,6 +24,7 @@ import getMyProfile from "@/helpers/server/getMyProfile";
 import { callFetch } from "@/helpers/server";
 import { IssuesFormFields } from "@/reuseables";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
   try {
@@ -64,12 +65,22 @@ export async function getServerSideProps(context) {
 }
 
 export default function Show({ __state, myProfile, repairs, customer }) {
+  const router = useRouter();
   return (
     <Main
       title={`Customer || Show - ${customer.name} `}
       icon="fa-solid fa-users"
       profile={myProfile}
     >
+      <div className="container-fluid pb-3 ">
+        <Button
+          variant="outline-primary"
+          size="md"
+          onClick={() => router.back()}
+        >
+          <i className="fa-solid fa-arrow-left mr-2"></i>Back
+        </Button>
+      </div>
       <Table
         responsive="xl"
         bordered
@@ -128,31 +139,7 @@ export default function Show({ __state, myProfile, repairs, customer }) {
                   ...
                 </td>
                 <td>{repair.servicetype.name}</td>
-                <td>
-                  <Form.Group controlId="active">
-                    <FloatingLabel controlId="floatingSelect" className="mb-3">
-                      <select
-                        className="form-select form-select-sm"
-                        defaultValue={repair.status}
-                        onChange={(e) => {
-                          handleStatusChange(repair._id, e.target.value);
-                        }}
-                      >
-                        {["requested", "working", "completed", "pickedup"].map(
-                          (item, index) => (
-                            <option
-                              key={index}
-                              value={item}
-                              style={{ width: "100%" }}
-                            >
-                              {item}
-                            </option>
-                          )
-                        )}
-                      </select>
-                    </FloatingLabel>
-                  </Form.Group>
-                </td>
+                <td>{repair.status}</td>
                 <td>{toHuman(repair.createdAt)}</td>
 
                 <td>

@@ -5,25 +5,34 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/ui";
 import { Main } from "@/layouts";
 import getMyProfile from "@/helpers/server/getMyProfile";
+import { callFetch } from "@/helpers/server";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
-  try {
-    const myProfile = await getMyProfile(context);
+  const myProfile = await getMyProfile(context);
 
+  const [status, service] = await callFetch(
+    context,
+    `/serviceTypes/${context.params.id}`,
+    "GET"
+  );
+
+  if (status === 404) {
     return {
-      props: {
-        myProfile,
-      },
-    };
-  } catch (e) {
-    return {
-      props: {
-        fetched: false,
-      },
+      notFound: true,
     };
   }
+
+  return {
+    props: {
+      myProfile,
+      service,
+    },
+  };
 }
-export default function Add({ __state, myProfile }) {
+
+export default function Edit({ __state, service, myProfile }) {
+  const router = useRouter();
   const onSubmit = async (data) => {
     try {
       __state.loading = true;
@@ -34,16 +43,17 @@ export default function Add({ __state, myProfile }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          path: `/serviceTypes`,
-          method: "POST",
+          path: `/serviceTypes/${service.id}`,
+          method: "PUT",
           body: data,
         }),
       });
 
       const json = await response.json();
       if (response.status === 200) {
-        toast.success(`Servive named ${json.name} has been successfully added`);
-        reset();
+        toast.success(
+          `Servive named ${json.name} has been successfully updated`
+        );
       } else {
         toast.error(json.message);
       }
@@ -54,15 +64,18 @@ export default function Add({ __state, myProfile }) {
     }
   };
 
+  const defaultValues = {
+    name: service.name,
+  };
   const {
     watch,
     reset,
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({ defaultValues });
   return (
-    <Main title="Service || Add " icon="fa-solid fa-users" profile={myProfile}>
+    <Main title="Service || Edit " icon="fa-solid fa-users" profile={myProfile}>
       <div className="container-fluid pb-3 ">
         <Button
           variant="outline-primary"
@@ -92,7 +105,7 @@ export default function Add({ __state, myProfile }) {
 
             <div className="d-flex justify-content-end">
               <Button className="shadow" type="submit">
-                Submit Service
+                Update Service
               </Button>
             </div>
           </Form>
