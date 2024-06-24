@@ -63,7 +63,7 @@ export default function Index({
   const router = useRouter();
 
   const [customers, setcustomers] = useState(customersFromServer);
-  console.log(customersFromServer);
+
   const [showIssue, setShowIssue] = useState({
     id: "",
     show: false,

@@ -6,6 +6,7 @@ import { Table } from "react-bootstrap";
 
 const PrintPage = forwardRef((props, ref) => {
   const { data } = props;
+
   const subtotal = data.issuesWithPrice.reduce(
     (acc, item) => acc + item.price,
     0
@@ -62,7 +63,7 @@ const PrintPage = forwardRef((props, ref) => {
           </div>
           <div>
             <p>{new Date().toLocaleDateString()}</p>
-            <p>{data.id}</p>
+            <p>{data.invoiceNumber}</p>
           </div>
         </div>
         <div className="doted"></div>

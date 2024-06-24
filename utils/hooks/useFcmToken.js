@@ -11,7 +11,7 @@ const useFcmToken = () => {
     const retrieveToken = async () => {
       try {
         if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-          console.log("Attempting to register service worker...");
+          // console.log("Attempting to register service worker...");
           const registration = await navigator.serviceWorker.register(
             "/firebase-messaging-sw.js"
           );
@@ -33,9 +33,9 @@ const useFcmToken = () => {
             if (currentToken) {
               setToken(currentToken);
             } else {
-              console.log(
-                "No registration token available. Request permission to generate one."
-              );
+              // console.log(
+              //   "No registration token available. Request permission to generate one."
+              // );
             }
           }
         }

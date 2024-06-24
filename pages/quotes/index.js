@@ -149,7 +149,7 @@ export default function Index({
             },
           }),
         });
-        toast.info(`quotes status updated successfully`);
+        toast.info(`Quote has been approved successfully`);
         setquotes((prev) =>
           prev.map((project_inquiry) =>
             project_inquiry.id === quote.id

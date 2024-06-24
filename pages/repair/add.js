@@ -80,7 +80,6 @@ export default function Add({ __state, myProfile, serviceTypes }) {
         customerJson = await customerResponse.json();
       }
 
-      console.log("customerJson", customerJson);
       const response = await fetch(`/api`, {
         method: "POST",
         headers: {

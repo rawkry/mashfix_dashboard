@@ -15,15 +15,11 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const isSupported = firebase.messaging.isSupported();
-console.log("isSupported", isSupported);
+
 if (isSupported) {
   const messaging = firebase.messaging();
 
   messaging.onBackgroundMessage((payload) => {
-    console.log(
-      "[firebase-messaging-sw.js] Received background message ",
-      payload
-    );
     const notificationTitle = payload.notification.title;
     const notificationOptions = {
       body: payload.notification.body,

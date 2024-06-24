@@ -72,9 +72,14 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
                   type="number"
                   placeholder="Enter quantity"
                   value={issue.rate}
-                  onChange={(e) =>
-                    handleChange(key, "rate", e.target.value.trim())
-                  }
+                  onChange={(e) => {
+                    handleChange(key, "rate", e.target.value.trim());
+                    handleChange(
+                      key,
+                      "price",
+                      e.target.value.trim() * issue.quantity
+                    );
+                  }}
                   required
                 />
               </Col>
@@ -83,11 +88,7 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
                 <Form.Control
                   type="number"
                   placeholder="Enter price"
-                  value={issue.price}
-                  onChange={(e) =>
-                    handleChange(key, "price", e.target.value.trim())
-                  }
-                  required
+                  value={issue.quantity * issue.rate}
                 />
               </Col>
               <Col

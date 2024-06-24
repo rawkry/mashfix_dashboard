@@ -52,7 +52,7 @@ export async function getServerSideProps(context) {
 
 export default function Edit({ __state, repair, serviceType }) {
   const router = useRouter();
-  console.log(repair);
+
   const defaultValues = {
     serviceTypeId: repair.serviceTypeId.id,
     customer: repair.customer.id,
@@ -64,7 +64,7 @@ export default function Edit({ __state, repair, serviceType }) {
   const onSubmit = async (data) => {
     try {
       __state.loading = true;
-      console.log("data", data);
+
       const response = await fetch(`/api`, {
         method: "POST",
         headers: {

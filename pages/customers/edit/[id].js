@@ -173,7 +173,7 @@ export default function Add({ __state, myProfile, customer }) {
 
             <div className="d-flex justify-content-end">
               <Button className="shadow" type="submit">
-                Submit Repair
+                Update Customer
               </Button>
             </div>
           </Form>

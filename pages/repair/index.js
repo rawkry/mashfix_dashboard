@@ -63,7 +63,7 @@ export default function Index({
   const router = useRouter();
 
   const [repair, setrepair] = useState(repairFromServer);
-  console.log(repairFromServer);
+
   const [showIssue, setShowIssue] = useState({
     id: "",
     show: false,

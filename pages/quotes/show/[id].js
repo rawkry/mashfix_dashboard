@@ -29,7 +29,6 @@ export async function getServerSideProps(context) {
 }
 
 const index = ({ quote, myProfile }) => {
-  console.log("quote", quote);
   return (
     <Main
       title={`Quote ||  ${quote.customerName}`}

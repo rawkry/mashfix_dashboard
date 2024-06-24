@@ -39,7 +39,7 @@ function TopRightItem({ profile }) {
 export default function Main({ children, icon, title, profile = null }) {
   const { fcmToken, notificationPermissionStatus } = useFcmToken();
   // Use the token as needed
-  fcmToken && console.log("FCM token:", fcmToken);
+  // fcmToken && console.log("FCM token:", fcmToken);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
@@ -49,11 +49,11 @@ export default function Main({ children, icon, title, profile = null }) {
           const messaging = getMessaging(firebaseApp);
           if (fcmToken) {
             await messaging.subscribeToTopic(fcmToken, "allStudents");
-            console.log("Subscribed to allStudents topic");
+            // console.log("Subscribed to allStudents topic");
           } else {
-            console.log(
-              "No token available. Please check Firebase configuration."
-            );
+            // console.log(
+            //   "No token available. Please check Firebase configuration."
+            // );
           }
         } catch (error) {
           console.error("Error subscribing to topic:", error);

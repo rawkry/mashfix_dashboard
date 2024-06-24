@@ -42,7 +42,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function Add({ __state, myProfile, receipt }) {
-  console.log(receipt);
   const router = useRouter();
   const [issuesWithPrice, setIssuesWithPrice] = useState(
     receipt.issuesWithPrice
@@ -115,18 +114,19 @@ export default function Add({ __state, myProfile, receipt }) {
             <Card.Header as="h5" className="bg-primary text-white">
               Service Details
             </Card.Header>
-            <Card.Body>
+            <Card.Body className="fw-bold">
               <Card.Title className="m-2 ">
-                {receipt.repair.deviceName}
+                {receipt.repair.serviceTypeId.name}
               </Card.Title>
               <Card.Text className="m-2">
-                Model: {receipt.repair.model}
+                Device: {receipt.repair.device}
               </Card.Text>
+              <Card.Text className="m-2">
+                Brand: {receipt.repair.brand}
+              </Card.Text>
+
               <Card.Text className="m-2">
                 Problem: {receipt.repair.problemDescription}
-              </Card.Text>
-              <Card.Text className="m-2">
-                Service Type: {receipt.repair.serviceTypeId.name}
               </Card.Text>
             </Card.Body>
           </Card>
