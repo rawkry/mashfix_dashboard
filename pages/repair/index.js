@@ -404,8 +404,6 @@ export default function Index({
             <thead className="bg-secondary shadow">
               <tr className="align-middle">
                 <th>Track Id</th>
-                <th>Full Name</th>
-                <th>Number</th>
                 <th>Device</th>
                 <th>Brand</th>
                 <th>Description</th>
@@ -419,14 +417,16 @@ export default function Index({
               {repair.length > 0 ? (
                 repair.map((repair) => (
                   <tr key={repair._id} className="align-middle">
-                    <td>{repair.trackId}</td>
-                    <td>{repair.customer.name}</td>
-
                     <td>
-                      <a href={`tel:${repair.customer.phone}`}>
-                        {repair.customer.phone}
-                      </a>
+                      <span className="d-block">{repair.trackId}</span>
+                      <span className="d-block">{repair.customer.name}</span>
+                      <span>
+                        <a href={`tel:${repair.customer.phone}`}>
+                          {repair.customer.phone}
+                        </a>
+                      </span>
                     </td>
+
                     <td>{repair.device}</td>
                     <td>{repair.brand}</td>
 
