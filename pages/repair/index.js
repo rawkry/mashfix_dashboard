@@ -363,19 +363,23 @@ export default function Index({
                   }}
                 >
                   <option value="All">All</option>
-                  {["requested", "working", "completed", "pickedup"].map(
-                    (item, index) => (
-                      <option
-                        key={index}
-                        value={item}
-                        style={{
-                          width: "100%",
-                        }}
-                      >
-                        {item}
-                      </option>
-                    )
-                  )}
+                  {[
+                    "requested",
+                    "working",
+                    "waiting for parts",
+                    "completed",
+                    "pickedup",
+                  ].map((item, index) => (
+                    <option
+                      key={index}
+                      value={item}
+                      style={{
+                        width: "100%",
+                      }}
+                    >
+                      {item}
+                    </option>
+                  ))}
                 </select>
               </FloatingLabel>
               <div>
@@ -451,6 +455,7 @@ export default function Index({
                             {[
                               "requested",
                               "working",
+                              "waiting for parts",
                               "completed",
                               "pickedup",
                             ].map((item, index) => (

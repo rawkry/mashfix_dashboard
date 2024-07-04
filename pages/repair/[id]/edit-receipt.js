@@ -179,16 +179,6 @@ export default function Add({ __state, myProfile, receipt }) {
                 {...register("discount")}
               />
             </Form.Group>
-
-            <Form.Group className="mb-3" controlId="charger_paid">
-              <Form.Label>Charge Paid</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Enter  Charge Paid"
-                {...register("chargePaid")}
-              />
-            </Form.Group>
-
             <Form.Group className="mb-3" controlId="expectedServiceCharge">
               <Form.Label>Service Charge</Form.Label>
               <Form.Control
@@ -200,11 +190,14 @@ export default function Add({ __state, myProfile, receipt }) {
                 <span className="text-danger">Provide Service Charge</span>
               )}
             </Form.Group>
-
-            {/* <IssuesFormFields
-              setIssuesWithPrice={setIssuesWithPrice}
-              issuesWithPrice={issuesWithPrice}
-            /> */}
+            <Form.Group className="mb-3" controlId="charger_paid">
+              <Form.Label>Charge Paid</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Enter  Charge Paid"
+                {...register("chargePaid")}
+              />
+            </Form.Group>
 
             <div className="d-flex justify-content-end">
               <Button className="shadow" type="submit">

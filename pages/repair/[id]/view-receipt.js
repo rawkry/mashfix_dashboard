@@ -1,4 +1,12 @@
-import { Card, Col, Form, InputGroup, Row, Table } from "react-bootstrap";
+import {
+  Badge,
+  Card,
+  Col,
+  Form,
+  InputGroup,
+  Row,
+  Table,
+} from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { useRef, useState } from "react";
@@ -14,8 +22,9 @@ import getMyProfile from "@/helpers/server/getMyProfile";
 import { callFetch } from "@/helpers/server";
 import { IssuesFormFields } from "@/reuseables";
 import { useReactToPrint } from "react-to-print";
-import { PrintPage } from "@/components";
+import { PrintInvoice, PrintPage } from "@/components";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 export async function getServerSideProps(context) {
   try {
@@ -43,6 +52,7 @@ export async function getServerSideProps(context) {
 
 export default function Add({ __state, myProfile, receipt }) {
   const router = useRouter();
+  console.log(router);
   const [issuesWithPrice, setIssuesWithPrice] = useState(
     receipt.issuesWithPrice
   );
@@ -50,6 +60,10 @@ export default function Add({ __state, myProfile, receipt }) {
   const componentRef = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
+  });
+  const invoiceRef = useRef(null);
+  const handleInvoice = useReactToPrint({
+    content: () => invoiceRef.current,
   });
 
   const defaultValues = {
@@ -171,17 +185,6 @@ export default function Add({ __state, myProfile, receipt }) {
               {...register("discount")}
             />
           </Form.Group>
-
-          <Form.Group className="mb-3" controlId="charger_paid">
-            <Form.Label>Charge Paid</Form.Label>
-            <Form.Control
-              readOnly
-              type="number"
-              placeholder="Enter  Charge Paid"
-              {...register("chargePaid")}
-            />
-          </Form.Group>
-
           <Form.Group className="mb-3" controlId="expectedServiceCharge">
             <Form.Label>Service Charge</Form.Label>
             <Form.Control
@@ -194,19 +197,49 @@ export default function Add({ __state, myProfile, receipt }) {
               <span className="text-danger">Provide Service Charge</span>
             )}
           </Form.Group>
+          <Form.Group className="mb-3" controlId="charger_paid">
+            <Form.Label>Charge Paid</Form.Label>
+            <Form.Control
+              readOnly
+              type="number"
+              placeholder="Enter  Charge Paid"
+              {...register("chargePaid")}
+            />
+          </Form.Group>
 
-          <div className="d-flex justify-content-end">
-            <Button
-              className="shadow"
-              onClick={handlePrint}
-              disabled={receipt.issuesWithPrice.length < 1}
-            >
-              Print
-            </Button>
+          <div className="d-flex justify-content-between">
+            <div>
+              <Link href={`/repair/${router.query.id}/edit-receipt`}>
+                <Badge as={Button} variant={"warning"}>
+                  {" "}
+                  edit <i className="fas fa-pen" />
+                </Badge>
+              </Link>
+            </div>
+            <div className="d-flex gap-2">
+              <Button
+                className="shadow"
+                variant={"primary"}
+                onClick={handleInvoice}
+                disabled={receipt.issuesWithPrice.length < 1}
+              >
+                Print Receipt
+              </Button>
+              <Button
+                className="shadow"
+                onClick={handlePrint}
+                disabled={receipt.issuesWithPrice.length < 1}
+              >
+                Print Invoice
+              </Button>
+            </div>
           </div>
         </Card>
         <div ref={componentRef}>
           <PrintPage data={receipt} />
+        </div>
+        <div ref={invoiceRef}>
+          <PrintInvoice data={receipt} />
         </div>
       </div>
     </Main>

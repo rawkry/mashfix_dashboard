@@ -56,6 +56,7 @@ export default function Index({
   const router = useRouter();
 
   const [quotes, setquotes] = useState(quotesFromServer);
+  console.log("quotes", quotes);
 
   // const exportToExcel = () => {
   //   const workbook = new ExcelJS.Workbook();
@@ -253,13 +254,12 @@ export default function Index({
           <Table responsive="xl" bordered striped className="shadow">
             <thead className="bg-secondary shadow">
               <tr className="align-middle">
-                <th>Full Name</th>
-                <th>Email</th>
-                <th>Number</th>
+                <th>Customer</th>
+                <th>Service</th>
                 <th>DeviceName</th>
                 <th>Brand</th>
                 <th>Description</th>
-                <th>Reqested for</th>
+
                 <th>Approved</th>
                 <th>Submited Date</th>
                 <th>Options</th>
@@ -269,14 +269,18 @@ export default function Index({
               {quotes.length > 0 ? (
                 quotes.map((project_inquiry) => (
                   <tr key={project_inquiry.id} className="align-middle">
-                    <td>{project_inquiry.customerName}</td>
-
-                    <td>{project_inquiry.customerEmail}</td>
                     <td>
+                      <span className="d-block">
+                        {project_inquiry.customerName}
+                      </span>
+                      <span className="d-block">
+                        {project_inquiry.customerEmail}{" "}
+                      </span>
                       <a href={`tel:${project_inquiry.customerPhone}`}>
                         {project_inquiry.customerPhone}
                       </a>
                     </td>
+                    <td>{project_inquiry.service.name}</td>
                     <td>{project_inquiry.device}</td>
                     <td>{project_inquiry.brand}</td>
                     <td>
@@ -287,9 +291,7 @@ export default function Index({
                           .join(" ")}
                       ...
                     </td>
-                    <td>
-                      {project_inquiry.onSiteRepair ? "Onsite" : "Inshop"}
-                    </td>
+
                     <td>
                       <Form.Group className="mb-3" controlId="aproved">
                         <Form.Check

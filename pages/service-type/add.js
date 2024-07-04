@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/ui";
 import { Main } from "@/layouts";
 import getMyProfile from "@/helpers/server/getMyProfile";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
   try {
@@ -24,6 +25,7 @@ export async function getServerSideProps(context) {
   }
 }
 export default function Add({ __state, myProfile }) {
+  const router = useRouter();
   const onSubmit = async (data) => {
     try {
       __state.loading = true;
