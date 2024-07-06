@@ -56,7 +56,6 @@ export default function Index({
   const router = useRouter();
 
   const [quotes, setquotes] = useState(quotesFromServer);
-  console.log("quotes", quotes);
 
   // const exportToExcel = () => {
   //   const workbook = new ExcelJS.Workbook();
@@ -142,7 +141,7 @@ export default function Index({
             path: `/repairs`,
             method: "POST",
             body: {
-              serviceTypeId: quote.service,
+              serviceTypeId: quote.service.id,
               customer: data.id,
               device: quote.device,
               brand: quote.brand,

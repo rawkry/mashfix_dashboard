@@ -223,14 +223,14 @@ export default function Add({ __state, myProfile, receipt }) {
                 onClick={handleInvoice}
                 disabled={receipt.issuesWithPrice.length < 1}
               >
-                Print Receipt
+                Print Invoice
               </Button>
               <Button
                 className="shadow"
                 onClick={handlePrint}
                 disabled={receipt.issuesWithPrice.length < 1}
               >
-                Print Invoice
+                Print Receipt
               </Button>
             </div>
           </div>

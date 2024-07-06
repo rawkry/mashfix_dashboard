@@ -6,6 +6,7 @@
     "icon": "fa-solid fa-gauge-high",
     "spacer": "bottom"
   },
+
   {
     "type": "card",
     "title": "Customers",

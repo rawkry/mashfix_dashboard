@@ -52,7 +52,7 @@ const PrintPage = forwardRef((props, ref) => {
             color: "black",
           }}
         >
-          INVOICE / RECEIPT
+          RECEIPT
         </h4>
         <div className="doted"></div>
 
