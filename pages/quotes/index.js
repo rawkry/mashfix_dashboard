@@ -150,9 +150,10 @@ export default function Index({
           }),
         });
         toast.info(`Quote has been approved successfully`);
+
         setquotes((prev) =>
           prev.map((project_inquiry) =>
-            project_inquiry.id === quote.id
+            project_inquiry._id === quote._id
               ? { ...project_inquiry, approved: !project_inquiry.approved }
               : project_inquiry
           )
@@ -266,7 +267,7 @@ export default function Index({
             <tbody style={{ overflowY: "auto" }}>
               {quotes.length > 0 ? (
                 quotes.map((project_inquiry) => (
-                  <tr key={project_inquiry.id} className="align-middle">
+                  <tr key={project_inquiry._id} className="align-middle">
                     <td>
                       <span className="d-block">
                         {project_inquiry.customerName}
