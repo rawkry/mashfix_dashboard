@@ -64,7 +64,7 @@ export default function Add({ __state, myProfile, receipt }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          path: `/receipts/${receipt.id}`,
+          path: `/receipts/${receipt._id}`,
           method: "PUT",
           body: {
             ...data,

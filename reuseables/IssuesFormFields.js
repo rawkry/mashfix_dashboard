@@ -1,5 +1,5 @@
 import { Button } from "@/ui";
-import { Col, Form, Row } from "react-bootstrap";
+import { Card, Col, Form, Row } from "react-bootstrap";
 
 function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
   const handleAddSocial = () => {
@@ -112,22 +112,54 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
           <p className="text-muted">- No issues added yet -</p>
         )}
       </fieldset>
-      <Button
-        variant="primary"
-        className="shadow"
-        onClick={handleAddSocial}
-        disabled={
-          Object.keys(issuesWithPrice).length > 0 &&
-          Object.values(issuesWithPrice).some(
-            (issue) => !issue.description || !issue.price || !issue.quantity
-          )
-            ? true
-            : false
-        }
-      >
-        Add {Object.keys(issuesWithPrice).length === 0 ? "First" : "Another"}{" "}
-        Issue
-      </Button>
+      <div className="d-flex justify-content-between align-items-center">
+        <Button
+          variant="primary"
+          className="shadow"
+          onClick={handleAddSocial}
+          disabled={
+            Object.keys(issuesWithPrice).length > 0 &&
+            Object.values(issuesWithPrice).some(
+              (issue) => !issue.description || !issue.price || !issue.quantity
+            )
+              ? true
+              : false
+          }
+        >
+          Add {Object.keys(issuesWithPrice).length === 0 ? "First" : "Another"}{" "}
+          Issue
+        </Button>
+
+        <div>
+          <Card.Text className="text-muted">
+            Total: $
+            {Object.values(issuesWithPrice).reduce(
+              (acc, issue) => acc + issue.price,
+              0
+            )}
+          </Card.Text>
+          <Card.Text className="text-muted">
+            Tax (8.25%): $
+            {Object.values(issuesWithPrice).reduce(
+              (acc, issue) => acc + issue.price,
+              0
+            ) * 0.0825}
+          </Card.Text>
+
+          <Card.Text className="text-muted">
+            Grand Total: $
+            {Object.values(issuesWithPrice).reduce(
+              (acc, issue) => acc + issue.price,
+              0
+            ) +
+              Object.values(issuesWithPrice).reduce(
+                (acc, issue) => acc + issue.price,
+                0
+              ) *
+                0.0825}
+          </Card.Text>
+        </div>
+      </div>
     </Form.Group>
   );
 }

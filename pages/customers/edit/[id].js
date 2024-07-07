@@ -60,7 +60,7 @@ export default function Add({ __state, myProfile, customer }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          path: `/customers/${customer.id}`,
+          path: `/customers/${customer._id}`,
           method: "PUT",
           body: data,
         }),

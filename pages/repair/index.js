@@ -20,6 +20,7 @@ import { isoDate, searchRedirect, toHuman, toTrend } from "@/helpers/clients";
 import { toast } from "react-toastify";
 import getMyProfile from "@/helpers/server/getMyProfile";
 import { IssuesFormFields } from "@/reuseables";
+import path from "path";
 
 export async function getServerSideProps(context) {
   try {
@@ -186,6 +187,35 @@ export default function Index({
 
       if (response.status === 200) {
         toast.info(`Repair issues updated successfully`);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      __state.loading = false;
+    }
+  };
+  const handleDelete = async (id) => {
+    try {
+      __state.loading = true;
+      const response = await fetch(`/api`, {
+        method: "POST",
+        body: JSON.stringify({
+          path: `/repairs/${id}`,
+          method: "DELETE",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete repair");
+      }
+      const data = await response.json();
+      if (response.status === 200) {
+        toast.info(`Repair deleted successfully`);
+        setrepair(repair.filter((item) => item._id !== id));
       } else {
         toast.error(data.message);
       }
@@ -483,7 +513,7 @@ export default function Index({
 
                         <Button
                           size="sm"
-                          variant="warning"
+                          variant="secondary"
                           as={Link}
                           href={`/repair/edit/${repair._id}`}
                         >
@@ -513,6 +543,22 @@ export default function Index({
                           "
                           ></i>{" "}
                           View Receipt
+                        </Button>
+
+                        <Button
+                          size="sm"
+                          variant="warning"
+                          onClick={async () => {
+                            window.confirm(
+                              "Are you sure you want to delete this repair?"
+                            ) && handleDelete(repair._id);
+                          }}
+                        >
+                          <i
+                            className="fas fa-exclamation-triangle me-1
+                          "
+                          ></i>{" "}
+                          Delete
                         </Button>
                       </ButtonGroup>
                     </td>

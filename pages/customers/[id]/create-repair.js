@@ -65,7 +65,7 @@ export default function Add({ __state, myProfile, serviceTypes, customer }) {
           method: "POST",
           body: {
             serviceTypeId: data.serviceTypeId,
-            customer: customer.id,
+            customer: customer._id,
             device: data.device,
             brand: data.brand,
             problemDescription: data.problemDescription,
@@ -121,7 +121,7 @@ export default function Add({ __state, myProfile, serviceTypes, customer }) {
               >
                 <option value="">Select Service Type</option>
                 {serviceTypes.map((service) => (
-                  <option key={service.id} value={service.id}>
+                  <option key={service._id} value={service._id}>
                     {service.name}
                   </option>
                 ))}

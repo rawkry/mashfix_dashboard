@@ -54,7 +54,7 @@ export default function Edit({ __state, repair, serviceType }) {
   const router = useRouter();
 
   const defaultValues = {
-    serviceTypeId: repair.serviceTypeId.id,
+    serviceTypeId: repair.serviceTypeId._id,
     customer: repair.customer.id,
     device: repair.device,
     brand: repair.brand,
@@ -71,7 +71,7 @@ export default function Edit({ __state, repair, serviceType }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          path: `/repairs/${repair.id}`,
+          path: `/repairs/${repair._id}`,
           method: "PUT",
           body: data,
         }),
@@ -122,7 +122,7 @@ export default function Edit({ __state, repair, serviceType }) {
                 })}
               >
                 {serviceType.map((service) => (
-                  <option key={service.id} value={service.id}>
+                  <option key={service._id} value={service._id}>
                     {service.name}
                   </option>
                 ))}

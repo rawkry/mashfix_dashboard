@@ -43,7 +43,7 @@ export default function Edit({ __state, service, myProfile }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          path: `/serviceTypes/${service.id}`,
+          path: `/serviceTypes/${service._id}`,
           method: "PUT",
           body: data,
         }),

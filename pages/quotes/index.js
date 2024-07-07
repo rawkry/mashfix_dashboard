@@ -124,7 +124,7 @@ export default function Index({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          path: `/quotes/approve/${quote.id}`,
+          path: `/quotes/approve/${quote._id}`,
           method: "PATCH",
         }),
       });
@@ -141,8 +141,8 @@ export default function Index({
             path: `/repairs`,
             method: "POST",
             body: {
-              serviceTypeId: quote.service.id,
-              customer: data.id,
+              serviceTypeId: quote.service._id,
+              customer: data._id,
               device: quote.device,
               brand: quote.brand,
               problemDescription: quote.problemDescription,
@@ -258,7 +258,6 @@ export default function Index({
                 <th>DeviceName</th>
                 <th>Brand</th>
                 <th>Description</th>
-
                 <th>Approved</th>
                 <th>Submited Date</th>
                 <th>Options</th>
@@ -313,7 +312,7 @@ export default function Index({
 
                     <td>
                       <ButtonGroup size="sm">
-                        <Link href={`/quotes/show/${project_inquiry.id}`}>
+                        <Link href={`/quotes/show/${project_inquiry._id}`}>
                           <Button size="sm">
                             <i className="fas fa-eye me-1"></i> View
                           </Button>

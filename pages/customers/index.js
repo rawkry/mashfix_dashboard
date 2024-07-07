@@ -333,7 +333,7 @@ export default function Index({
 
                     <td>
                       <ButtonGroup size="sm">
-                        <Link href={`/customers/show/${customer.id}`}>
+                        <Link href={`/customers/show/${customer._id}`}>
                           <Button size="sm">
                             <i className="fas fa-eye me-1"></i> View
                           </Button>
@@ -343,7 +343,7 @@ export default function Index({
                           size="sm"
                           variant="warning"
                           as={Link}
-                          href={`/customers/edit/${customer.id}`}
+                          href={`/customers/edit/${customer._id}`}
                         >
                           <i className="fas fa-pen me-1"></i> Edit
                         </Button>
@@ -351,7 +351,7 @@ export default function Index({
                           size="sm"
                           variant="success"
                           as={Link}
-                          href={`/customers/${customer.id}/create-repair`}
+                          href={`/customers/${customer._id}/create-repair`}
                         >
                           <i className="fas fa-gear me-1"></i> Add Repair
                         </Button>

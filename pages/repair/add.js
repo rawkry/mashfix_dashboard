@@ -40,6 +40,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function Add({ __state, myProfile, serviceTypes }) {
+  console.log(serviceTypes);
   const router = useRouter();
   const [issuesWithPrice, setIssuesWithPrice] = useState({});
   const onSubmit = async (data) => {
@@ -90,7 +91,7 @@ export default function Add({ __state, myProfile, serviceTypes }) {
           method: "POST",
           body: {
             serviceTypeId: data.serviceTypeId,
-            customer: customerJson.id,
+            customer: customerJson._id,
             device: data.device,
             brand: data.brand,
             problemDescription: data.problemDescription,
@@ -142,7 +143,7 @@ export default function Add({ __state, myProfile, serviceTypes }) {
               >
                 <option value="">Select Service Type</option>
                 {serviceTypes.map((service) => (
-                  <option key={service.id} value={service.id}>
+                  <option key={service._id} value={service._id}>
                     {service.name}
                   </option>
                 ))}

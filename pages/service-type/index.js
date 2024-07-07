@@ -112,7 +112,7 @@ export default function Index({
         toast.info(`serviceTypes status updated successfully`);
         setserviceTypes((prev) =>
           prev.map((service) =>
-            service.id === id ? { ...service, active: status } : service
+            service._id === id ? { ...service, active: status } : service
           )
         );
       } else {
@@ -239,7 +239,7 @@ export default function Index({
                                 "Are you sure, you want to change  status of this service?"
                               )
                             ) {
-                              handleStatusChange(service.id, e.target.checked);
+                              handleStatusChange(service._id, e.target.checked);
                             }
                           }}
                         />
@@ -248,12 +248,12 @@ export default function Index({
                     <td>{toHuman(service.createdAt)}</td>
                     <td>
                       <ButtonGroup size="sm">
-                        <Link href={`/service-type/show/${service.id}`}>
+                        <Link href={`/service-type/show/${service._id}`}>
                           <Button size="sm">
                             <i className="fas fa-eye me-1"></i> View
                           </Button>
                         </Link>
-                        <Link href={`/service-type/edit/${service.id}`}>
+                        <Link href={`/service-type/edit/${service._id}`}>
                           <Button size="sm" variant="info">
                             <i className="fas fa-edit me-1"></i> Edit
                           </Button>
