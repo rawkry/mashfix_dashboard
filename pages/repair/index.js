@@ -544,22 +544,6 @@ export default function Index({
                           ></i>{" "}
                           View Receipt
                         </Button>
-
-                        <Button
-                          size="sm"
-                          variant="warning"
-                          onClick={async () => {
-                            window.confirm(
-                              "Are you sure you want to delete this repair?"
-                            ) && handleDelete(repair._id);
-                          }}
-                        >
-                          <i
-                            className="fas fa-exclamation-triangle me-1
-                          "
-                          ></i>{" "}
-                          Delete
-                        </Button>
                       </ButtonGroup>
                     </td>
                   </tr>
