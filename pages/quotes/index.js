@@ -192,7 +192,7 @@ export default function Index({
       ) : (
         <>
           <div className="d-flex justify-content-between">
-            <Form onSubmit={(e) => e.preventDefault()}>
+            <Form>
               <Form.Group
                 className="d-flex align-items-center w-100 gap-5"
                 style={{
@@ -229,6 +229,51 @@ export default function Index({
                     500
                   )}
                 />
+                <FloatingLabel
+                  controlId="floatingSelect"
+                  label="Approved"
+                  style={{
+                    width: "100%",
+                  }}
+                >
+                  <select
+                    className="form-select form-select-sm"
+                    defaultValue={router.query.status || "All"}
+                    onChange={(e) => {
+                      const { value } = e.target;
+
+                      if (value === "All") {
+                        const { approved, ...query } = router.query;
+                        router.push({
+                          pathname: router.pathname,
+                          query,
+                        });
+                        return;
+                      }
+
+                      router.push({
+                        pathname: router.pathname,
+                        query: {
+                          ...router.query,
+                          approved: value,
+                        },
+                      });
+                    }}
+                  >
+                    <option value="All">All</option>
+                    {["yes", "no"].map((item, index) => (
+                      <option
+                        key={index}
+                        value={item}
+                        style={{
+                          width: "100%",
+                        }}
+                      >
+                        {item}
+                      </option>
+                    ))}
+                  </select>
+                </FloatingLabel>
               </Form.Group>
             </Form>
 

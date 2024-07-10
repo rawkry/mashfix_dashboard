@@ -34,7 +34,7 @@ export default function Main({
             routes.length === 0 ? "ms-0" : ""
           }`}
         >
-          <div className="p-4 p-sm-5">
+          <div className="p-4 ">
             <div
               className="bg-zapp-gradient"
               style={{ height: "5px", opacity: 0.3 }}

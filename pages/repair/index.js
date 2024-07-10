@@ -71,7 +71,10 @@ export default function Index({
   });
   const [issuesWithPrice, setIssuesWithPrice] = useState({});
   const [activemodalShow, setActiveModalShow] = useState(false);
-  const [dates, setDates] = useState({});
+  const [dates, setDates] = useState({
+    from_date: new Date(),
+    to_date: new Date(),
+  });
 
   const exportToExcel = () => {
     const workbook = new ExcelJS.Workbook();
@@ -288,10 +291,10 @@ export default function Index({
         </div>
       ) : (
         <>
-          <div className="d-flex justify-content-between">
+          <div className="d-flex justify-content-between flex-wrap">
             <Form onSubmit={(e) => e.preventDefault()}>
               <Form.Group
-                className="d-flex align-items-center w-100 gap-5"
+                className="d-flex align-items-center w-100 gap-2"
                 style={{
                   marginBottom: "1rem",
                 }}
@@ -326,6 +329,57 @@ export default function Index({
                     500
                   )}
                 />
+                <FloatingLabel
+                  controlId="floatingSelect"
+                  label="Status"
+                  style={{
+                    width: "100%",
+                  }}
+                >
+                  <select
+                    className="form-select form-select-sm"
+                    defaultValue={router.query.status || "All"}
+                    onChange={(e) => {
+                      const { value } = e.target;
+
+                      if (value === "All") {
+                        const { status, ...query } = router.query;
+                        router.push({
+                          pathname: router.pathname,
+                          query,
+                        });
+                        return;
+                      }
+
+                      router.push({
+                        pathname: router.pathname,
+                        query: {
+                          ...router.query,
+                          status: value,
+                        },
+                      });
+                    }}
+                  >
+                    <option value="All">All</option>
+                    {[
+                      "requested",
+                      "working",
+                      "waiting for parts",
+                      "completed",
+                      "pickedup",
+                    ].map((item, index) => (
+                      <option
+                        key={index}
+                        value={item}
+                        style={{
+                          width: "100%",
+                        }}
+                      >
+                        {item}
+                      </option>
+                    ))}
+                  </select>
+                </FloatingLabel>
               </Form.Group>
             </Form>
 
@@ -367,51 +421,7 @@ export default function Index({
                   </div>
                 </Form.Group>
               </div>
-              <FloatingLabel controlId="floatingSelect" label="Status">
-                <select
-                  className="form-select form-select-sm"
-                  defaultValue={router.query.status || "All"}
-                  onChange={(e) => {
-                    const { value } = e.target;
 
-                    if (value === "All") {
-                      const { status, ...query } = router.query;
-                      router.push({
-                        pathname: router.pathname,
-                        query,
-                      });
-                      return;
-                    }
-
-                    router.push({
-                      pathname: router.pathname,
-                      query: {
-                        ...router.query,
-                        status: value,
-                      },
-                    });
-                  }}
-                >
-                  <option value="All">All</option>
-                  {[
-                    "requested",
-                    "working",
-                    "waiting for parts",
-                    "completed",
-                    "pickedup",
-                  ].map((item, index) => (
-                    <option
-                      key={index}
-                      value={item}
-                      style={{
-                        width: "100%",
-                      }}
-                    >
-                      {item}
-                    </option>
-                  ))}
-                </select>
-              </FloatingLabel>
               <div>
                 <Limit limit={limit} />
               </div>
@@ -448,10 +458,14 @@ export default function Index({
                 repair.map((repair) => (
                   <tr key={repair._id} className="align-middle">
                     <td>
-                      <span className="d-block">{repair.trackId}</span>
-                      <span className="d-block">{repair.customer.name}</span>
+                      <span className="d-block fw-bold">{repair.trackId}</span>
+                      <span className="d-block">
+                        <i className="fas fa-user m-1" />
+                        {repair.customer.name}
+                      </span>
                       <span>
                         <a href={`tel:${repair.customer.phone}`}>
+                          <i className="fas fa-phone m-1" />{" "}
                           {repair.customer.phone}
                         </a>
                       </span>
