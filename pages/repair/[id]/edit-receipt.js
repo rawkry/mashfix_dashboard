@@ -16,8 +16,9 @@ import { IssuesFormFields } from "@/reuseables";
 import { useRouter } from "next/router";
 import { Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
 
-import { PdfReceipt, PrintPage } from "../../../components";
+import { PdfReceipt, PrintInvoice, PrintPage } from "../../../components";
 import generatePDF from "react-to-pdf";
+import { useReactToPrint } from "react-to-print";
 
 export async function getServerSideProps(context) {
   try {
@@ -47,6 +48,13 @@ export default function Add({ __state, myProfile, receipt }) {
   console.log(receipt);
   const router = useRouter();
   const componentRef = useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+  const invoiceRef = useRef(null);
+  const handleInvoice = useReactToPrint({
+    content: () => invoiceRef.current,
+  });
 
   const [issuesWithPrice, setIssuesWithPrice] = useState(
     receipt.issuesWithPrice
@@ -298,7 +306,35 @@ export default function Add({ __state, myProfile, receipt }) {
               </Button>
             </div>
           </Form>
-          <button onClick={() => setOpenEmailDialog(true)}>Send Email</button>
+
+          <div className="d-flex gap-2 ">
+            <Button variant="success" onClick={() => setOpenEmailDialog(true)}>
+              Send Email
+            </Button>
+            <Button
+              className="shadow"
+              variant={"primary"}
+              onClick={handleInvoice}
+              disabled={receipt.issuesWithPrice.length < 1}
+            >
+              Print Invoice
+            </Button>
+            <Button
+              className="shadow"
+              variant="warning"
+              onClick={handlePrint}
+              disabled={receipt.issuesWithPrice.length < 1}
+            >
+              Print Receipt
+            </Button>
+          </div>
+
+          <div ref={componentRef}>
+            <PrintPage data={receipt} />
+          </div>
+          <div ref={invoiceRef}>
+            <PrintInvoice data={receipt} />
+          </div>
         </Card>
 
         <Modal
