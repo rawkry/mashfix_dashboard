@@ -22,9 +22,9 @@ const PrintPage = forwardRef((props, ref) => {
   const balanceDue = total - data.chargePaid;
 
   return (
-    <div ref={ref} className="print_container font-zapp ">
+    <div ref={ref} className="print_container font-zapp m-5">
       <div
-        className="print d-none"
+        className="print "
         style={{
           color: "black",
           backgroundColor: "white",

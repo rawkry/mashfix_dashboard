@@ -1,7 +1,7 @@
-import { Card, Col, Form, InputGroup, Row } from "react-bootstrap";
+import { Card, Col, Form, InputGroup, Modal, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { Button } from "@/ui";
 import { Main } from "@/layouts";
@@ -14,6 +14,10 @@ import getMyProfile from "@/helpers/server/getMyProfile";
 import { callFetch } from "@/helpers/server";
 import { IssuesFormFields } from "@/reuseables";
 import { useRouter } from "next/router";
+import { Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
+
+import { PdfReceipt, PrintPage } from "../../../components";
+import generatePDF from "react-to-pdf";
 
 export async function getServerSideProps(context) {
   try {
@@ -42,9 +46,14 @@ export async function getServerSideProps(context) {
 export default function Add({ __state, myProfile, receipt }) {
   console.log(receipt);
   const router = useRouter();
+  const componentRef = useRef(null);
+
   const [issuesWithPrice, setIssuesWithPrice] = useState(
     receipt.issuesWithPrice
   );
+  const [openEmailDialog, setOpenEmailDialog] = useState(false);
+  const [pdf, setPdf] = useState(null);
+  console.log(pdf);
   const onSubmit = async (data) => {
     try {
       __state.loading = true;
@@ -81,6 +90,90 @@ export default function Add({ __state, myProfile, receipt }) {
       toast.error(e.message);
     } finally {
       __state.loading = false;
+    }
+  };
+
+  const sendEmail = async () => {
+    try {
+      const response = await fetch(`/api/receipt/${receipt.customer._id}`, {
+        method: "POST",
+        body: pdf,
+      });
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  // const generatePdf = async () => {
+  //   try {
+  //     console.log("current", componentRef.current);
+
+  //     if (componentRef.current) {
+  //       const pdf = await generatePDF(componentRef, {
+  //         filename: "receipt.pdf",
+  //       });
+  //       console.log("Generated PDF:", pdf);
+  //       if (pdf) {
+  //         // Assuming sendPdfToApi is properly defined and handles the PDF upload
+  //         sendPdfToApi(pdf); // Uncomment this line to send PDF to API
+  //       } else {
+  //         console.error("PDF generation failed or returned undefined");
+  //       }
+  //     } else {
+  //       console.error(
+  //         "componentRef.current is not available or referencing the wrong element"
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error("Error generating PDF:", error);
+  //   }
+  // };
+
+  // const generatePdf = async (toPdf) => {
+  //   try {
+  //     if (componentRef.current) {
+  //       const pdf = await toPdf();
+  //       await sendPdfToApi(pdf);
+  //     } else {
+  //       console.error("componentRef.current is not available");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error generating PDF:", error);
+  //   }
+  // };
+
+  // const sendPdfToApi = async (pdf) => {
+  //   try {
+  //     // Example: Send PDF to an API using fetch
+  //     const response = await fetch("https://your-api-endpoint.com/upload-pdf", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/pdf",
+  //       },
+  //       body: pdf,
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Failed to upload PDF");
+  //     }
+
+  //     console.log("PDF uploaded successfully");
+  //   } catch (error) {
+  //     console.error("Error uploading PDF:", error);
+  //   }
+  // };
+
+  const handleImageChange = (event) => {
+    event.preventDefault();
+
+    const file = event.target.files[0];
+    console.log(file);
+    if (file) {
+      const formData = new FormData();
+      formData.append("receipt", file);
+      setPdf(formData);
+    } else {
+      setPdf(null);
     }
   };
 
@@ -199,13 +292,37 @@ export default function Add({ __state, myProfile, receipt }) {
               />
             </Form.Group>
 
-            <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end gap-2">
               <Button className="shadow" type="submit">
                 Submit receipt
               </Button>
             </div>
           </Form>
+          <button onClick={() => setOpenEmailDialog(true)}>Send Email</button>
         </Card>
+
+        <Modal
+          show={openEmailDialog}
+          onHide={() => setOpenEmailDialog(false)}
+          size="lg"
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Send Email</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <InputGroup className="mb-3">
+              <Form.Control
+                type="file"
+                name="pdf"
+                onChange={handleImageChange}
+              />
+            </InputGroup>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={sendEmail}>Send Email</Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     </Main>
   );

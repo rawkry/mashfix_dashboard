@@ -41,7 +41,6 @@ p {
   background-color: #c344ff90;
 }
 
-
 .bg-zapp {
   background-color: #232122 !important;
 }
@@ -49,7 +48,7 @@ p {
   box-shadow: #be377b 0px 5px 14px -7.5px;
 }
 .border-zapp {
-  border-color: #FF3B9D30 !important;
+  border-color: #ff3b9d30 !important;
 }
 
 .border-zapp-alt {
@@ -114,13 +113,20 @@ p {
 }
 .hover-select:hover {
   background-color: #f0f0f0;
-    color: rgb(226, 16, 142);
+  color: rgb(226, 16, 142);
 }
-h3{
-  color:green
+h3 {
+  color: green;
 }
-.ql-indent-2{
-  background-color: red
+.ql-indent-2 {
+  background-color: red;
+}
+.download {
+  color: #232122;
+  display: flex;
+  justify-content: center;
+
+  height: 100vh;
 }
 @media print {
   .doted {
@@ -129,18 +135,18 @@ h3{
   }
   .print_container {
     color: #232122;
-   display: flex;
+    display: flex;
     justify-content: center;
 
     height: 100vh;
   }
-  h2{
-    color:#232122
+  h2 {
+    color: #232122;
   }
 
-    .d-none {
-      display: block !important;
-      width: 100%;
-        padding: 50px;
-    }
+  .d-none {
+    display: block !important;
+    width: 100%;
+    padding: 50px;
+  }
 }

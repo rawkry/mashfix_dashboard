@@ -4,3 +4,4 @@ export { default as Texteditor } from "./Texteditor";
 export { default as PrintPage } from "./PrintPage";
 export { default as PrintInvoice } from "./PrintInvoice";
 export { default as DateRange } from "./DateRange";
+export { default as PdfReceipt } from "./PdfReceipt";
