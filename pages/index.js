@@ -51,7 +51,7 @@ export default function Index({
     },
     {
       name: "Quotes",
-      link: "/quotes",
+      link: "/quotes?approved=no",
       icon: "fas fa-message",
       total: quoteTotal,
     },

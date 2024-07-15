@@ -115,7 +115,6 @@ export default function Index({
 
   const handleApprovedChange = async (quote) => {
     try {
-      console.log(quote);
       __state.loading = true;
 
       const response = await fetch(`/api`, {
@@ -238,7 +237,7 @@ export default function Index({
                 >
                   <select
                     className="form-select form-select-sm"
-                    defaultValue={router.query.status || "All"}
+                    defaultValue={router.query.approved || "All"}
                     onChange={(e) => {
                       const { value } = e.target;
 

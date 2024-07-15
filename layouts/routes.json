@@ -65,7 +65,7 @@
     "links": [
       {
         "title": "List",
-        "url": "/quotes",
+        "url": "/quotes?approved=no",
         "icon": "fa-regular fa-rectangle-list"
       }
     ]

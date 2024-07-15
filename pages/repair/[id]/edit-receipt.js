@@ -45,7 +45,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function Add({ __state, myProfile, receipt }) {
-  console.log(receipt);
   const router = useRouter();
   const componentRef = useRef(null);
   const handlePrint = useReactToPrint({
@@ -61,7 +60,7 @@ export default function Add({ __state, myProfile, receipt }) {
   );
   const [openEmailDialog, setOpenEmailDialog] = useState(false);
   const [pdf, setPdf] = useState(null);
-  console.log(pdf);
+
   const onSubmit = async (data) => {
     try {
       __state.loading = true;
@@ -276,6 +275,7 @@ export default function Add({ __state, myProfile, receipt }) {
               <Form.Label>Discount</Form.Label>
               <Form.Control
                 type="text"
+                step={0.01}
                 placeholder="Enter Discount"
                 {...register("discount")}
               />
@@ -283,6 +283,7 @@ export default function Add({ __state, myProfile, receipt }) {
             <Form.Group className="mb-3" controlId="expectedServiceCharge">
               <Form.Label>Service Charge</Form.Label>
               <Form.Control
+                step={0.01}
                 type="number"
                 placeholder="Enter Expected Service Charge"
                 {...register("expectedServiceCharge")}

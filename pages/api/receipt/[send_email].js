@@ -3,7 +3,6 @@ const api = JSON.parse(process.env.NEXT_PUBLIC_BASE_SERVICE);
 
 export default async function handler(req, res) {
   try {
-    console.log(req.query);
     if (req.method === "POST") {
       const response = await fetch(
         `${api.url}/receipts/upload/${req.query.send_email}`,

@@ -52,7 +52,7 @@ export async function getServerSideProps(context) {
 
 export default function Add({ __state, myProfile, receipt }) {
   const router = useRouter();
-  console.log(router);
+
   const [issuesWithPrice, setIssuesWithPrice] = useState(
     receipt.issuesWithPrice
   );

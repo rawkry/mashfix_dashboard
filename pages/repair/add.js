@@ -40,7 +40,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function Add({ __state, myProfile, serviceTypes }) {
-  console.log(serviceTypes);
   const router = useRouter();
   const [issuesWithPrice, setIssuesWithPrice] = useState({});
   const onSubmit = async (data) => {
