@@ -2,7 +2,7 @@ import { Button } from "@/ui";
 import { Card, Col, Form, Row } from "react-bootstrap";
 
 function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
-  const handleAddSocial = () => {
+  const handleAddIssues = () => {
     const newKey = Math.floor(Math.random() * 16777215).toString(16);
     setIssuesWithPrice((prev) => ({
       ...prev,
@@ -16,23 +16,53 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
   };
 
   const handleChange = (key, field, value) => {
-    setIssuesWithPrice((prev) => ({
-      ...prev,
-      [key]: {
-        ...prev[key],
-        [field]: value,
-      },
-    }));
+    if (field === "rate") {
+      const newRate = parseFloat(value.trim());
+      const newPrice = isNaN(newRate)
+        ? 0
+        : newRate * parseFloat(issuesWithPrice[key].quantity);
+      setIssuesWithPrice((prev) => ({
+        ...prev,
+        [key]: {
+          ...prev[key],
+          rate: newRate.toString(),
+          price: newPrice.toString(),
+        },
+      }));
+    } else {
+      setIssuesWithPrice((prev) => ({
+        ...prev,
+        [key]: {
+          ...prev[key],
+          [field]: value,
+        },
+      }));
+    }
   };
 
   // Function to remove a social media entry
-  const handleRemoveSocial = (key) => {
+  const handleRemoveIssue = (key) => {
     setIssuesWithPrice((prev) => {
       const newState = { ...prev };
       delete newState[key];
       return newState;
     });
   };
+
+  const total = Object.values(issuesWithPrice)
+    .reduce((acc, issue) => acc + parseFloat(issue.price || 0), 0)
+    .toFixed(2);
+
+  // Calculate Tax
+  const tax = (
+    Object.values(issuesWithPrice).reduce(
+      (acc, issue) => acc + parseFloat(issue.price || 0),
+      0
+    ) * 0.0825
+  ).toFixed(2);
+
+  // Calculate Grand Total
+  const grandTotal = (parseFloat(total) + parseFloat(tax)).toFixed(2);
 
   return (
     <Form.Group className="mb-3">
@@ -74,11 +104,6 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
                   value={issue.rate}
                   onChange={(e) => {
                     handleChange(key, "rate", e.target.value.trim());
-                    handleChange(
-                      key,
-                      "price",
-                      e.target.value.trim() * issue.quantity
-                    );
                   }}
                   required
                 />
@@ -88,7 +113,7 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
                 <Form.Control
                   type="number"
                   placeholder="Enter price"
-                  value={issue.quantity * issue.rate}
+                  defaultValue={issue.price}
                 />
               </Col>
               <Col
@@ -99,7 +124,7 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
                   variant="primary"
                   size="sm"
                   className="d-inline-block rounded"
-                  onClick={() => handleRemoveSocial(key)}
+                  onClick={() => handleRemoveIssue(key)}
                 >
                   <i className="fas fa-times" />
                 </Button>
@@ -116,47 +141,21 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
         <Button
           variant="primary"
           className="shadow"
-          onClick={handleAddSocial}
-          disabled={
-            Object.keys(issuesWithPrice).length > 0 &&
-            Object.values(issuesWithPrice).some(
-              (issue) => !issue.description || !issue.price || !issue.quantity
-            )
-              ? true
-              : false
-          }
+          onClick={handleAddIssues}
+          disabled={Object.values(issuesWithPrice).some(
+            (issue) =>
+              !issue.description || issue.price === "" || issue.quantity === ""
+          )}
         >
           Add {Object.keys(issuesWithPrice).length === 0 ? "First" : "Another"}{" "}
           Issue
         </Button>
 
         <div>
+          <Card.Text className="text-muted">Total: ${total}</Card.Text>
+          <Card.Text className="text-muted">Tax (8.25%): ${tax}</Card.Text>
           <Card.Text className="text-muted">
-            Total: $
-            {Object.values(issuesWithPrice).reduce(
-              (acc, issue) => acc + issue.price,
-              0
-            )}
-          </Card.Text>
-          <Card.Text className="text-muted">
-            Tax (8.25%): $
-            {Object.values(issuesWithPrice).reduce(
-              (acc, issue) => acc + issue.price,
-              0
-            ) * 0.0825}
-          </Card.Text>
-
-          <Card.Text className="text-muted">
-            Grand Total: $
-            {Object.values(issuesWithPrice).reduce(
-              (acc, issue) => acc + issue.price,
-              0
-            ) +
-              Object.values(issuesWithPrice).reduce(
-                (acc, issue) => acc + issue.price,
-                0
-              ) *
-                0.0825}
+            Grand Total: ${grandTotal}
           </Card.Text>
         </div>
       </div>
