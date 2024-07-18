@@ -295,6 +295,7 @@ export default function Add({ __state, myProfile, receipt }) {
             <Form.Group className="mb-3" controlId="charger_paid">
               <Form.Label>Charge Paid</Form.Label>
               <Form.Control
+                step={0.01}
                 type="number"
                 placeholder="Enter  Charge Paid"
                 {...register("chargePaid")}

@@ -38,10 +38,6 @@ export default function Index({
   repairTotal,
   customerTotal,
 }) {
-  console.log({
-    repairTotal,
-    quoteTotal,
-  });
   const dashboardShortcuts = [
     {
       name: "Customers",
