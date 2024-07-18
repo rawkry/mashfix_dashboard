@@ -102,12 +102,21 @@ export default function Add({ __state, myProfile, receipt }) {
 
   const sendEmail = async () => {
     try {
+      __state.loading = true;
       const response = await fetch(`/api/receipt/${receipt.customer._id}`, {
         method: "POST",
         body: pdf,
       });
+      const json = response.json();
+      if (!response.ok) {
+        toast.error(json.message);
+      }
+      setOpenEmailDialog(false);
+      toast.success("Receipt has been successfully send");
     } catch (error) {
       toast.error(error.message);
+    } finally {
+      __state.loading = false;
     }
   };
 
