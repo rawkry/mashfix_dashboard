@@ -83,7 +83,7 @@ export default function Add({ __state, myProfile, receipt }) {
   });
   return (
     <Main
-      title={`Receipt || Edit : ${receipt.customer.name} `}
+      title={`Receipt : ${receipt.customer.name} `}
       icon="fa-solid fa-users"
       profile={myProfile}
     >

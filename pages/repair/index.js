@@ -317,12 +317,27 @@ export default function Index({
                 <Form.Control
                   type="search"
                   placeholder="Search by phone..."
-                  defaultValue={router.query.email || ""}
+                  defaultValue={router.query.phone || ""}
                   onChange={debounce(
                     (e) =>
                       searchRedirect(
                         router.pathname,
                         "phone",
+                        e.target.value,
+                        router
+                      ),
+                    500
+                  )}
+                />
+                <Form.Control
+                  type="search"
+                  placeholder="Search by brand..."
+                  defaultValue={router.query.brand || ""}
+                  onChange={debounce(
+                    (e) =>
+                      searchRedirect(
+                        router.pathname,
+                        "brand",
                         e.target.value,
                         router
                       ),

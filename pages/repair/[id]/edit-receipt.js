@@ -5,19 +5,14 @@ import React, { useRef, useState } from "react";
 
 import { Button } from "@/ui";
 import { Main } from "@/layouts";
-import {
-  generateFakeEmail,
-  generateFakeNumber,
-  generateFakePan,
-} from "@/helpers/clients";
+
 import getMyProfile from "@/helpers/server/getMyProfile";
 import { callFetch } from "@/helpers/server";
 import { IssuesFormFields } from "@/reuseables";
 import { useRouter } from "next/router";
-import { Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
 
-import { PdfReceipt, PrintInvoice, PrintPage } from "../../../components";
-import generatePDF from "react-to-pdf";
+import { PrintInvoice, PrintPage } from "../../../components";
+
 import { useReactToPrint } from "react-to-print";
 
 export async function getServerSideProps(context) {
@@ -120,65 +115,6 @@ export default function Add({ __state, myProfile, receipt }) {
     }
   };
 
-  // const generatePdf = async () => {
-  //   try {
-  //     console.log("current", componentRef.current);
-
-  //     if (componentRef.current) {
-  //       const pdf = await generatePDF(componentRef, {
-  //         filename: "receipt.pdf",
-  //       });
-  //       console.log("Generated PDF:", pdf);
-  //       if (pdf) {
-  //         // Assuming sendPdfToApi is properly defined and handles the PDF upload
-  //         sendPdfToApi(pdf); // Uncomment this line to send PDF to API
-  //       } else {
-  //         console.error("PDF generation failed or returned undefined");
-  //       }
-  //     } else {
-  //       console.error(
-  //         "componentRef.current is not available or referencing the wrong element"
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error("Error generating PDF:", error);
-  //   }
-  // };
-
-  // const generatePdf = async (toPdf) => {
-  //   try {
-  //     if (componentRef.current) {
-  //       const pdf = await toPdf();
-  //       await sendPdfToApi(pdf);
-  //     } else {
-  //       console.error("componentRef.current is not available");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error generating PDF:", error);
-  //   }
-  // };
-
-  // const sendPdfToApi = async (pdf) => {
-  //   try {
-  //     // Example: Send PDF to an API using fetch
-  //     const response = await fetch("https://your-api-endpoint.com/upload-pdf", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/pdf",
-  //       },
-  //       body: pdf,
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Failed to upload PDF");
-  //     }
-
-  //     console.log("PDF uploaded successfully");
-  //   } catch (error) {
-  //     console.error("Error uploading PDF:", error);
-  //   }
-  // };
-
   const handleImageChange = (event) => {
     event.preventDefault();
 
@@ -210,7 +146,7 @@ export default function Add({ __state, myProfile, receipt }) {
   });
   return (
     <Main
-      title={`Receipt || Edit : ${receipt.customer.name} `}
+      title={`Receipt : ${receipt.customer.name} `}
       icon="fa-solid fa-users"
       profile={myProfile}
     >
