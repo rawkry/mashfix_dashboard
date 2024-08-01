@@ -1,11 +1,10 @@
-import React, { forwardRef, useEffect } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 
 // import { timeFomate, toHuman } from "@/helper/client";
 
-const PrintPage = forwardRef((props, ref) => {
-  const { data } = props;
-
+const PrintPage = forwardRef(({ data: serverData }, ref) => {
+  const [data, setData] = useState(serverData);
   const subtotal = data.issuesWithPrice.reduce(
     (acc, item) => acc + item.price,
     0
@@ -20,6 +19,9 @@ const PrintPage = forwardRef((props, ref) => {
   const total = subtotal + salesTax + serviceCharge - data.discount;
 
   const balanceDue = total - data.chargePaid;
+  useEffect(() => {
+    setData(serverData);
+  }, [serverData]);
 
   return (
     <div ref={ref} className="print_container font-zapp ">
@@ -70,10 +72,12 @@ const PrintPage = forwardRef((props, ref) => {
           <div>
             <p>Customer Name</p>
             <p>Phone Number</p>
+            {data.paymentMethod && <p>Paid By</p>}
           </div>
           <div>
             <p>{data.customer.name}</p>
             <p>{data.customer.phone}</p>
+            {data.paymentMethod && <p>{data.paymentMethod}</p>}
           </div>
         </div>
         <div className="doted"></div>

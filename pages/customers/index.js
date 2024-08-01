@@ -229,7 +229,7 @@ export default function Index({
 
   return (
     <Main
-      title={`customers (${!fetched ? "" : total})`}
+      title={`Customers (${!fetched ? "" : total})`}
       icon="fa-solid fa-useres"
       profile={myProfile}
     >

@@ -74,6 +74,8 @@ const PrintPage = forwardRef((props, ref) => {
           <div>
             <p>{data.customer.name}</p>
             <p>{data.customer.phone}</p>
+
+            <p></p>
           </div>
         </div>
         <div className="doted"></div>

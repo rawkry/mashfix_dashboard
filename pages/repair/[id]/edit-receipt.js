@@ -1,7 +1,7 @@
 import { Card, Col, Form, InputGroup, Modal, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import React, { useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 
 import { Button } from "@/ui";
 import { Main } from "@/layouts";
@@ -39,7 +39,9 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Add({ __state, myProfile, receipt }) {
+export default function Add({ __state, myProfile, receipt: serverReceipt }) {
+  const [receipt, setReceipt] = useState(serverReceipt);
+
   const router = useRouter();
   const componentRef = useRef(null);
   const handlePrint = useReactToPrint({
@@ -83,9 +85,15 @@ export default function Add({ __state, myProfile, receipt }) {
           },
         }),
       });
+      const json = await receiptResponse.json();
+
       if (!receiptResponse.ok) {
         return toast.error("Failed to update receipt");
       }
+      setReceipt((prev) => ({
+        ...prev,
+        paymentMethod: json.paymentMethod,
+      }));
 
       toast.success(`Receipt  has been updated successfully`);
     } catch (e) {
@@ -119,7 +127,7 @@ export default function Add({ __state, myProfile, receipt }) {
     event.preventDefault();
 
     const file = event.target.files[0];
-    console.log(file);
+
     if (file) {
       const formData = new FormData();
       formData.append("receipt", file);
@@ -130,6 +138,7 @@ export default function Add({ __state, myProfile, receipt }) {
   };
 
   const defaultValues = {
+    paymentMethod: receipt.paymentMethod,
     discount: receipt.discount,
     chargePaid: receipt.chargePaid,
     expectedServiceCharge: receipt.expectedServiceCharge,
@@ -245,6 +254,16 @@ export default function Add({ __state, myProfile, receipt }) {
                 placeholder="Enter  Charge Paid"
                 {...register("chargePaid")}
               />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="paymentMethod">
+              <Form.Label>Payment Method</Form.Label>
+              <Form.Select
+                aria-label="Payment Method"
+                {...register("paymentMethod")}
+              >
+                <option value="cash">Cash</option>
+                <option value="card">Card</option>
+              </Form.Select>
             </Form.Group>
 
             <div className="d-flex justify-content-end gap-2">

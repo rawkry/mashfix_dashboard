@@ -63,7 +63,6 @@ export default function Main({ children, icon, title, profile = null }) {
 
       const messaging = getMessaging(firebaseApp);
       const unsubscribe = onMessage(messaging, (payload) => {
-        console.log("Foreground push notification received:", payload);
         // Handle the received push notification while the app is in the foreground
         // You can display a notification or update the UI based on the payload
       });

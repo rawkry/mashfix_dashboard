@@ -25,14 +25,14 @@ export async function getServerSideProps(context) {
   try {
     const myProfile = await getMyProfile(context);
     const { limit = 10 } = context.query;
-
-    const [status, { quotes, total, currentPage, pages }] = await callFetch(
-      context,
-      `/quotes?limit=${limit}&approved=no&declined=no&${querystring.stringify(
-        context.query
-      )}`,
-      "GET"
-    );
+    const [quote_status, { quotes, total, currentPage, pages }] =
+      await callFetch(
+        context,
+        `/quotes?declined=yes&limit=${limit}&${querystring.stringify(
+          context.query
+        )}`,
+        "GET"
+      );
 
     return {
       props: {
@@ -123,56 +123,6 @@ export default function Index({
   //   });
   // };
 
-  const handleApprovedChange = async (quote) => {
-    try {
-      __state.loading = true;
-
-      const response = await fetch(`/api`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          path: `/quotes/approve/${quote._id}`,
-          method: "PATCH",
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.status === 200) {
-        const response = await fetch(`/api`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            path: `/repairs`,
-            method: "POST",
-            body: {
-              serviceTypeId: quote.service._id,
-              customer: data._id,
-              device: quote.device,
-              brand: quote.brand,
-              problemDescription: quote.problemDescription,
-            },
-          }),
-        });
-        toast.info(`Quote has been approved successfully`);
-
-        setquotes((prev) =>
-          prev.filter((project_inquiry) => project_inquiry._id !== quote._id)
-        );
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      __state.loading = false;
-    }
-  };
-
   const handleDeclinedChange = async (quote) => {
     try {
       __state.loading = true;
@@ -186,7 +136,7 @@ export default function Index({
           path: `/quotes/decline/${quote._id}`,
           method: "PATCH",
           body: {
-            declined: true,
+            declined: false,
           },
         }),
       });
@@ -199,9 +149,7 @@ export default function Index({
       }
       toast.info(`Quote has been rejected successfully`);
 
-      setquotes((prev) =>
-        prev.filter((project_inquiry) => project_inquiry._id !== quote._id)
-      );
+      setquotes((prev) => prev.filter((item) => item._id !== quote._id));
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -240,19 +188,19 @@ export default function Index({
                 gridTemplateColumns: "repeat(3,1fr)",
               }}
             >
-              <Button variant={"warning"}>Pending</Button>
+              <Button as={Link} href={"/quotes"}>
+                Pending
+              </Button>
 
               <Button as={Link} href={"/quotes/approved"}>
                 Approved
               </Button>
 
-              <Button as={Link} href={"/quotes/declined"}>
-                Declined
-              </Button>
+              <Button variant={"warning"}>Declined</Button>
             </Nav>
           </Tab.Container>
 
-          <div className="d-flex justify-content-between mt-3 ">
+          <div className="d-flex justify-content-between mt-3">
             <Form>
               <Form.Group
                 className="d-flex align-items-center w-100 gap-5"
@@ -320,7 +268,7 @@ export default function Index({
                 <th>DeviceName</th>
                 <th>Brand</th>
                 <th>Description</th>
-                <th>Approved</th>
+
                 <th>Declined</th>
 
                 <th>Submited Date</th>
@@ -359,29 +307,11 @@ export default function Index({
                         <Form.Check
                           className="text-success"
                           type="switch"
-                          checked={project_inquiry.approved}
-                          onChange={(e) => {
-                            if (
-                              confirm(
-                                "Are you sure, you want to change  status of this quote?"
-                              )
-                            ) {
-                              handleApprovedChange(project_inquiry);
-                            }
-                          }}
-                        />
-                      </Form.Group>
-                    </td>
-                    <td>
-                      <Form.Group className="mb-3" controlId="aproved">
-                        <Form.Check
-                          className="text-success"
-                          type="switch"
                           checked={project_inquiry.declined}
                           onChange={(e) => {
                             if (
                               confirm(
-                                "Are you sure, you want to reject this quote?"
+                                "Are you sure, you want to undo this quote?"
                               )
                             ) {
                               handleDeclinedChange(project_inquiry);

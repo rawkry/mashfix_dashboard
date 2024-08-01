@@ -4,6 +4,7 @@ import {
   Col,
   Form,
   InputGroup,
+  Modal,
   Row,
   Table,
 } from "react-bootstrap";
@@ -52,7 +53,8 @@ export async function getServerSideProps(context) {
 
 export default function Add({ __state, myProfile, receipt }) {
   const router = useRouter();
-
+  const [openEmailDialog, setOpenEmailDialog] = useState(false);
+  const [pdf, setPdf] = useState(null);
   const [issuesWithPrice, setIssuesWithPrice] = useState(
     receipt.issuesWithPrice
   );
@@ -65,11 +67,43 @@ export default function Add({ __state, myProfile, receipt }) {
   const handleInvoice = useReactToPrint({
     content: () => invoiceRef.current,
   });
+  const handleImageChange = (event) => {
+    event.preventDefault();
 
+    const file = event.target.files[0];
+
+    if (file) {
+      const formData = new FormData();
+      formData.append("receipt", file);
+      setPdf(formData);
+    } else {
+      setPdf(null);
+    }
+  };
+  const sendEmail = async () => {
+    try {
+      __state.loading = true;
+      const response = await fetch(`/api/receipt/${receipt.customer._id}`, {
+        method: "POST",
+        body: pdf,
+      });
+      const json = response.json();
+      if (!response.ok) {
+        toast.error(json.message);
+      }
+      setOpenEmailDialog(false);
+      toast.success("Receipt has been successfully send");
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      __state.loading = false;
+    }
+  };
   const defaultValues = {
     discount: receipt.discount,
     chargePaid: receipt.chargePaid,
     expectedServiceCharge: receipt.expectedServiceCharge,
+    paymentMethod: receipt.paymentMethod,
   };
 
   const {
@@ -206,6 +240,14 @@ export default function Add({ __state, myProfile, receipt }) {
               {...register("chargePaid")}
             />
           </Form.Group>
+          <Form.Group className="mb-3" controlId="paymentMethod">
+            <Form.Label>Payment Method</Form.Label>
+            <Form.Control
+              readOnly
+              aria-label="Payment Method"
+              {...register("paymentMethod")}
+            />
+          </Form.Group>
 
           <div className="d-flex justify-content-between">
             <div>
@@ -217,6 +259,12 @@ export default function Add({ __state, myProfile, receipt }) {
               </Link>
             </div>
             <div className="d-flex gap-2">
+              <Button
+                variant="success"
+                onClick={() => setOpenEmailDialog(true)}
+              >
+                Send Email
+              </Button>
               <Button
                 className="shadow"
                 variant={"primary"}
@@ -242,6 +290,25 @@ export default function Add({ __state, myProfile, receipt }) {
           <PrintInvoice data={receipt} />
         </div>
       </div>
+
+      <Modal
+        show={openEmailDialog}
+        onHide={() => setOpenEmailDialog(false)}
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Send Email</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <InputGroup className="mb-3">
+            <Form.Control type="file" name="pdf" onChange={handleImageChange} />
+          </InputGroup>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={sendEmail}>Send Email</Button>
+        </Modal.Footer>
+      </Modal>
     </Main>
   );
 }
