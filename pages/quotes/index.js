@@ -67,62 +67,6 @@ export default function Index({
 
   const [quotes, setquotes] = useState(quotesFromServer);
 
-  // const exportToExcel = () => {
-  //   const workbook = new ExcelJS.Workbook();
-  //   const worksheet = workbook.addWorksheet("Transactions");
-
-  //   const headers = [
-  //     "Track ID",
-  //     "Name",
-  //     "Phone",
-  //     "Email",
-  //     "Device Name",
-  //     "Model",
-  //     "Problem Description",
-  //     "Discount",
-  //     "Expected Price",
-  //     "Charge paid",
-  //     "Status",
-  //     "Issue Date",
-  //   ];
-
-  //   const headerRow = worksheet.addRow(headers);
-  //   headerRow.eachCell((cell) => {
-  //     cell.font = { bold: true };
-  //   });
-
-  //   quotes.forEach((item) => {
-  //     const row = [
-  //       item.trackId || "-",
-  //       item.customerName || "-",
-  //       item.customerPhone || "-",
-  //       item.customerEmail || "-",
-  //       item.deviceName || "-",
-  //       item.model || "-",
-  //       item.problemDescription || "-",
-  //       item.discount || 0,
-  //       item.expectedServiceCharge || "-",
-  //       item.chargePaid ? "Paid" : "Not Paid",
-  //       item.status || "-",
-  //       toHuman(item.createdAt) || "-",
-  //     ];
-  //     worksheet.addRow(row);
-  //   });
-
-  //   workbook.xlsx.writeBuffer().then((buffer) => {
-  //     const blob = new Blob([buffer], {
-  //       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  //     });
-
-  //     const url = window.URL.createObjectURL(blob);
-  //     const a = document.createElement("a");
-  //     a.href = url;
-  //     a.download = "quoteslist.xlsx";
-  //     a.click();
-  //     window.URL.revokeObjectURL(url);
-  //   });
-  // };
-
   const handleApprovedChange = async (quote) => {
     try {
       __state.loading = true;
@@ -297,18 +241,6 @@ export default function Index({
               <div>
                 <Limit limit={limit} />
               </div>
-              {/* <Button
-                onClick={() => exportToExcel()}
-                className="shadow-sm rounded"
-                style={{
-                  border: "none ",
-                  marginLeft: "10px",
-                  padding: "10px 20px",
-                  color: "#c344ff",
-                }}
-              >
-                <i className="fas fa-file-excel"></i> Export
-              </Button> */}
             </div>
           </div>
 

@@ -27,7 +27,7 @@ export async function getServerSideProps(context) {
     const { limit = 10 } = context.query;
     const [status, { users, total, currentPage, pages }] = await callFetch(
       context,
-      `/user?limit=${limit}&${querystring.stringify(context.query)}`,
+      `/users?limit=${limit}&${querystring.stringify(context.query)}`,
       "GET"
     );
 
@@ -69,36 +69,6 @@ export default function Index({
     show: false,
   });
   const [issuesWithPrice, setIssuesWithPrice] = useState({});
-
-  const handleDelete = async (id) => {
-    try {
-      __state.loading = true;
-
-      const response = await fetch(`/api`, {
-        method: "POST",
-        body: JSON.stringify({
-          path: `/forms/career/${id}`,
-          method: "DELETE",
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-
-      if (response.status === 200) {
-        toast.info(`Career  deleted successfully`);
-        setcareers((prev) => prev.filter((customer) => customer.id !== id));
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      __state.loading = false;
-    }
-  };
 
   const handleRoleChange = async (id, role) => {
     try {

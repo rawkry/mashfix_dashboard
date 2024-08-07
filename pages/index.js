@@ -62,7 +62,7 @@ export default function Index({
     <Main icon="fas fa-columns" title="Dashboard" profile={myProfile}>
       <div className="mt-3 d-flex gap-3">
         {dashboardShortcuts.map((item) => (
-          <Card className="shadow bg-light">
+          <Card className="shadow bg-light" key={item.name}>
             <Card.Body>
               <Link href={item.link}>
                 <Card.Title>{item.name}</Card.Title>
