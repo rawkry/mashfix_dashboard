@@ -127,7 +127,7 @@ const PrintPage = forwardRef(({ data: serverData }, ref) => {
             <p>{subtotal.toFixed(2)}</p>
             <p>{salesTax.toFixed(2)}</p>
 
-            <p>{serviceCharge.toFixed(2)}</p>
+            <p>{serviceCharge?.toFixed(2)}</p>
             <p>-{data.discount.toFixed(2)}</p>
             <p className=" fw-bolder">{total.toFixed(2)}</p>
             <p>-{data.chargePaid?.toFixed(2)}</p>
