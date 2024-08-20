@@ -264,13 +264,12 @@ export default function Index({
             <thead className="bg-secondary shadow">
               <tr className="align-middle">
                 <th>Customer</th>
+                <th>Branch</th>
                 <th>Service</th>
                 <th>DeviceName</th>
                 <th>Brand</th>
                 <th>Description</th>
-
                 <th>Declined</th>
-
                 <th>Submited Date</th>
                 <th>Options</th>
               </tr>
@@ -290,6 +289,7 @@ export default function Index({
                         {project_inquiry.customerPhone}
                       </a>
                     </td>
+                    <td>{project_inquiry.branch}</td>
                     <td>{project_inquiry.service.name}</td>
                     <td>{project_inquiry.device}</td>
                     <td>{project_inquiry.brand}</td>
