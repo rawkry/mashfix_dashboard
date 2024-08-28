@@ -7,7 +7,8 @@ import { Button } from "@/ui";
 import { Main } from "@/layouts";
 
 import getMyProfile from "@/helpers/server/getMyProfile";
-
+import { callFetch } from "@/helpers/server";
+import { IssuesFormFields } from "@/reuseables";
 import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
@@ -20,11 +21,27 @@ export async function getServerSideProps(context) {
         notFound: true,
       };
     }
+    const [customer_status, customer] = await callFetch(
+      context,
+      `/users/${context.params.id}`,
+      "GET"
+    );
+
+    if (customer_status !== 200) {
+      return {
+        props: {
+          fetched: false,
+        },
+      };
+    }
+
     return {
       props: {
-        myProfile,
+        customer,
         roles,
         branch,
+        fetched: true,
+        myProfile,
       },
     };
   } catch (e) {
@@ -36,9 +53,8 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Add({ __state, roles, branch, myProfile }) {
+export default function Add({ __state, myProfile, customer, roles, branch }) {
   const router = useRouter();
-
   const onSubmit = async (data) => {
     try {
       __state.loading = true;
@@ -49,15 +65,9 @@ export default function Add({ __state, roles, branch, myProfile }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          path: `/users`,
-          method: "POST",
-          body: {
-            name: data.name,
-            email: data.email,
-            password: data.password,
-            branch: data.branch,
-            role: data.role,
-          },
+          path: `/users/${customer._id}`,
+          method: "PUT",
+          body: data,
         }),
       });
 
@@ -66,8 +76,7 @@ export default function Add({ __state, roles, branch, myProfile }) {
         return toast.error(json.message);
       }
 
-      toast.success(`User  has been successfully added`);
-      reset();
+      toast.success(`User  has been successfully updated`);
     } catch (e) {
       toast.error(e.message);
     } finally {
@@ -75,15 +84,27 @@ export default function Add({ __state, roles, branch, myProfile }) {
     }
   };
 
+  const defaultValues = {
+    name: customer.name,
+    branch: customer.branch,
+    role: customer.role,
+    email: customer.email,
+  };
   const {
     watch,
     reset,
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues,
+  });
   return (
-    <Main title="Repair || Add " icon="fa-solid fa-users" profile={myProfile}>
+    <Main
+      title={`Customer || Edit - ${customer.name} `}
+      icon="fa-solid fa-users"
+      profile={myProfile}
+    >
       <div className="container-fluid pb-3 ">
         <Button
           variant="outline-primary"
@@ -97,50 +118,34 @@ export default function Add({ __state, roles, branch, myProfile }) {
         <Card className="shadow-sm p-4">
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Form.Group className="mb-3" controlId="name">
-              <Form.Label>Customer Name</Form.Label>
+              <Form.Label> Name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter name"
+                placeholder="Enter customer name"
                 {...register("name", {
                   required: true,
                   setValueAs: (value) => value.trim(),
                 })}
               />
-              {errors.customerName && (
-                <span className="text-danger">Name cannot be empty</span>
+              {errors.name && (
+                <span className="text-danger"> Name cannot be empty</span>
               )}
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="vehicle_number">
-              <Form.Label>Customer Email</Form.Label>
+            <Form.Group className="mb-3" controlId="email">
+              <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
-                placeholder="Enter  Customer email"
+                placeholder="Enter customer email"
                 {...register("email", {
                   required: true,
-
-                  setValueAs: (value) => value.trim().toLowerCase(),
+                  setValueAs: (value) => value.trim(),
                 })}
               />
-              {errors.customerEmail && (
-                <span className="text-danger">Provide valid email</span>
+              {errors.email && (
+                <span className="text-danger">Email cannot be empty</span>
               )}
             </Form.Group>
-
-            <Form.Group className="mb-3" controlId="Password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter Password "
-                {...register("password", {
-                  required: true,
-                })}
-              />
-              {errors.password && (
-                <span className="text-danger">Provide password</span>
-              )}
-            </Form.Group>
-
             <Form.Group className="mb-3" controlId="Branch">
               <Form.Label>Branch</Form.Label>
               <Form.Select
@@ -181,7 +186,7 @@ export default function Add({ __state, roles, branch, myProfile }) {
 
             <div className="d-flex justify-content-end">
               <Button className="shadow" type="submit">
-                Create User
+                Update Customer
               </Button>
             </div>
           </Form>

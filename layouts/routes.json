@@ -9,6 +9,24 @@
 
   {
     "type": "card",
+    "title": "Users",
+    "icon": "fa-solid fa-users-gear",
+    "links": [
+      {
+        "title": "List",
+        "url": "/users",
+        "icon": "fa-regular fa-rectangle-list"
+      },
+      {
+        "title": "Add New",
+        "url": "/users/add",
+        "icon": "fa-solid fa-circle-plus"
+      }
+    ]
+  },
+
+  {
+    "type": "card",
     "title": "Customers",
     "icon": "fa-solid fa-user",
     "links": [

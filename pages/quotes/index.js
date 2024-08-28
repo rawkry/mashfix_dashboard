@@ -66,7 +66,7 @@ export default function Index({
   const router = useRouter();
 
   const [quotes, setquotes] = useState(quotesFromServer);
-
+  const branch = JSON.parse(process.env.NEXT_PUBLIC_BRANCH);
   const handleApprovedChange = async (quote) => {
     try {
       __state.loading = true;
@@ -234,6 +234,51 @@ export default function Index({
                     500
                   )}
                 />
+                <FloatingLabel
+                  controlId="floatingSelect"
+                  label="Branch"
+                  style={{
+                    width: "100%",
+                  }}
+                >
+                  <select
+                    className="form-select form-select-sm"
+                    defaultValue={router.query.branch || "All"}
+                    onChange={(e) => {
+                      const { value } = e.target;
+
+                      if (value === "All") {
+                        const { branch, ...query } = router.query;
+                        router.push({
+                          pathname: router.pathname,
+                          query,
+                        });
+                        return;
+                      }
+
+                      router.push({
+                        pathname: router.pathname,
+                        query: {
+                          ...router.query,
+                          branch: value,
+                        },
+                      });
+                    }}
+                  >
+                    <option value="All">All</option>
+                    {branch.map((item, index) => (
+                      <option
+                        key={index}
+                        value={item}
+                        style={{
+                          width: "100%",
+                        }}
+                      >
+                        {item}
+                      </option>
+                    ))}
+                  </select>
+                </FloatingLabel>
               </Form.Group>
             </Form>
 
@@ -355,7 +400,7 @@ export default function Index({
                 ))
               ) : (
                 <tr>
-                  <td colSpan="9" className="text-center">
+                  <td colSpan="10" className="text-center">
                     No data found
                   </td>
                 </tr>

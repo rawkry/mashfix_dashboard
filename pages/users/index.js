@@ -24,6 +24,11 @@ import { IssuesFormFields } from "@/reuseables";
 export async function getServerSideProps(context) {
   try {
     const myProfile = await getMyProfile(context);
+    if (myProfile.role != "admin") {
+      return {
+        notFound: true,
+      };
+    }
     const { limit = 10 } = context.query;
     const [status, { users, total, currentPage, pages }] = await callFetch(
       context,
@@ -77,7 +82,7 @@ export default function Index({
       const response = await fetch(`/api`, {
         method: "POST",
         body: JSON.stringify({
-          path: `/user/update-role/${id}`,
+          path: `/users/update-role/${id}`,
           method: "PATCH",
           body: { role },
         }),
@@ -212,6 +217,7 @@ export default function Index({
           <Table responsive="xl" bordered striped className="shadow">
             <thead className="bg-secondary shadow">
               <tr className="align-middle">
+                <th>Branch</th>
                 <th>Full Name</th>
                 <th>Email</th>
                 <th>Role</th>
@@ -223,6 +229,7 @@ export default function Index({
               {customers.length > 0 ? (
                 customers.map((user) => (
                   <tr key={user.id} className="align-middle">
+                    <td>{user.branch}</td>
                     <td>{user.name}</td>
 
                     <td>{user.email}</td>
@@ -236,7 +243,7 @@ export default function Index({
                             className="form-select form-select-sm"
                             defaultValue={user.role}
                             onChange={(e) => {
-                              handleRoleChange(user.id, e.target.value);
+                              handleRoleChange(user._id, e.target.value);
                             }}
                           >
                             {["user", "admin"].map((item, index) => (
@@ -257,23 +264,22 @@ export default function Index({
 
                     <td>
                       <ButtonGroup size="sm">
-                        <Link href={`/users/show/${user.id}`}>
-                          <Button size="sm">
-                            <i className="fas fa-eye me-1"></i> View
-                          </Button>
-                        </Link>
-
                         <Button
                           size="sm"
                           variant="warning"
                           as={Link}
-                          href={`/users/edit/${user.id}`}
+                          href={`/users/${user._id}/update`}
                         >
                           <i className="fas fa-pen me-1"></i> Edit
                         </Button>
 
-                        <Button size="sm" variant="success">
-                          <i className="fas fa-pen me-1"></i> update password
+                        <Button
+                          size="sm"
+                          variant="success"
+                          as={Link}
+                          href={`/users/${user._id}/update-password`}
+                        >
+                          <i className="fas fa-key me-1"></i> Password
                         </Button>
                       </ButtonGroup>
                     </td>
