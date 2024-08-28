@@ -83,7 +83,11 @@ export default function Add({ __state, roles, branch, myProfile }) {
     formState: { errors },
   } = useForm();
   return (
-    <Main title="Repair || Add " icon="fa-solid fa-users" profile={myProfile}>
+    <Main
+      title="Mashfix user || Add "
+      icon="fa-solid fa-users"
+      profile={myProfile}
+    >
       <div className="container-fluid pb-3 ">
         <Button
           variant="outline-primary"
