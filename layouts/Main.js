@@ -18,7 +18,7 @@ function TopRightItem({ profile }) {
             variant="outline-light"
             id="top-right-item"
             size="sm"
-            className="font-zapp-bold px-3 py-2 rounded-0 shadow-sm"
+            className="font-zapp-bold px-3 py-2 rounded-0 shadow-sm text-zapp"
           >
             <i className="fa fa-user me-2"></i>
             Hello, {profile.name.split(" ")[0]}
