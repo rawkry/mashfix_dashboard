@@ -76,6 +76,7 @@ export default function Main({ children, icon, title, profile = null }) {
     <MainBaseLayout
       icon={icon}
       title={title}
+      profile={profile}
       rightItem={<TopRightItem profile={profile} />}
       routes={routes}
     >

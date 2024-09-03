@@ -150,11 +150,16 @@ export default function Index({
 
       const data = await response.json();
 
-      if (response.status === 200) {
-        toast.info(`Repair status updated successfully`);
-      } else {
-        toast.error(data.message);
+      if (!response.ok) {
+        return toast.error(data.message);
       }
+
+      toast.info(`Repair status updated successfully`);
+      setrepair((prev) =>
+        prev.map((item) =>
+          item._id === data._id ? { ...item, ...data } : item
+        )
+      );
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -519,6 +524,10 @@ export default function Index({
                               "pickedup",
                             ].map((item, index) => (
                               <option
+                                disabled={
+                                  myProfile.role === "user" &&
+                                  repair.status === "pickedup"
+                                }
                                 key={index}
                                 value={item}
                                 style={{ width: "100%" }}
@@ -543,6 +552,10 @@ export default function Index({
                         <Button
                           size="sm"
                           variant="secondary"
+                          disabled={
+                            myProfile.role === "user" &&
+                            repair.status === "pickedup"
+                          }
                           as={Link}
                           href={`/repair/edit/${repair._id}`}
                         >
@@ -553,6 +566,10 @@ export default function Index({
                           href={`/repair/${repair._id}/edit-receipt`}
                           size="sm"
                           variant="success"
+                          disabled={
+                            myProfile.role === "user" &&
+                            repair.status === "pickedup"
+                          }
                         >
                           <i
                             className="fas fa-money-bill me-1

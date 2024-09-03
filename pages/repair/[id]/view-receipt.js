@@ -11,17 +11,10 @@ import {
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { useRef, useState } from "react";
-
 import { Button } from "@/ui";
 import { Main } from "@/layouts";
-import {
-  generateFakeEmail,
-  generateFakeNumber,
-  generateFakePan,
-} from "@/helpers/clients";
 import getMyProfile from "@/helpers/server/getMyProfile";
 import { callFetch } from "@/helpers/server";
-import { IssuesFormFields } from "@/reuseables";
 import { useReactToPrint } from "react-to-print";
 import { PrintInvoice, PrintPage } from "@/components";
 import { useRouter } from "next/router";
@@ -105,6 +98,8 @@ export default function Add({ __state, myProfile, receipt }) {
     expectedServiceCharge: receipt.expectedServiceCharge,
     paymentMethod: receipt.paymentMethod,
   };
+  const shouldShowButton =
+    myProfile.role === "user" && receipt.repair.status === "pickedup";
 
   const {
     watch,
@@ -251,12 +246,14 @@ export default function Add({ __state, myProfile, receipt }) {
 
           <div className="d-flex justify-content-between">
             <div>
-              <Link href={`/repair/${router.query.id}/edit-receipt`}>
-                <Badge as={Button} variant={"warning"}>
-                  {" "}
-                  edit <i className="fas fa-pen" />
-                </Badge>
-              </Link>
+              {!shouldShowButton && (
+                <Link href={`/repair/${router.query.id}/edit-receipt`}>
+                  <Badge as={Button} variant={"warning"}>
+                    {" "}
+                    edit <i className="fas fa-pen" />
+                  </Badge>
+                </Link>
+              )}
             </div>
             <div className="d-flex gap-2">
               <Button

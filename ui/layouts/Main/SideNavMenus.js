@@ -71,12 +71,19 @@ function IconWithToolTip({ icon, title }) {
   );
 }
 
-export default function SideNavMenus({ open, routes = [] }) {
+export default function SideNavMenus({ open, routes = [], profile }) {
   const { asPath } = useRouter();
   const pathname = asPath.split("?")[0];
+
+  // Filter routes based on user role
+  const filteredRoutes =
+    profile.role === "user"
+      ? routes.filter((route) => route.title !== "Users")
+      : routes;
+
   return (
     <div style={{ width: "280px" }}>
-      {routes.map((route, routeIndex) => (
+      {filteredRoutes.map((route, routeIndex) => (
         <div key={routeIndex}>
           {route.spacer && route.spacer === "top" ? (
             <div className="mb-2 border-bottom border-zapp-alt" />

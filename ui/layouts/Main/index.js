@@ -8,6 +8,7 @@ import WrapWithHead from "../_shared/components/WrapWithHead";
 import styles from "./Main.module.css";
 
 export default function Main({
+  profile,
   children,
   icon,
   rightItem = null,
@@ -26,7 +27,11 @@ export default function Main({
               sidenavOpen ? styles.open : ""
             }`}
           >
-            <SideNavMenus routes={routes} open={sidenavOpen} />
+            <SideNavMenus
+              profile={profile}
+              routes={routes}
+              open={sidenavOpen}
+            />
           </div>
         ) : null}
         <div
