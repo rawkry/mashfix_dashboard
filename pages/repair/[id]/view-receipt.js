@@ -99,7 +99,7 @@ export default function Add({ __state, myProfile, receipt }) {
     paymentMethod: receipt.paymentMethod,
   };
   const shouldShowButton =
-    myProfile.role === "user" && receipt.repair.status === "pickedup";
+    myProfile.role != "user" && receipt.repair.status != "pickedup";
 
   const {
     watch,
@@ -246,7 +246,7 @@ export default function Add({ __state, myProfile, receipt }) {
 
           <div className="d-flex justify-content-between">
             <div>
-              {!shouldShowButton && (
+              {shouldShowButton && (
                 <Link href={`/repair/${router.query.id}/edit-receipt`}>
                   <Badge as={Button} variant={"warning"}>
                     {" "}

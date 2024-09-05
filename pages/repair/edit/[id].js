@@ -33,6 +33,7 @@ export async function getServerSideProps(context) {
 
     return {
       props: {
+        myProfile,
         repair,
         serviceType: serviceTypes,
         fetched: true,
@@ -50,7 +51,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Edit({ __state, repair, serviceType }) {
+export default function Edit({ __state, repair, serviceType, myProfile }) {
   const router = useRouter();
 
   const defaultValues = {
@@ -101,6 +102,7 @@ export default function Edit({ __state, repair, serviceType }) {
     <Main
       title={`Repair: ${repair.customer.name} || Edit `}
       icon="fa-solid fa-users"
+      profile={myProfile}
     >
       <div className="container-fluid pb-3 ">
         <Button
