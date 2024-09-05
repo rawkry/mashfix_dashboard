@@ -18,6 +18,11 @@ import { useReactToPrint } from "react-to-print";
 export async function getServerSideProps(context) {
   try {
     const myProfile = await getMyProfile(context);
+    if (myProfile.role !== "admin") {
+      return {
+        notFound: true,
+      };
+    }
     const [status, receipt] = await callFetch(
       context,
       `/receipts/${context.params.id}`,
