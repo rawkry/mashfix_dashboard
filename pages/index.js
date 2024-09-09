@@ -16,14 +16,17 @@ export async function getServerSideProps(context) {
     [repai_status, { total: repairTotal }],
     [status, { total: quoteTotal }],
     [customer_status, { total: customerTotal }],
+    [stats_status, stats],
   ] = await Promise.all([
     callFetch(context, `/repairs`, "GET"),
     callFetch(context, `/quotes`, "GET"),
     callFetch(context, `/customers`, "GET"),
+    callFetch(context, `/receipts/stats`, "GET"),
   ]);
 
   return {
     props: {
+      stats,
       repairTotal,
       quoteTotal,
       customerTotal,
@@ -37,6 +40,7 @@ export default function Index({
   quoteTotal,
   repairTotal,
   customerTotal,
+  stats,
 }) {
   const dashboardShortcuts = [
     {
@@ -60,6 +64,26 @@ export default function Index({
   ];
   return (
     <Main icon="fas fa-columns" title="Dashboard" profile={myProfile}>
+      {myProfile.role == "admin" ? (
+        <div className="d-flex  align-items-center justify-content-around  gap-3 p-3 bg-light rounded shadow-sm text-dark m-2 ">
+          <div className=" flex bg-white p-2 rounded shadow-sm text-center  ">
+            <h4>Discount</h4>{" "}
+            <h2 className="text-warning">$ {stats.discount || 0}</h2>
+          </div>
+          <div className="flex bg-white p-2 rounded shadow-sm text-center ">
+            <h4>Service Charge</h4>
+            <h2 className="text-success ">
+              {" "}
+              $ {stats.totalExpectedServiceCharge || 0}{" "}
+            </h2>
+          </div>
+
+          <div className=" flex bg-white p-2 rounded shadow-sm text-center ">
+            <h4>Issue Price</h4>{" "}
+            <h2 className="text-success">$ {stats.totalIssuesPrice || 0} </h2>
+          </div>
+        </div>
+      ) : null}
       <div className="mt-3 d-flex gap-3">
         {dashboardShortcuts.map((item) => (
           <Card className="shadow bg-light" key={item.name}>

@@ -20,7 +20,6 @@ import { DateRange, Limit, Pagination } from "@/components";
 import { isoDate, searchRedirect, toHuman, toTrend } from "@/helpers/clients";
 
 import getMyProfile from "@/helpers/server/getMyProfile";
-import { object } from "yup";
 
 export async function getServerSideProps(context) {
   try {
@@ -31,19 +30,13 @@ export async function getServerSideProps(context) {
       };
     }
     const { limit = 10 } = context.query;
-    const [
-      [status, { receipts, total, currentPage, pages }],
-      [status1, stats],
-    ] = await Promise.all([
-      callFetch(
-        context,
-        `/receipts?limit=${limit}&${querystring.stringify(context.query)}`,
-        "GET"
-      ),
-      callFetch(context, `/receipts/stats`, "GET"),
-    ]);
+    const [status, { receipts, total, currentPage, pages }] = await callFetch(
+      context,
+      `/receipts?limit=${limit}&${querystring.stringify(context.query)}`,
+      "GET"
+    );
 
-    if (status !== 200 || status1 !== 200) {
+    if (status !== 200) {
       return {
         notFound: true,
       };
@@ -51,7 +44,6 @@ export async function getServerSideProps(context) {
 
     return {
       props: {
-        stats,
         receipts,
         total,
         currentPage,
@@ -70,7 +62,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function Index({
-  stats,
   receipts: receiptsFromServer,
   currentPage,
   limit,
@@ -80,11 +71,9 @@ export default function Index({
   total,
   __state,
 }) {
-  console.log("stats", stats);
   const router = useRouter();
 
   const [receipts, setreceipts] = useState(receiptsFromServer);
-  console.log(receipts);
 
   const [issuesWithPrice, setIssuesWithPrice] = useState({});
   const [activemodalShow, setActiveModalShow] = useState(false);
@@ -211,25 +200,6 @@ export default function Index({
         </div>
       ) : (
         <>
-          <div className="d-flex  align-items-center justify-content-around  gap-3 p-3 bg-light rounded shadow-sm text-dark mb-2 ">
-            <div className=" flex bg-white p-2 rounded shadow-sm text-center  ">
-              <h4>Discount</h4>{" "}
-              <h2 className="text-warning">$ {stats.discount || 0}</h2>
-            </div>
-            <div className="flex bg-white p-2 rounded shadow-sm text-center ">
-              <h4>Service Charge</h4>
-              <h2 className="text-success ">
-                {" "}
-                $ {stats.totalExpectedServiceCharge || 0}{" "}
-              </h2>
-            </div>
-
-            <div className=" flex bg-white p-2 rounded shadow-sm text-center ">
-              <h4>Issue Price</h4>{" "}
-              <h2 className="text-success">$ {stats.totalIssuesPrice || 0} </h2>
-            </div>
-          </div>
-
           <div className="d-flex justify-content-between align-items-center w-100">
             <Form.Group
               className="d-flex align-items-center gap-2"
