@@ -83,8 +83,6 @@ export default function SideNavMenus({ open, routes = [], profile }) {
         )
       : routes;
 
-  console.log("filteredRoutes", filteredRoutes);
-
   return (
     <div style={{ width: "280px" }}>
       {filteredRoutes.map((route, routeIndex) => (
