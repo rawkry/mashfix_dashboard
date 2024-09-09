@@ -99,7 +99,7 @@ export default function Add({ __state, myProfile, receipt }) {
     paymentMethod: receipt.paymentMethod,
   };
   const shouldShowButton =
-    myProfile.role != "user" && receipt.repair.status != "pickedup";
+    myProfile.role != "user" && receipt.repair?.status != "pickedup";
 
   const {
     watch,

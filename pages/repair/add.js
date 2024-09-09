@@ -46,15 +46,6 @@ export default function Add({ __state, myProfile, serviceTypes }) {
     try {
       __state.loading = true;
 
-      const issueswithprice = Object.entries(issuesWithPrice).map(
-        ([key, issue]) => ({
-          description: issue.description,
-          quantity: issue.quantity,
-          rate: issue.rate,
-          price: issue.price,
-        })
-      );
-
       const customer = {
         name: data.name,
         email: data.email,
@@ -94,6 +85,7 @@ export default function Add({ __state, myProfile, serviceTypes }) {
             device: data.device,
             brand: data.brand,
             problemDescription: data.problemDescription,
+            origin: "System",
           },
         }),
       });

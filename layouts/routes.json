@@ -6,7 +6,23 @@
     "icon": "fa-solid fa-gauge-high",
     "spacer": "bottom"
   },
-
+  {
+    "type": "card",
+    "title": "Sales",
+    "icon": "fa-solid fa-wave-square",
+    "links": [
+      {
+        "title": "List",
+        "url": "/sales",
+        "icon": "fa-regular fa-rectangle-list"
+      },
+      {
+        "title": "Add New",
+        "url": "/sales/add",
+        "icon": "fa-solid fa-circle-plus"
+      }
+    ]
+  },
   {
     "type": "card",
     "title": "Users",

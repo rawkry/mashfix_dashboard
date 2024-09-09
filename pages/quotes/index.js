@@ -99,6 +99,7 @@ export default function Index({
               device: quote.device,
               brand: quote.brand,
               problemDescription: quote.problemDescription,
+              origin: "quote",
             },
           }),
         });

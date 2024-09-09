@@ -78,8 +78,12 @@ export default function SideNavMenus({ open, routes = [], profile }) {
   // Filter routes based on user role
   const filteredRoutes =
     profile.role === "user"
-      ? routes.filter((route) => route.title !== "Users")
+      ? routes.filter(
+          (route) => route.title !== "Users" && route.title !== "Sales"
+        )
       : routes;
+
+  console.log("filteredRoutes", filteredRoutes);
 
   return (
     <div style={{ width: "280px" }}>
