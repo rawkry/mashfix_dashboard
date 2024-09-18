@@ -20,7 +20,6 @@ import { isoDate, searchRedirect, toHuman, toTrend } from "@/helpers/clients";
 import { toast } from "react-toastify";
 import getMyProfile from "@/helpers/server/getMyProfile";
 import { IssuesFormFields } from "@/reuseables";
-import path from "path";
 
 export async function getServerSideProps(context) {
   try {
