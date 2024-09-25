@@ -1,8 +1,9 @@
 import { Button as RBButton } from "react-bootstrap";
-
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import styles from "./Button.module.css";
 
 export default function Button({
+  title,
   children,
   variant,
   type = "button",
@@ -12,7 +13,13 @@ export default function Button({
   onClick,
   disabled,
 }) {
-  return (
+  const renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      {title}
+    </Tooltip>
+  );
+
+  const button = (
     <RBButton
       className={`${variant ? styles[variant] : styles.default} font-zapp`}
       type={type}
@@ -24,5 +31,13 @@ export default function Button({
     >
       {children}
     </RBButton>
+  );
+
+  return title ? (
+    <OverlayTrigger placement="top" overlay={renderTooltip}>
+      {button}
+    </OverlayTrigger>
+  ) : (
+    button
   );
 }

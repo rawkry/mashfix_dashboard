@@ -68,7 +68,7 @@ function Bar({ data: sampleData }) {
   const chartOptions = useChartOptions(sampleData);
 
   return (
-    <Card>
+    <Card className="mb-4">
       <Card.Header
         action={
           <Button color="inherit" size="small">

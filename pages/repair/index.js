@@ -403,58 +403,47 @@ export default function Index({
             </Form>
 
             <div className="d-flex gap-2 mb-2">
-              <div>
-                <Form.Label className="font-zapp-bold mb-0">
-                  Requested Date
-                </Form.Label>
-                <Form.Group>
-                  <div className="d-flex align-items-center  justify-content-center">
-                    <div
-                      onClick={() => {
-                        setActiveModalShow(true);
-                      }}
-                      className="border-zapp-alt p-2 text-zapp hover"
-                    >
+              <Form.Group>
+                <div className="d-flex align-items-center  justify-content-center">
+                  <div
+                    onClick={() => {
+                      setActiveModalShow(true);
+                    }}
+                    className="border-zapp-alt p-2 text-zapp hover"
+                  >
+                    {!router.query.fromDate && (
                       <i className="fas fa-calendar-alt"></i>
-                      {router.query.fromDate && toTrend(router.query.fromDate)}
-                      <small className="font-zapp-bold "> - To - </small>
-                      <i className="fas fa-calendar-alt"></i>
-                      {router.query.toDate && toTrend(router.query.toDate)}
-                    </div>
-                    {(router.query.fromDate || router.query.toDate) && (
-                      <span
-                        className="m-2"
-                        onClick={() => {
-                          const { fromDate, toDate, ...query } = router.query;
-                          router.push({
-                            pathname: router.pathname,
-                            query: { ...query },
-                          });
-                        }}
-                      >
-                        <i className="fas fa-times-circle text-danger hover ">
-                          {" "}
-                        </i>
-                      </span>
                     )}
+                    {router.query.fromDate && toTrend(router.query.fromDate)}
+                    <small className="font-zapp-bold "> - To - </small>
+                    {!router.query.toDate && (
+                      <i className="fas fa-calendar-alt"></i>
+                    )}
+                    {router.query.toDate && toTrend(router.query.toDate)}
                   </div>
-                </Form.Group>
-              </div>
-
-              <div>
-                <Limit limit={limit} />
-              </div>
+                  {(router.query.fromDate || router.query.toDate) && (
+                    <span
+                      className="m-2"
+                      onClick={() => {
+                        const { fromDate, toDate, ...query } = router.query;
+                        router.push({
+                          pathname: router.pathname,
+                          query: { ...query },
+                        });
+                      }}
+                    >
+                      <i className="fas fa-times-circle text-danger hover ">
+                        {" "}
+                      </i>
+                    </span>
+                  )}
+                </div>
+              </Form.Group>
               <Button
                 onClick={() => exportToExcel()}
                 className="shadow-sm rounded"
-                style={{
-                  border: "none ",
-                  marginLeft: "10px",
-                  padding: "10px 20px",
-                  color: "#c344ff",
-                }}
               >
-                <i className="fas fa-file-excel"></i> Export
+                <i className="fas fa-file-excel"></i>
               </Button>
             </div>
           </div>
@@ -543,14 +532,19 @@ export default function Index({
                     <td>
                       <ButtonGroup size="sm">
                         <Link href={`/repair/show/${repair._id}`}>
-                          <Button size="sm">
-                            <i className="fas fa-eye me-1"></i> View
+                          <Button
+                            size="sm"
+                            variant="outline-primary"
+                            title={"View"}
+                          >
+                            <i className="fas fa-eye me-1"></i>
                           </Button>
                         </Link>
 
                         <Button
+                          title={"Edit"}
                           size="sm"
-                          variant="secondary"
+                          variant="outline-primary"
                           disabled={
                             myProfile.role === "user" &&
                             repair.status === "pickedup"
@@ -558,36 +552,36 @@ export default function Index({
                           as={Link}
                           href={`/repair/edit/${repair._id}`}
                         >
-                          <i className="fas fa-pen me-1"></i> Edit
+                          <i className="fas fa-pen me-1 text-primary"></i>
                         </Button>
                         <Button
+                          title={"Edit Receipt"}
                           as={Link}
                           href={`/repair/${repair._id}/edit-receipt`}
                           size="sm"
-                          variant="success"
+                          variant="outline-primary"
                           disabled={
                             myProfile.role === "user" &&
                             repair.status === "pickedup"
                           }
                         >
                           <i
-                            className="fas fa-money-bill me-1
+                            className="fas fa-money-bill me-1 text-success
                           "
                           ></i>{" "}
-                          Cost Update
                         </Button>
 
                         <Button
+                          title={"View Receipt"}
                           size="sm"
-                          variant="danger"
                           as={Link}
+                          variant="outline-primary"
                           href={`/repair/${repair._id}/view-receipt`}
                         >
                           <i
-                            className="fas fa-print me-1
+                            className="fas fa-print me-1 text-danger
                           "
                           ></i>{" "}
-                          View Receipt
                         </Button>
                       </ButtonGroup>
                     </td>
@@ -643,12 +637,14 @@ export default function Index({
               </Button>
             </Modal.Footer>
           </Modal>
-
-          <Pagination
-            pathname={router.pathname}
-            currentPage={currentPage}
-            pages={pages}
-          />
+          <div className="d-flex justify-content-end gap-5">
+            <Limit limit={limit} />
+            <Pagination
+              pathname={router.pathname}
+              currentPage={currentPage}
+              pages={pages}
+            />
+          </div>
         </>
       )}
     </Main>

@@ -7,78 +7,42 @@
     "spacer": "bottom"
   },
   {
-    "type": "card",
+    "type": "singular",
     "title": "Sales",
     "icon": "fa-solid fa-wave-square",
-    "links": [
-      {
-        "title": "List",
-        "url": "/sales",
-        "icon": "fa-regular fa-rectangle-list"
-      },
-      {
-        "title": "Add New",
-        "url": "/sales/add",
-        "icon": "fa-solid fa-circle-plus"
-      }
-    ]
+    "url": "/sales"
   },
   {
-    "type": "card",
+    "type": "singular",
     "title": "Users",
     "icon": "fa-solid fa-users-gear",
-    "links": [
-      {
-        "title": "List",
-        "url": "/users",
-        "icon": "fa-regular fa-rectangle-list"
-      },
-      {
-        "title": "Add New",
-        "url": "/users/add",
-        "icon": "fa-solid fa-circle-plus"
-      }
-    ]
+    "url": "/users"
   },
 
   {
-    "type": "card",
+    "type": "singular",
     "title": "Customers",
     "icon": "fa-solid fa-user",
-    "links": [
-      {
-        "title": "List",
-        "url": "/customers",
-        "icon": "fa-regular fa-rectangle-list"
-      },
-      {
-        "title": "Add New",
-        "url": "/customers/add",
-        "icon": "fa-solid fa-circle-plus"
-      }
-    ]
+    "url": "/customers"
   },
   {
-    "type": "card",
+    "type": "singular",
     "title": "Repair",
-    "icon": "fa-solid fa-building",
-    "links": [
-      {
-        "title": "List",
-        "url": "/repair",
-        "icon": "fa-regular fa-rectangle-list"
-      },
-      {
-        "title": "Add New",
-        "url": "/repair/add",
-        "icon": "fa-solid fa-circle-plus"
-      }
-    ]
+    "icon": "fa-solid fa-tools",
+    "url": "/repair"
+  },
+
+  {
+    "type": "singular",
+    "title": "Quotes ",
+    "icon": "fa-solid fa-message",
+    "url": "/quotes?approved=no"
   },
   {
-    "type": "card",
+    "type": "singular",
     "title": "Service type",
-    "icon": "fa-solid fa-tools",
+    "icon": "fa-solid fa-hand-holding-heart",
+    "url": "/service-type",
     "links": [
       {
         "title": "List",
@@ -89,18 +53,6 @@
         "title": "Add New",
         "url": "/service-type/add",
         "icon": "fa-solid fa-circle-plus"
-      }
-    ]
-  },
-  {
-    "type": "card",
-    "title": "Quotes ",
-    "icon": "fa-solid fa-message",
-    "links": [
-      {
-        "title": "List",
-        "url": "/quotes?approved=no",
-        "icon": "fa-regular fa-rectangle-list"
       }
     ]
   }

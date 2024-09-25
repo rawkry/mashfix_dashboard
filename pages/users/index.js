@@ -265,21 +265,23 @@ export default function Index({
                     <td>
                       <ButtonGroup size="sm">
                         <Button
+                          variant="outline-primary"
+                          title={"Update User"}
                           size="sm"
-                          variant="warning"
                           as={Link}
                           href={`/users/${user._id}/update`}
                         >
-                          <i className="fas fa-pen me-1"></i> Edit
+                          <i className="fas fa-pen me-1 text-primary"></i>
                         </Button>
 
                         <Button
+                          title={"Update Password"}
                           size="sm"
-                          variant="success"
+                          variant="outline-primary"
                           as={Link}
                           href={`/users/${user._id}/update-password`}
                         >
-                          <i className="fas fa-key me-1"></i> Password
+                          <i className="fas fa-key me-1"></i>
                         </Button>
                       </ButtonGroup>
                     </td>

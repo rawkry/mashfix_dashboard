@@ -349,26 +349,32 @@ export default function Index({
                     <td>
                       <ButtonGroup size="sm">
                         <Link href={`/customers/show/${customer._id}`}>
-                          <Button size="sm">
-                            <i className="fas fa-eye me-1"></i> View
+                          <Button
+                            variant="outline-primary"
+                            size="sm"
+                            title={"View"}
+                          >
+                            <i className="fas fa-eye me-1 text-primary"></i>
                           </Button>
                         </Link>
 
                         <Button
+                          title={"Edit"}
                           size="sm"
-                          variant="warning"
+                          variant="outline-primary"
                           as={Link}
                           href={`/customers/edit/${customer._id}`}
                         >
-                          <i className="fas fa-pen me-1"></i> Edit
+                          <i className="fas fa-pen me-1 text-warning"></i>
                         </Button>
                         <Button
+                          title={"Create Repair"}
                           size="sm"
-                          variant="success"
+                          variant="outline-primary"
                           as={Link}
                           href={`/customers/${customer._id}/create-repair`}
                         >
-                          <i className="fas fa-gear me-1"></i> Add Repair
+                          <i className="fas fa-tools me-1 text-success  "></i>
                         </Button>
                       </ButtonGroup>
                     </td>
