@@ -56,7 +56,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
   const handleInvoice = useReactToPrint({
     content: () => invoiceRef.current,
   });
-  //sudeep
+
   const [issuesWithPrice, setIssuesWithPrice] = useState(
     receipt.issuesWithPrice
   );
@@ -138,12 +138,18 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
         }),
       });
       const json = await receiptResponse.json();
+
       if (!receiptResponse.ok) {
         return toast.error("Failed to update receipt");
       }
       setReceipt((prev) => ({
         ...prev,
         paymentMethod: json.paymentMethod,
+        issuesWithPrice: json.issuesWithPrice,
+        discount: json.discount,
+        chargePaid: json.chargePaid,
+        chargePaidCard: json.chargePaidCard,
+        expectedServiceCharge: json.expectedServiceCharge,
       }));
       toast.success(`Receipt  has been updated successfully`);
     } catch (e) {

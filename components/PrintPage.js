@@ -18,7 +18,7 @@ const PrintPage = forwardRef(({ data: serverData }, ref) => {
 
   const total = subtotal + salesTax + serviceCharge - data.discount;
 
-  const balanceDue = total - data.chargePaid;
+  const balanceDue = total - (data.chargePaid + data.chargePaidCard);
   useEffect(() => {
     setData(serverData);
   }, [serverData]);
@@ -77,7 +77,7 @@ const PrintPage = forwardRef(({ data: serverData }, ref) => {
           <div>
             <p>{data.customer.name}</p>
             <p>{data.customer.phone}</p>
-            {data.paymentMethod && <p>{data.paymentMethod}</p>}
+            {data.paymentMethod && <p>{data.paymentMethod.join(", ")}</p>}
           </div>
         </div>
         <div className="doted"></div>
@@ -121,7 +121,8 @@ const PrintPage = forwardRef(({ data: serverData }, ref) => {
             <p>Service Charge</p>
             <p>Discount</p>
             <p className=" fw-bolder">Total: </p>
-            <p>Payment Made</p>
+            <p>{data.paymentMethod.includes("cash") && "Cash Paid"}</p>
+            <p>{data.paymentMethod.includes("card") && "Card Paid"}</p>
           </div>
           <div>
             <p>{subtotal.toFixed(2)}</p>
@@ -130,7 +131,20 @@ const PrintPage = forwardRef(({ data: serverData }, ref) => {
             <p>{serviceCharge?.toFixed(2)}</p>
             <p>-{data.discount?.toFixed(2)}</p>
             <p className=" fw-bolder">{total.toFixed(2)}</p>
-            <p>-{data.chargePaid?.toFixed(2)}</p>
+            {/* <p>-{data.chargePaid?.toFixed(2)}</p>
+             */}
+            <p>
+              -
+              {data.paymentMethod.includes("cash")
+                ? data.chargePaid?.toFixed(2)
+                : 0}
+            </p>
+            <p>
+              -
+              {data.paymentMethod.includes("card")
+                ? data.chargePaidCard?.toFixed(2) || data.chargePaid?.toFixed(2)
+                : 0}
+            </p>
           </div>
         </div>
         <div
