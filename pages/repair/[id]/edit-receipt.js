@@ -56,7 +56,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
   const handleInvoice = useReactToPrint({
     content: () => invoiceRef.current,
   });
-
+  //sudeep
   const [issuesWithPrice, setIssuesWithPrice] = useState(
     receipt.issuesWithPrice
   );
