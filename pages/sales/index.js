@@ -239,7 +239,7 @@ export default function Index({
               />
               <FloatingLabel
                 controlId="floatingSelect"
-                label="Status"
+                label="Payment Method"
                 style={{
                   width: "100%",
                 }}
