@@ -7,21 +7,11 @@
     "spacer": "bottom"
   },
   {
-    "type": "card",
+    "type": "singular",
     "title": "Sales",
     "icon": "fa-solid fa-wave-square",
-    "links": [
-      {
-        "title": "List",
-        "url": "/sales",
-        "icon": "fa-regular fa-rectangle-list"
-      },
-      {
-        "title": "Add New",
-        "url": "/sales/add",
-        "icon": "fa-solid fa-circle-plus"
-      }
-    ]
+    "url": "/sales",
+    "spacer": "bottom"
   },
   {
     "type": "card",
