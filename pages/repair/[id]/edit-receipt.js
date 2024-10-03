@@ -105,7 +105,10 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
   };
 
   const onSubmit = async (data) => {
-    if (receipt.repair.status === "completed") {
+    if (
+      receipt.repair.status === "completed" ||
+      receipt.repair.status === "pickedup"
+    ) {
       setOpenRemarkModal(true);
     } else {
       await submitForm(data);
