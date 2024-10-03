@@ -5,7 +5,7 @@ import { Table } from "react-bootstrap";
 
 const PrintPage = forwardRef(({ data: serverData }, ref) => {
   const [data, setData] = useState(serverData);
-  console.log("data", data);
+
   const subtotal = data.issuesWithPrice.reduce(
     (acc, item) => acc + item.price,
     0

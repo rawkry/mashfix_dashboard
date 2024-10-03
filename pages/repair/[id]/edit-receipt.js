@@ -1,7 +1,15 @@
-import { Card, Col, Form, InputGroup, Modal, Row } from "react-bootstrap";
+import {
+  Card,
+  Col,
+  Form,
+  InputGroup,
+  Modal,
+  Row,
+  Table,
+} from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/ui";
 import { Main } from "@/layouts";
@@ -47,6 +55,9 @@ export async function getServerSideProps(context) {
 export default function Add({ __state, myProfile, receipt: serverReceipt }) {
   const [receipt, setReceipt] = useState(serverReceipt);
 
+  const [openRemarkModal, setOpenRemarkModal] = useState(false);
+  const [remark, setRemark] = useState("");
+  const [viewRemarks, setViewRemarks] = useState(false);
   const router = useRouter();
   const componentRef = useRef(null);
   const handlePrint = useReactToPrint({
@@ -94,6 +105,14 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
   };
 
   const onSubmit = async (data) => {
+    if (receipt.repair.status === "completed") {
+      setOpenRemarkModal(true);
+    } else {
+      await submitForm(data);
+    }
+  };
+
+  const submitForm = async (data) => {
     try {
       __state.loading = true;
       const paymentMethod = Object.keys(selectedMethods).filter(
@@ -141,6 +160,28 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
 
       if (!receiptResponse.ok) {
         return toast.error("Failed to update receipt");
+      }
+      if (openRemarkModal) {
+        const response = await fetch(`/api`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            path: `/repairs/remarks/${receipt.repair._id}`,
+            method: "PATCH",
+            body: {
+              description: remark,
+            },
+          }),
+        });
+        const json = await response.json();
+        if (!response.ok) {
+          return toast.error("Failed to add remark");
+        }
+        toast.success(`Remark   has been updated successfully`);
+        setOpenRemarkModal(false);
+        return;
       }
       setReceipt((prev) => ({
         ...prev,
@@ -193,6 +234,48 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
     }
   };
 
+  // function checkDirtyValues(prev, current) {
+  //   console.log("current", current, "prev", prev);
+  //   const dirty = {};
+
+  //   const checkValues = (prevValue, currentValue, key) => {
+  //     if (Array.isArray(prevValue) && Array.isArray(currentValue)) {
+  //       // Check if arrays are different lengths or have different contents
+  //       if (
+  //         prevValue.length !== currentValue.length ||
+  //         !prevValue.every((v, index) => v === currentValue[index])
+  //       ) {
+  //         dirty[key] = true;
+  //       }
+  //     } else if (prevValue !== currentValue) {
+  //       dirty[key] = true;
+  //     }
+  //   };
+
+  //   Object.keys(prev).forEach((key) => {
+  //     if (current.hasOwnProperty(key)) {
+  //       checkValues(prev[key], current[key], key);
+  //     } else {
+  //       dirty[key] = true; // Key exists in prev but not in current
+  //     }
+  //   });
+
+  //   // Optional: Check for keys that are in current but not in prev
+  //   Object.keys(current).forEach((key) => {
+  //     if (!prev.hasOwnProperty(key)) {
+  //       dirty[key] = true; // Key exists in current but not in prev
+  //     }
+  //   });
+
+  //   return dirty;
+  // }
+
+  const handleRemarkSubmit = () => {
+    // Close the modal and submit the form with the remark
+
+    handleSubmit(submitForm)();
+  };
+
   const defaultValues = {
     paymentMethod: receipt.paymentMethod,
     discount: receipt.discount,
@@ -201,27 +284,31 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
   };
 
   const {
-    watch,
-    reset,
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    defaultValues,
-  });
+  } = useForm({ defaultValues });
+
   return (
     <Main
       title={`Receipt : ${receipt.customer.name} `}
       icon="fa-solid fa-users"
       profile={myProfile}
     >
-      <div className="container-fluid pb-3 ">
+      <div className="container-fluid pb-3 d-flex justify-content-between ">
         <Button
           variant="outline-primary"
           size="md"
           onClick={() => router.back()}
         >
           <i className="fa-solid fa-arrow-left mr-2"></i>Back
+        </Button>
+        <Button
+          variant="outline-primary"
+          size="md"
+          onClick={() => setViewRemarks(true)}
+        >
+          <i className="fa-solid fa-comment mr-2"></i>
         </Button>
       </div>
       <Row className="mb-3">
@@ -281,13 +368,15 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
               setIssuesWithPrice={setIssuesWithPrice}
               issuesWithPrice={issuesWithPrice}
             />
-            <Form.Group className="mb-3" controlId="discount">
+            <Form.Group className="mb-3">
               <Form.Label>Discount</Form.Label>
               <Form.Control
-                type="text"
+                type="number"
                 step={0.01}
                 placeholder="Enter Discount"
-                {...register("discount")}
+                {...register("discount", {
+                  valueAsNumber: true,
+                })}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="expectedServiceCharge">
@@ -296,7 +385,9 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
                 step={0.01}
                 type="number"
                 placeholder="Enter Expected Service Charge"
-                {...register("expectedServiceCharge")}
+                {...register("expectedServiceCharge", {
+                  valueAsNumber: true,
+                })}
               />
               {errors.expectedServiceCharge && (
                 <span className="text-danger">Provide Service Charge</span>
@@ -433,6 +524,71 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={sendEmail}>Send Email</Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal
+          show={openRemarkModal}
+          onHide={() => setOpenRemarkModal(false)}
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Add Remark</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form.Group controlId="remark">
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={remark}
+                onChange={(e) => setRemark(e.target.value)}
+              />
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" onClick={handleRemarkSubmit}>
+              Submit with Remark
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal
+          show={viewRemarks}
+          onHide={() => setViewRemarks(false)}
+          centered
+          size="lg"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Remarks</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Status</th>
+                  <th>User</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {receipt.repair.remarks.map((remark, index) => (
+                  <tr key={index}>
+                    <td>{remark.date}</td>
+                    <td>{remark.time}</td>
+                    <td>{remark.status}</td>
+                    <td>{remark.by}</td>
+                    <td>{remark.description}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" onClick={() => setViewRemarks(false)}>
+              Close
+            </Button>
           </Modal.Footer>
         </Modal>
       </div>

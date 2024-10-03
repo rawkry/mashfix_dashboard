@@ -503,40 +503,44 @@ export default function Index({
                     </td>
                     <td>{repair.servicetype.name}</td>
                     <td>
-                      <Form.Group controlId="active">
-                        <FloatingLabel
-                          controlId="floatingSelect"
-                          className="mb-3"
-                        >
-                          <select
-                            className="form-select form-select-sm"
-                            defaultValue={repair.status}
-                            onChange={(e) => {
-                              handleStatusChange(repair._id, e.target.value);
-                            }}
+                      {repair.status === "pickedup" ? (
+                        <span className="text-success">{repair.status}</span>
+                      ) : (
+                        <Form.Group controlId="active">
+                          <FloatingLabel
+                            controlId="floatingSelect"
+                            className="mb-3"
                           >
-                            {[
-                              "requested",
-                              "working",
-                              "waiting for parts",
-                              "completed",
-                              "pickedup",
-                            ].map((item, index) => (
-                              <option
-                                disabled={
-                                  myProfile.role === "user" &&
-                                  repair.status === "pickedup"
-                                }
-                                key={index}
-                                value={item}
-                                style={{ width: "100%" }}
-                              >
-                                {item}
-                              </option>
-                            ))}
-                          </select>
-                        </FloatingLabel>
-                      </Form.Group>
+                            <select
+                              className="form-select form-select-sm"
+                              defaultValue={repair.status}
+                              onChange={(e) => {
+                                handleStatusChange(repair._id, e.target.value);
+                              }}
+                            >
+                              {[
+                                "requested",
+                                "working",
+                                "waiting for parts",
+                                "completed",
+                                "pickedup",
+                              ].map((item, index) => (
+                                <option
+                                  disabled={
+                                    myProfile.role === "user" &&
+                                    repair.status === "pickedup"
+                                  }
+                                  key={index}
+                                  value={item}
+                                  style={{ width: "100%" }}
+                                >
+                                  {item}
+                                </option>
+                              ))}
+                            </select>
+                          </FloatingLabel>
+                        </Form.Group>
+                      )}
                     </td>
                     <td>{toHuman(repair.createdAt)}</td>
 
