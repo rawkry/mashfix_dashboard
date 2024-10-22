@@ -63,6 +63,10 @@ export default function Index({
   const router = useRouter();
 
   const [repair, setrepair] = useState(repairFromServer);
+  const [viewRemarks, setViewRemarks] = useState({
+    remarks: null,
+    show: false,
+  });
 
   const [showIssue, setShowIssue] = useState({
     id: "",
@@ -593,6 +597,22 @@ export default function Index({
                           ></i>{" "}
                           View Receipt
                         </Button>
+
+                        {repair.remarks.length > 0 && (
+                          <Button
+                            size="sm"
+                            variant="warning"
+                            onClick={() =>
+                              setViewRemarks({
+                                show: true,
+                                remarks: repair.remarks,
+                              })
+                            }
+                          >
+                            <i className="fa-solid fa-comment mr-2"></i> View
+                            Remarks
+                          </Button>
+                        )}
                       </ButtonGroup>
                     </td>
                   </tr>
@@ -646,6 +666,45 @@ export default function Index({
                 Save
               </Button>
             </Modal.Footer>
+          </Modal>
+          <Modal
+            show={viewRemarks.show}
+            onHide={() =>
+              setViewRemarks({
+                show: false,
+                remarks: [],
+              })
+            }
+            centered
+            size="lg"
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Remarks</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>User</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {viewRemarks.remarks?.map((remark, index) => (
+                    <tr key={index}>
+                      <td>{remark.date}</td>
+                      <td>{remark.time}</td>
+                      <td>{remark.status}</td>
+                      <td>{remark.by}</td>
+                      <td>{remark.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Modal.Body>
           </Modal>
 
           <Pagination
