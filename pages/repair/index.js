@@ -598,7 +598,7 @@ export default function Index({
                           View Receipt
                         </Button>
 
-                        {repair.remarks.length > 0 && (
+                        {repair.remarks?.length > 0 && (
                           <Button
                             size="sm"
                             variant="warning"
