@@ -58,6 +58,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
   const [openRemarkModal, setOpenRemarkModal] = useState(false);
   const [remark, setRemark] = useState("");
   const [viewRemarks, setViewRemarks] = useState(false);
+  const [changes, setChanges] = useState({});
   const router = useRouter();
   const componentRef = useRef(null);
   const handlePrint = useReactToPrint({
@@ -118,24 +119,6 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
   const submitForm = async (data) => {
     try {
       __state.loading = true;
-      const paymentMethod = Object.keys(selectedMethods).filter(
-        (key) => selectedMethods[key]
-      );
-
-      if (paymentMethod.length === 0) {
-        toast.error("Please select atleast one payment method");
-        return;
-      }
-
-      const paymentObj = {
-        paymentMethod,
-        chargePaid: paymentMethod.includes("cash")
-          ? parseFloat(amounts.cash)
-          : 0,
-        chargePaidCard: paymentMethod.includes("card")
-          ? parseFloat(amounts.card)
-          : 0,
-      };
       const issueswithprice = Object.entries(issuesWithPrice).map(
         ([key, issue]) => ({
           description: issue.description,
@@ -144,58 +127,92 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
           price: issue.price,
         })
       );
-      const receiptResponse = await fetch(`/api`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          path: `/receipts/${receipt._id}`,
-          method: "PUT",
-          body: {
-            ...data,
-            ...paymentObj,
-            issuesWithPrice: issueswithprice,
-          },
-        }),
-      });
-      const json = await receiptResponse.json();
+      const dirty = JSON.stringify(
+        checkDirtyValues(defaultValues, {
+          ...data,
+          issuesWithPrice: issueswithprice,
+          chargePaid: parseFloat(amounts.cash),
+          chargePaidCard: parseFloat(amounts.card),
+          paymentMethod: Object.keys(selectedMethods).filter(
+            (key) => selectedMethods[key]
+          ),
+        })
+      );
 
-      if (!receiptResponse.ok) {
-        return toast.error("Failed to update receipt");
-      }
-      if (openRemarkModal) {
-        const response = await fetch(`/api`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            path: `/repairs/remarks/${receipt.repair._id}`,
-            method: "PATCH",
-            body: {
-              description: remark,
-            },
-          }),
-        });
-        const json = await response.json();
-        if (!response.ok) {
-          return toast.error("Failed to add remark");
-        }
-        toast.success(`Remark   has been updated successfully`);
-        setOpenRemarkModal(false);
-        return;
-      }
-      setReceipt((prev) => ({
-        ...prev,
-        paymentMethod: json.paymentMethod,
-        issuesWithPrice: json.issuesWithPrice,
-        discount: json.discount,
-        chargePaid: json.chargePaid,
-        chargePaidCard: json.chargePaidCard,
-        expectedServiceCharge: json.expectedServiceCharge,
-      }));
-      toast.success(`Receipt  has been updated successfully`);
+      console.log("dirty", dirty);
+      // setChanges(dirty);
+      // const paymentMethod = Object.keys(selectedMethods).filter(
+      //   (key) => selectedMethods[key]
+      // );
+
+      // if (paymentMethod.length === 0) {
+      //   toast.error("Please select atleast one payment method");
+      //   return;
+      // }
+
+      // const paymentObj = {
+      //   paymentMethod,
+      //   chargePaid: paymentMethod.includes("cash")
+      //     ? parseFloat(amounts.cash)
+      //     : 0,
+      //   chargePaidCard: paymentMethod.includes("card")
+      //     ? parseFloat(amounts.card)
+      //     : 0,
+      // };
+
+      // const receiptResponse = await fetch(`/api`, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     path: `/receipts/${receipt._id}`,
+      //     method: "PUT",
+      //     body: {
+      //       ...data,
+      //       ...paymentObj,
+      //       issuesWithPrice: issueswithprice,
+      //     },
+      //   }),
+      // });
+      // const json = await receiptResponse.json();
+
+      // if (!receiptResponse.ok) {
+      //   return toast.error("Failed to update receipt");
+      // }
+      // if (openRemarkModal) {
+      //   const response = await fetch(`/api`, {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       path: `/repairs/remarks/${receipt.repair._id}`,
+      //       method: "PATCH",
+      //       body: {
+      //         changes: dirty,
+      //         description: remark,
+      //       },
+      //     }),
+      //   });
+      //   const json = await response.json();
+      //   if (!response.ok) {
+      //     return toast.error("Failed to add remark");
+      //   }
+      //   toast.success(`Remark   has been updated successfully`);
+      //   setOpenRemarkModal(false);
+      //   return;
+      // }
+      // setReceipt((prev) => ({
+      //   ...prev,
+      //   paymentMethod: json.paymentMethod,
+      //   issuesWithPrice: json.issuesWithPrice,
+      //   discount: json.discount,
+      //   chargePaid: json.chargePaid,
+      //   chargePaidCard: json.chargePaidCard,
+      //   expectedServiceCharge: json.expectedServiceCharge,
+      // }));
+      // toast.success(`Receipt  has been updated successfully`);
     } catch (e) {
       toast.error(e.message);
     } finally {
@@ -237,53 +254,85 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
     }
   };
 
-  // function checkDirtyValues(prev, current) {
-  //   console.log("current", current, "prev", prev);
-  //   const dirty = {};
+  function checkDirtyValues(prev, current) {
+    const dirty = {};
+    console.log({
+      prev,
+      current,
+    });
 
-  //   const checkValues = (prevValue, currentValue, key) => {
-  //     if (Array.isArray(prevValue) && Array.isArray(currentValue)) {
-  //       // Check if arrays are different lengths or have different contents
-  //       if (
-  //         prevValue.length !== currentValue.length ||
-  //         !prevValue.every((v, index) => v === currentValue[index])
-  //       ) {
-  //         dirty[key] = true;
-  //       }
-  //     } else if (prevValue !== currentValue) {
-  //       dirty[key] = true;
-  //     }
-  //   };
+    const checkArrayChanges = (prevArray, currentArray, key) => {
+      const changes = [];
 
-  //   Object.keys(prev).forEach((key) => {
-  //     if (current.hasOwnProperty(key)) {
-  //       checkValues(prev[key], current[key], key);
-  //     } else {
-  //       dirty[key] = true; // Key exists in prev but not in current
-  //     }
-  //   });
+      // Check for changes in existing items and capture new ones
+      currentArray.forEach((currentItem, index) => {
+        const prevItem = prevArray[index];
 
-  //   // Optional: Check for keys that are in current but not in prev
-  //   Object.keys(current).forEach((key) => {
-  //     if (!prev.hasOwnProperty(key)) {
-  //       dirty[key] = true; // Key exists in current but not in prev
-  //     }
-  //   });
+        if (prevItem) {
+          const itemChanges = {};
 
-  //   return dirty;
-  // }
+          // Check each field for changes
+          Object.keys(currentItem).forEach((field) => {
+            if (prevItem[field] !== currentItem[field]) {
+              itemChanges[field] = currentItem[field]; // Capture the new value
+            }
+          });
+
+          // Only add to changes if there are any modifications
+          if (Object.keys(itemChanges).length > 0) {
+            changes.push(itemChanges);
+          }
+        } else {
+          // If prevItem doesn't exist, it means it's a new addition
+          changes.push(currentItem);
+        }
+      });
+
+      // If there are changes, record them
+      if (changes.length > 0) {
+        dirty[key] = {
+          prev: prevArray,
+          new: changes,
+        };
+      }
+    };
+
+    // Iterate through the keys in prev
+    Object.keys(prev).forEach((key) => {
+      if (current.hasOwnProperty(key)) {
+        if (Array.isArray(prev[key]) && Array.isArray(current[key])) {
+          checkArrayChanges(prev[key], current[key], key);
+        } else if (prev[key] !== current[key]) {
+          // Handle non-array fields
+          dirty[key] = {
+            prev: prev[key],
+            new: current[key],
+          };
+        }
+      }
+    });
+
+    return dirty;
+  }
 
   const handleRemarkSubmit = () => {
     // Close the modal and submit the form with the remark
-
     handleSubmit(submitForm)();
   };
 
   const defaultValues = {
     paymentMethod: receipt.paymentMethod,
+    chargePaidCard: receipt.chargePaidCard,
+    chargePaid: receipt.chargePaid,
     discount: receipt.discount,
     chargePaid: receipt.chargePaid,
     expectedServiceCharge: receipt.expectedServiceCharge,
+    issuesWithPrice: receipt.issuesWithPrice.map((issue) => ({
+      description: issue.description,
+      price: issue.price,
+      quantity: issue.quantity,
+      rate: issue.rate,
+    })),
   };
 
   const {
@@ -314,6 +363,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
           <i className="fa-solid fa-comment mr-2"></i>
         </Button>
       </div>
+
       <Row className="mb-3">
         {/* Customer Details Card */}
         <Col md={6} sm={12}>
@@ -559,7 +609,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
           show={viewRemarks}
           onHide={() => setViewRemarks(false)}
           centered
-          size="lg"
+          size="xl"
         >
           <Modal.Header closeButton>
             <Modal.Title>Remarks</Modal.Title>
@@ -573,6 +623,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
                   <th>Status</th>
                   <th>User</th>
                   <th>Description</th>
+                  <th>Changes</th>
                 </tr>
               </thead>
               <tbody>
@@ -583,6 +634,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
                     <td>{remark.status}</td>
                     <td>{remark.by}</td>
                     <td>{remark.description}</td>
+                    <td>{remark.changes}</td>
                   </tr>
                 ))}
               </tbody>
