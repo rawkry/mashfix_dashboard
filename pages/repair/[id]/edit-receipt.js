@@ -140,79 +140,79 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
       );
 
       console.log("dirty", dirty);
-      // setChanges(dirty);
-      // const paymentMethod = Object.keys(selectedMethods).filter(
-      //   (key) => selectedMethods[key]
-      // );
+      setChanges(dirty);
+      const paymentMethod = Object.keys(selectedMethods).filter(
+        (key) => selectedMethods[key]
+      );
 
-      // if (paymentMethod.length === 0) {
-      //   toast.error("Please select atleast one payment method");
-      //   return;
-      // }
+      if (paymentMethod.length === 0) {
+        toast.error("Please select atleast one payment method");
+        return;
+      }
 
-      // const paymentObj = {
-      //   paymentMethod,
-      //   chargePaid: paymentMethod.includes("cash")
-      //     ? parseFloat(amounts.cash)
-      //     : 0,
-      //   chargePaidCard: paymentMethod.includes("card")
-      //     ? parseFloat(amounts.card)
-      //     : 0,
-      // };
+      const paymentObj = {
+        paymentMethod,
+        chargePaid: paymentMethod.includes("cash")
+          ? parseFloat(amounts.cash)
+          : 0,
+        chargePaidCard: paymentMethod.includes("card")
+          ? parseFloat(amounts.card)
+          : 0,
+      };
 
-      // const receiptResponse = await fetch(`/api`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     path: `/receipts/${receipt._id}`,
-      //     method: "PUT",
-      //     body: {
-      //       ...data,
-      //       ...paymentObj,
-      //       issuesWithPrice: issueswithprice,
-      //     },
-      //   }),
-      // });
-      // const json = await receiptResponse.json();
+      const receiptResponse = await fetch(`/api`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          path: `/receipts/${receipt._id}`,
+          method: "PUT",
+          body: {
+            ...data,
+            ...paymentObj,
+            issuesWithPrice: issueswithprice,
+          },
+        }),
+      });
+      const json = await receiptResponse.json();
 
-      // if (!receiptResponse.ok) {
-      //   return toast.error("Failed to update receipt");
-      // }
-      // if (openRemarkModal) {
-      //   const response = await fetch(`/api`, {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify({
-      //       path: `/repairs/remarks/${receipt.repair._id}`,
-      //       method: "PATCH",
-      //       body: {
-      //         changes: dirty,
-      //         description: remark,
-      //       },
-      //     }),
-      //   });
-      //   const json = await response.json();
-      //   if (!response.ok) {
-      //     return toast.error("Failed to add remark");
-      //   }
-      //   toast.success(`Remark   has been updated successfully`);
-      //   setOpenRemarkModal(false);
-      //   return;
-      // }
-      // setReceipt((prev) => ({
-      //   ...prev,
-      //   paymentMethod: json.paymentMethod,
-      //   issuesWithPrice: json.issuesWithPrice,
-      //   discount: json.discount,
-      //   chargePaid: json.chargePaid,
-      //   chargePaidCard: json.chargePaidCard,
-      //   expectedServiceCharge: json.expectedServiceCharge,
-      // }));
-      // toast.success(`Receipt  has been updated successfully`);
+      if (!receiptResponse.ok) {
+        return toast.error("Failed to update receipt");
+      }
+      if (openRemarkModal) {
+        const response = await fetch(`/api`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            path: `/repairs/remarks/${receipt.repair._id}`,
+            method: "PATCH",
+            body: {
+              changes: dirty,
+              description: remark,
+            },
+          }),
+        });
+        const json = await response.json();
+        if (!response.ok) {
+          return toast.error("Failed to add remark");
+        }
+        toast.success(`Remark   has been updated successfully`);
+        setOpenRemarkModal(false);
+        return;
+      }
+      setReceipt((prev) => ({
+        ...prev,
+        paymentMethod: json.paymentMethod,
+        issuesWithPrice: json.issuesWithPrice,
+        discount: json.discount,
+        chargePaid: json.chargePaid,
+        chargePaidCard: json.chargePaidCard,
+        expectedServiceCharge: json.expectedServiceCharge,
+      }));
+      toast.success(`Receipt  has been updated successfully`);
     } catch (e) {
       toast.error(e.message);
     } finally {
@@ -316,6 +316,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
   }
 
   const handleRemarkSubmit = () => {
+    if (!remark.trim().length > 0) return toast.error("Please enter remark");
     // Close the modal and submit the form with the remark
     handleSubmit(submitForm)();
   };
@@ -591,6 +592,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
           <Modal.Body>
             <Form.Group controlId="remark">
               <Form.Control
+                required
                 as="textarea"
                 rows={3}
                 value={remark}
