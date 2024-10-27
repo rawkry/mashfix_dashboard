@@ -63,6 +63,7 @@ export default function Index({
   const router = useRouter();
 
   const [repair, setrepair] = useState(repairFromServer);
+  console.log(repair);
   const [viewRemarks, setViewRemarks] = useState({
     remarks: null,
     show: false,
@@ -690,6 +691,7 @@ export default function Index({
                     <th>Status</th>
                     <th>User</th>
                     <th>Description</th>
+                    <th>Changes</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -700,6 +702,7 @@ export default function Index({
                       <td>{remark.status}</td>
                       <td>{remark.by}</td>
                       <td>{remark.description}</td>
+                      <td>{remark.changes}</td>
                     </tr>
                   ))}
                 </tbody>
