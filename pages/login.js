@@ -86,6 +86,7 @@ const LoginPage = ({ __state }) => {
             <Form.Group className="mb-3" controlId="email">
               <Form.Label>Email</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="text"
                 placeholder="Enter your email"
                 {...register("email", {
@@ -100,6 +101,7 @@ const LoginPage = ({ __state }) => {
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Password</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="password"
                 placeholder="Enter your password"
                 {...register("password", {
