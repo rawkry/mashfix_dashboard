@@ -168,13 +168,16 @@ export default function Index({
     >
       <Modal
         title={"Select Last Active Date Range"}
+        className="d-flex justify-content-center align-items-center p-4"
+        centered
         show={activemodalShow}
+        size="lg"
         onHide={() => {
           setActiveModalShow(false);
         }}
       >
         <DateRange dates={dates} setDates={setDates} />
-        <div className="d-flex justify-content-end gap-4 mt-4">
+        <div className="d-flex justify-content-end gap-4 m-2">
           <div>
             <Button
               onClick={() => {
@@ -200,7 +203,7 @@ export default function Index({
         </div>
       ) : (
         <>
-          <div className="d-flex flex-wrap justify-content-between align-items-center w-100 mb-4">
+          <div className="d-flex flex-wrap justify-content-between align-items-center w-100 ">
             <Form.Group className="d-flex align-items-center gap-2 mb-3">
               <Form.Control
                 type="search"
@@ -236,7 +239,7 @@ export default function Index({
               />
               <FloatingLabel
                 controlId="floatingSelect"
-                label="Status"
+                label="Payment Method"
                 className="w-100 rounded-pill"
               >
                 <select
@@ -288,7 +291,13 @@ export default function Index({
                 )}
               </div>
 
-              <Button variant="outline-primary" onClick={() => exportToExcel()}>
+              <Button
+                className="rounded-pill"
+                title={"Export to Excel"}
+                size="sm"
+                variant="outline-primary"
+                onClick={() => exportToExcel()}
+              >
                 <i className="fas fa-file-export text-primary "></i>
               </Button>
             </div>
@@ -324,7 +333,7 @@ export default function Index({
                       </span>
                     </td>
 
-                    <td>{receipts.paymentMethod}</td>
+                    <td>{receipts.paymentMethod.join(", ")}</td>
                     <td>{receipts.servicetype.name}</td>
 
                     <td>$ {receipts.expectedServiceCharge}</td>

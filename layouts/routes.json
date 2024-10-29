@@ -22,7 +22,7 @@
   {
     "type": "singular",
     "title": "Customers",
-    "icon": "fa-solid fa-user",
+    "icon": "fa-solid fa-users",
     "url": "/customers"
   },
   {

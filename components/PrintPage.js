@@ -5,6 +5,7 @@ import { Table } from "react-bootstrap";
 
 const PrintPage = forwardRef(({ data: serverData }, ref) => {
   const [data, setData] = useState(serverData);
+
   const subtotal = data.issuesWithPrice.reduce(
     (acc, item) => acc + item.price,
     0
@@ -18,7 +19,7 @@ const PrintPage = forwardRef(({ data: serverData }, ref) => {
 
   const total = subtotal + salesTax + serviceCharge - data.discount;
 
-  const balanceDue = total - data.chargePaid;
+  const balanceDue = total - (data.chargePaid + data.chargePaidCard);
   useEffect(() => {
     setData(serverData);
   }, [serverData]);
@@ -77,7 +78,7 @@ const PrintPage = forwardRef(({ data: serverData }, ref) => {
           <div>
             <p>{data.customer.name}</p>
             <p>{data.customer.phone}</p>
-            {data.paymentMethod && <p>{data.paymentMethod}</p>}
+            {data.paymentMethod && <p>{data.paymentMethod.join(", ")}</p>}
           </div>
         </div>
         <div className="doted"></div>
@@ -94,7 +95,6 @@ const PrintPage = forwardRef(({ data: serverData }, ref) => {
             <tr className="text-center">
               <th>Description</th>
               <th>Quantity</th>
-
               <th>Amount</th>
             </tr>
           </thead>
@@ -121,16 +121,24 @@ const PrintPage = forwardRef(({ data: serverData }, ref) => {
             <p>Service Charge</p>
             <p>Discount</p>
             <p className=" fw-bolder">Total: </p>
-            <p>Payment Made</p>
+            <p>{data.paymentMethod.includes("cash") && "Cash Paid"}</p>
+            <p>{data.paymentMethod.includes("card") && "Card Paid"}</p>
           </div>
-          <div>
+          <div className="text-end">
             <p>{subtotal.toFixed(2)}</p>
             <p>{salesTax.toFixed(2)}</p>
 
             <p>{serviceCharge?.toFixed(2)}</p>
             <p>-{data.discount?.toFixed(2)}</p>
             <p className=" fw-bolder">{total.toFixed(2)}</p>
-            <p>-{data.chargePaid?.toFixed(2)}</p>
+
+            {data.paymentMethod.includes("cash") && (
+              <p>- {data.chargePaid?.toFixed(2)}</p>
+            )}
+
+            {data.paymentMethod.includes("card") && (
+              <p>- {data.chargePaidCard?.toFixed(2)}</p>
+            )}
           </div>
         </div>
         <div

@@ -63,6 +63,11 @@ export default function Index({
   const router = useRouter();
 
   const [repair, setrepair] = useState(repairFromServer);
+  console.log(repair);
+  const [viewRemarks, setViewRemarks] = useState({
+    remarks: null,
+    show: false,
+  });
 
   const [showIssue, setShowIssue] = useState({
     id: "",
@@ -258,7 +263,7 @@ export default function Index({
   return (
     <Main
       title={`Repairs (${!fetched ? "" : total})`}
-      icon="fa-solid fa-useres"
+      icon="fa-solid fa-tools"
       profile={myProfile}
     >
       <Modal
@@ -269,7 +274,7 @@ export default function Index({
         }}
       >
         <DateRange dates={dates} setDates={setDates} />
-        <div className="d-flex justify-content-end gap-4 mt-4">
+        <div className="d-flex justify-content-end gap-4 m-2">
           <div>
             <Button
               onClick={() => {
@@ -304,8 +309,9 @@ export default function Index({
                 }}
               >
                 <Form.Control
+                  className="rounded-pill"
                   type="search"
-                  placeholder="Search by name..."
+                  placeholder="name"
                   defaultValue={router.query.name || ""}
                   onChange={debounce(
                     (e) =>
@@ -319,8 +325,9 @@ export default function Index({
                   )}
                 />
                 <Form.Control
+                  className="rounded-pill"
                   type="search"
-                  placeholder="Search by phone..."
+                  placeholder="phone"
                   defaultValue={router.query.phone || ""}
                   onChange={debounce(
                     (e) =>
@@ -334,8 +341,9 @@ export default function Index({
                   )}
                 />
                 <Form.Control
+                  className="rounded-pill"
                   type="search"
-                  placeholder="Search by brand..."
+                  placeholder="brand"
                   defaultValue={router.query.brand || ""}
                   onChange={debounce(
                     (e) =>
@@ -402,7 +410,7 @@ export default function Index({
               </Form.Group>
             </Form>
 
-            <div className="d-flex gap-2 mb-2">
+            <div className="d-flex gap-2 mb-2 justify-content-end align-items-center">
               <Form.Group>
                 <div className="d-flex align-items-center  justify-content-center">
                   <div
@@ -439,11 +447,15 @@ export default function Index({
                   )}
                 </div>
               </Form.Group>
+
               <Button
+                className="rounded-pill"
+                title={"Export to Excel"}
+                size="sm"
+                variant="outline-primary"
                 onClick={() => exportToExcel()}
-                className="shadow-sm rounded"
               >
-                <i className="fas fa-file-excel"></i>
+                <i className="fas fa-file-export text-primary "></i>
               </Button>
             </div>
           </div>
@@ -492,40 +504,44 @@ export default function Index({
                     </td>
                     <td>{repair.servicetype.name}</td>
                     <td>
-                      <Form.Group controlId="active">
-                        <FloatingLabel
-                          controlId="floatingSelect"
-                          className="mb-3"
-                        >
-                          <select
-                            className="form-select form-select-sm"
-                            defaultValue={repair.status}
-                            onChange={(e) => {
-                              handleStatusChange(repair._id, e.target.value);
-                            }}
+                      {repair.status === "pickedup" ? (
+                        <span className="text-success">{repair.status}</span>
+                      ) : (
+                        <Form.Group controlId="active">
+                          <FloatingLabel
+                            controlId="floatingSelect"
+                            className="mb-3"
                           >
-                            {[
-                              "requested",
-                              "working",
-                              "waiting for parts",
-                              "completed",
-                              "pickedup",
-                            ].map((item, index) => (
-                              <option
-                                disabled={
-                                  myProfile.role === "user" &&
-                                  repair.status === "pickedup"
-                                }
-                                key={index}
-                                value={item}
-                                style={{ width: "100%" }}
-                              >
-                                {item}
-                              </option>
-                            ))}
-                          </select>
-                        </FloatingLabel>
-                      </Form.Group>
+                            <select
+                              className="form-select form-select-sm"
+                              defaultValue={repair.status}
+                              onChange={(e) => {
+                                handleStatusChange(repair._id, e.target.value);
+                              }}
+                            >
+                              {[
+                                "requested",
+                                "working",
+                                "waiting for parts",
+                                "completed",
+                                "pickedup",
+                              ].map((item, index) => (
+                                <option
+                                  disabled={
+                                    myProfile.role === "user" &&
+                                    repair.status === "pickedup"
+                                  }
+                                  key={index}
+                                  value={item}
+                                  style={{ width: "100%" }}
+                                >
+                                  {item}
+                                </option>
+                              ))}
+                            </select>
+                          </FloatingLabel>
+                        </Form.Group>
+                      )}
                     </td>
                     <td>{toHuman(repair.createdAt)}</td>
 
@@ -552,7 +568,7 @@ export default function Index({
                           as={Link}
                           href={`/repair/edit/${repair._id}`}
                         >
-                          <i className="fas fa-pen me-1 text-primary"></i>
+                          <i className="fas fa-edit me-1 text-primary"></i>
                         </Button>
                         <Button
                           title={"Edit Receipt"}
@@ -583,6 +599,22 @@ export default function Index({
                           "
                           ></i>{" "}
                         </Button>
+
+                        {repair.remarks?.length > 0 && (
+                          <Button
+                            title={"View Remarks"}
+                            size="sm"
+                            variant="outline-warning"
+                            onClick={() =>
+                              setViewRemarks({
+                                show: true,
+                                remarks: repair.remarks,
+                              })
+                            }
+                          >
+                            <i className="fa-solid fa-comment mr-2"></i>
+                          </Button>
+                        )}
                       </ButtonGroup>
                     </td>
                   </tr>
@@ -637,14 +669,55 @@ export default function Index({
               </Button>
             </Modal.Footer>
           </Modal>
-          <div className="d-flex justify-content-end gap-5">
-            <Limit limit={limit} />
-            <Pagination
-              pathname={router.pathname}
-              currentPage={currentPage}
-              pages={pages}
-            />
-          </div>
+          <Modal
+            scrollable
+            className="shadow-sm"
+            show={viewRemarks.show}
+            onHide={() =>
+              setViewRemarks({
+                show: false,
+                remarks: [],
+              })
+            }
+            centered
+            size="lg"
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Remarks</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>User</th>
+                    <th>Description</th>
+                    <th>Changes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {viewRemarks.remarks?.map((remark, index) => (
+                    <tr key={index}>
+                      <td>{remark.date}</td>
+                      <td>{remark.time}</td>
+                      <td>{remark.status}</td>
+                      <td>{remark.by}</td>
+                      <td>{remark.description}</td>
+                      <td>{remark.changes}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Modal.Body>
+          </Modal>
+
+          <Pagination
+            pathname={router.pathname}
+            currentPage={currentPage}
+            pages={pages}
+          />
         </>
       )}
     </Main>

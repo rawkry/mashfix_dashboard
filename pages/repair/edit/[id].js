@@ -110,7 +110,7 @@ export default function Edit({ __state, repair, serviceType, myProfile }) {
           size="md"
           onClick={() => router.back()}
         >
-          <i className="fa-solid fa-arrow-left mr-2"></i>Back
+          <i className="fa-solid fa-arrow-left mr-2"></i>
         </Button>
       </div>
       <div>
@@ -181,8 +181,12 @@ export default function Edit({ __state, repair, serviceType, myProfile }) {
             </Form.Group>
 
             <div className="d-flex justify-content-end">
-              <Button className="shadow" type="submit">
-                Update Repair
+              <Button className="shadow" type="submit" variant={"primary"}>
+                {__state.loading ? (
+                  <i className="fa fa-spinner fa-spin"></i>
+                ) : (
+                  "Update"
+                )}
               </Button>
             </div>
           </Form>

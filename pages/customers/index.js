@@ -230,7 +230,7 @@ export default function Index({
   return (
     <Main
       title={`Customers (${!fetched ? "" : total})`}
-      icon="fa-solid fa-useres"
+      icon="fa-solid fa-users"
       profile={myProfile}
     >
       {!fetched ? (
@@ -249,14 +249,15 @@ export default function Index({
           <div className="d-flex justify-content-between">
             <Form onSubmit={(e) => e.preventDefault()}>
               <Form.Group
-                className="d-flex align-items-center w-100 gap-5"
+                className="d-flex align-items-center w-100 gap-2"
                 style={{
                   marginBottom: "1rem",
                 }}
               >
                 <Form.Control
                   type="search"
-                  placeholder="Search by name..."
+                  placeholder="name"
+                  className="rounded-pill"
                   defaultValue={router.query.name || ""}
                   onChange={debounce(
                     (e) =>
@@ -271,7 +272,8 @@ export default function Index({
                 />
                 <Form.Control
                   type="search"
-                  placeholder="Search by email..."
+                  placeholder="email"
+                  className="rounded-pill"
                   defaultValue={router.query.email || ""}
                   onChange={debounce(
                     (e) =>
@@ -286,7 +288,7 @@ export default function Index({
                 />
                 <Form.Control
                   type="search"
-                  placeholder="Search by phone..."
+                  placeholder="phone"
                   defaultValue={router.query.phone || ""}
                   onChange={debounce(
                     (e) =>
@@ -298,25 +300,23 @@ export default function Index({
                       ),
                     500
                   )}
+                  className="rounded-pill"
                 />
               </Form.Group>
             </Form>
 
-            <div className="d-flex gap-2 mb-2">
+            <div className="d-flex gap-2 mb-2 justify-content-end align-items-center">
               <div>
                 <Limit limit={limit} />
               </div>
               <Button
+                className="rounded-pill"
+                title={"Export to Excel"}
+                size="sm"
+                variant="outline-primary"
                 onClick={() => exportToExcel()}
-                className="shadow-sm rounded"
-                style={{
-                  border: "none ",
-                  marginLeft: "10px",
-                  padding: "10px 20px",
-                  color: "#c344ff",
-                }}
               >
-                <i className="fas fa-file-excel"></i> Export
+                <i className="fas fa-file-export text-primary "></i>
               </Button>
             </div>
           </div>
@@ -354,7 +354,7 @@ export default function Index({
                             size="sm"
                             title={"View"}
                           >
-                            <i className="fas fa-eye me-1 text-primary"></i>
+                            <i className="fas fa-eye me-1 "></i>
                           </Button>
                         </Link>
 
@@ -365,7 +365,7 @@ export default function Index({
                           as={Link}
                           href={`/customers/edit/${customer._id}`}
                         >
-                          <i className="fas fa-pen me-1 text-warning"></i>
+                          <i className="fas fa-edit me-1 text-primary"></i>
                         </Button>
                         <Button
                           title={"Create Repair"}

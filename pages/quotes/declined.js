@@ -165,7 +165,7 @@ export default function Index({
   return (
     <Main
       title={`Quotes (${!fetched ? "" : totalCount})`}
-      icon="fa-solid fa-useres"
+      icon="fa-solid fa-message"
       profile={myProfile}
     >
       {!fetched ? (
@@ -181,37 +181,50 @@ export default function Index({
         </div>
       ) : (
         <>
-          <Tab.Container>
+          <Tab.Container defaultActiveKey="declined">
             <Nav
               variant="tabs"
+              className="justify-content-center mb-4"
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(3,1fr)",
+                gridTemplateColumns: "repeat(3, 1fr)",
               }}
             >
-              <Button as={Link} href={"/quotes"}>
-                Pending
-              </Button>
-
-              <Button as={Link} href={"/quotes/approved"}>
-                Approved
-              </Button>
-
-              <Button variant={"warning"}>Declined</Button>
+              <Nav.Item>
+                <Nav.Link
+                  eventKey="pending"
+                  as={Link}
+                  href="/quotes?approved=no"
+                  className="btn-warning"
+                >
+                  Pending
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link as={Link} href="/quotes/approved" eventKey="approved">
+                  Approved
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link eventKey="declined" className="btn-warning">
+                  Declined
+                </Nav.Link>
+              </Nav.Item>
             </Nav>
           </Tab.Container>
 
           <div className="d-flex justify-content-between mt-3">
             <Form>
               <Form.Group
-                className="d-flex align-items-center w-100 gap-5"
+                className="d-flex align-items-center w-100 gap-2"
                 style={{
                   marginBottom: "1rem",
                 }}
               >
                 <Form.Control
                   type="search"
-                  placeholder="Search by name..."
+                  className="rounded-pill"
+                  placeholder="name"
                   defaultValue={router.query.customerName || ""}
                   onChange={debounce(
                     (e) =>
@@ -226,7 +239,8 @@ export default function Index({
                 />
                 <Form.Control
                   type="search"
-                  placeholder="Search by email..."
+                  className="rounded-pill"
+                  placeholder="email"
                   defaultValue={router.query.email || ""}
                   onChange={debounce(
                     (e) =>
@@ -371,8 +385,8 @@ export default function Index({
                     <td>
                       <ButtonGroup size="sm">
                         <Link href={`/quotes/show/${project_inquiry._id}`}>
-                          <Button size="sm">
-                            <i className="fas fa-eye me-1"></i> View
+                          <Button size="sm" variant={"primary"} title={"View"}>
+                            <i className="fas fa-eye me-1"></i>
                           </Button>
                         </Link>
 

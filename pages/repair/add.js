@@ -119,7 +119,7 @@ export default function Add({ __state, myProfile, serviceTypes }) {
           size="md"
           onClick={() => router.back()}
         >
-          <i className="fa-solid fa-arrow-left mr-2"></i>Back
+          <i className="fa-solid fa-arrow-left mr-2"></i>
         </Button>
       </div>
       <div>

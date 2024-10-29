@@ -4,18 +4,20 @@ import {
   Card,
   FloatingLabel,
   Form,
+  Modal,
   Row,
   Table,
 } from "react-bootstrap";
 
 import { Main } from "@/layouts";
-
 import getMyProfile from "@/helpers/server/getMyProfile";
 import Link from "next/link";
 import { callFetch } from "@/helpers/server";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IsoDateString, toHuman } from "@/helpers/clients";
 import { Bar } from "@/reuseables";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 // const { url_one, url_two, headers } = JSON.parse(
 //   process.env.NEXT_PUBLIC_BUSINESS_INTERNAL_BASE_SERVICE
@@ -92,6 +94,30 @@ export default function Index({
     },
   ];
   const [showStats, setShowStats] = useState(false);
+  const [showLocker, setShowLocker] = useState(true);
+  const [passwordCorrect, setPasswordCorrect] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    if (data.password !== "4744") {
+      toast.error("Wrong password");
+      return; // Keep the modal open
+    }
+
+    setPasswordCorrect(true);
+    setShowLocker(false); // Close modal only if password is correct
+    setShowStats(data.showStats); // Assuming showStats comes from the form data
+  };
+
+  useEffect(() => {
+    // Example of ensuring that this runs on the client only
+    setShowLocker(true); // or some logic to determine if the modal should be shown
+  }, []);
+
   return (
     <Main icon="fas fa-columns" title="Dashboard" profile={myProfile}>
       {myProfile.role == "admin" ? (
@@ -413,6 +439,35 @@ export default function Index({
           </Card.Body>
         </Card>
       </div>
+      <Modal
+        show={showLocker}
+        onHide={() => (passwordCorrect ? setShowLocker(false) : null)} // Prevent closing if password is incorrect
+        centered
+        size="md"
+      >
+        <Modal.Header>
+          <Modal.Title>Enter Password</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="d-flex justify-content-center">
+            <Form
+              onSubmit={handleSubmit(onSubmit)}
+              className="d-flex flex-column w-75"
+            >
+              <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Control
+                  type="password"
+                  placeholder="password"
+                  {...register("password", { required: true })}
+                />
+              </Form.Group>
+              <Button variant="primary" type="submit">
+                Enter
+              </Button>
+            </Form>
+          </div>
+        </Modal.Body>
+      </Modal>
     </Main>
   );
 }

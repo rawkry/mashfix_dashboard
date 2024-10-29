@@ -6,7 +6,7 @@ import MainLayoutContext from "./MainLayoutContext";
 import styles from "./TopNav.module.css";
 
 export default function TopNav({ rightItem, noSideNav }) {
-  const appName = process.env.NEXT_PUBLIC_APP_NAME;
+  const appName = process.env.NEXT_PUBLIC_APP_NAME || "MASHFiX";
   const [doRotate, setDoRotate] = useState(false);
   const { sidenavOpen, setSidenavOpen } = useContext(MainLayoutContext);
 
@@ -42,13 +42,18 @@ export default function TopNav({ rightItem, noSideNav }) {
           }}
         >
           <div className="mx-3">
-            <img src="/logo.png" alt="Logo" height="55px" />
+            {/* <img
+              src="/logo.png"
+              alt="Logo"
+              height="55px"
+              style={{
+                objectFit: "contain",
+                backgroundBlendMode: "screen",
+              }}
+            /> */}
             {appName ? (
               <div>
-                <small
-                  className="font-zapp-extrabold text-lowercase"
-                  style={{ fontSize: ".6rem" }}
-                >
+                <small className="text-bolder" style={{ fontSize: "1rem" }}>
                   {appName}
                 </small>
               </div>

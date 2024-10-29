@@ -85,7 +85,7 @@ export default function Add({ __state, roles, branch, myProfile }) {
   return (
     <Main
       title="Mashfix user || Add "
-      icon="fa-solid fa-users"
+      icon="fa-solid fa-users-gear"
       profile={myProfile}
     >
       <div className="container-fluid pb-3 ">
@@ -94,7 +94,7 @@ export default function Add({ __state, roles, branch, myProfile }) {
           size="md"
           onClick={() => router.back()}
         >
-          <i className="fa-solid fa-arrow-left mr-2"></i>Back
+          <i className="fa-solid fa-arrow-left mr-2"></i>
         </Button>
       </div>
       <div>
