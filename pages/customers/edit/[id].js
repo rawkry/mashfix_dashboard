@@ -115,6 +115,7 @@ export default function Add({ __state, myProfile, customer }) {
             <Form.Group className="mb-3" controlId="name">
               <Form.Label> Name</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="text"
                 placeholder="Enter customer name"
                 {...register("name", {
@@ -130,6 +131,7 @@ export default function Add({ __state, myProfile, customer }) {
             <Form.Group className="mb-3" controlId="phone">
               <Form.Label>Phone</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="text"
                 placeholder="Enter customer phone"
                 {...register("phone", {
@@ -144,6 +146,7 @@ export default function Add({ __state, myProfile, customer }) {
             <Form.Group className="mb-3" controlId="email">
               <Form.Label>Email</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="email"
                 placeholder="Enter customer email"
                 {...register("email", {
@@ -159,6 +162,7 @@ export default function Add({ __state, myProfile, customer }) {
             <Form.Group className="mb-3" controlId="address">
               <Form.Label>Address</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="address"
                 placeholder="Enter customer address"
                 {...register("address", {
@@ -172,8 +176,12 @@ export default function Add({ __state, myProfile, customer }) {
             </Form.Group>
 
             <div className="d-flex justify-content-end">
-              <Button className="shadow" type="submit">
-                Update Customer
+              <Button className="shadow" type="submit" variant="primary">
+                {__state.loading ? (
+                  <i className="fa fa-spinner fa-spin"></i>
+                ) : (
+                  "Update"
+                )}
               </Button>
             </div>
           </Form>

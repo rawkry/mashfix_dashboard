@@ -72,12 +72,13 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
           <div key={key}>
             <Row className="mb-3">
               <Col md={3}>
-                <Form.Label className="text-black">Description</Form.Label>
+                <Form.Label>Description</Form.Label>
                 <Form.Control
+                  className="rounded-pill"
                   required
                   type="text"
                   placeholder="Enter specific issue"
-                  className="text-dark"
+                  // className="text-dark"
                   value={issue.description}
                   onChange={(e) =>
                     handleChange(key, "description", e.target.value)
@@ -85,9 +86,10 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
                 />
               </Col>
               <Col md={2}>
-                <Form.Label className="text-black">Quantity</Form.Label>
+                <Form.Label>Quantity</Form.Label>
                 <Form.Control
                   type="number"
+                  className="rounded-pill"
                   placeholder="Enter quantity"
                   value={issue.quantity}
                   onChange={(e) =>
@@ -97,8 +99,9 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
                 />
               </Col>
               <Col md={2}>
-                <Form.Label className="text-black">Rate</Form.Label>
+                <Form.Label>Rate</Form.Label>
                 <Form.Control
+                  className="rounded-pill"
                   type="number"
                   placeholder="Enter quantity"
                   value={issue.rate}
@@ -109,8 +112,9 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
                 />
               </Col>
               <Col md={2}>
-                <Form.Label className="text-black">Amount</Form.Label>
+                <Form.Label>Amount</Form.Label>
                 <Form.Control
+                  className="rounded-pill"
                   type="number"
                   placeholder="Enter price"
                   defaultValue={issue.price}
@@ -121,12 +125,12 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
                 className="text-end d-flex justify-content-center align-items-center"
               >
                 <Button
-                  variant="primary"
+                  variant="waring"
                   size="sm"
                   className="d-inline-block rounded"
                   onClick={() => handleRemoveIssue(key)}
                 >
-                  <i className="fas fa-times" />
+                  <i className="fas fa-times text-danger" />
                 </Button>
               </Col>
             </Row>

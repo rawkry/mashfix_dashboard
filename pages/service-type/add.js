@@ -71,7 +71,7 @@ export default function Add({ __state, myProfile }) {
           size="md"
           onClick={() => router.back()}
         >
-          <i className="fa-solid fa-arrow-left mr-2"></i>Back
+          <i className="fa-solid fa-arrow-left mr-2"></i>
         </Button>
       </div>
       <div>
@@ -80,6 +80,7 @@ export default function Add({ __state, myProfile }) {
             <Form.Group className="mb-3" controlId="name">
               <Form.Label>Service Name</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="text"
                 placeholder="Enter name"
                 {...register("name", {
@@ -93,8 +94,8 @@ export default function Add({ __state, myProfile }) {
             </Form.Group>
 
             <div className="d-flex justify-content-end">
-              <Button className="shadow" type="submit">
-                Submit Service
+              <Button className="shadow" type="submit" variant={"primary"}>
+                Add
               </Button>
             </div>
           </Form>

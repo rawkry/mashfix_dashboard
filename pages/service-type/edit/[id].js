@@ -82,7 +82,7 @@ export default function Edit({ __state, service, myProfile }) {
           size="md"
           onClick={() => router.back()}
         >
-          <i className="fa-solid fa-arrow-left mr-2"></i>Back
+          <i className="fa-solid fa-arrow-left mr-2"></i>
         </Button>
       </div>
       <div>
@@ -91,6 +91,7 @@ export default function Edit({ __state, service, myProfile }) {
             <Form.Group className="mb-3" controlId="name">
               <Form.Label>Service Name</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="text"
                 placeholder="Enter name"
                 {...register("name", {
@@ -104,8 +105,8 @@ export default function Edit({ __state, service, myProfile }) {
             </Form.Group>
 
             <div className="d-flex justify-content-end">
-              <Button className="shadow" type="submit">
-                Update Service
+              <Button className="shadow" type="submit" variant={"primary"}>
+                Update
               </Button>
             </div>
           </Form>

@@ -354,24 +354,50 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
           size="md"
           onClick={() => router.back()}
         >
-          <i className="fa-solid fa-arrow-left mr-2"></i>Back
+          <i className="fa-solid fa-arrow-left mr-2"></i>
         </Button>
-        <Button
-          variant="outline-primary"
-          size="md"
-          onClick={() => setViewRemarks(true)}
-        >
-          <i className="fa-solid fa-comment mr-2"></i>
-        </Button>
+        <div className="d-flex gap-2 border ">
+          <Button
+            title={"Send Email"}
+            variant={"primary"}
+            onClick={() => setOpenEmailDialog(true)}
+          >
+            <i className="fa-solid fa-envelope mr-2"></i>
+          </Button>
+          <Button
+            className="shadow"
+            variant={"primary"}
+            onClick={handleInvoice}
+            title={"Print Invoice"}
+            // disabled={receipt.issuesWithPrice.length < 1}
+          >
+            <i className="fa-solid fa-file-invoice mr-2 text-danger"></i>
+          </Button>
+          <Button
+            title={"Print Receipt"}
+            variant={"primary"}
+            className="shadow"
+            onClick={handlePrint}
+            // disabled={receipt.issuesWithPrice.length < 1}
+          >
+            <i className="fa-solid fa-print mr-2 text-primary"></i>
+          </Button>
+          <Button
+            title={"View Remarks"}
+            variant="outline-primary"
+            size="md"
+            onClick={() => setViewRemarks(true)}
+          >
+            <i className="fa-solid fa-comment mr-2 text-success"></i>
+          </Button>
+        </div>
       </div>
 
       <Row className="mb-3">
         {/* Customer Details Card */}
         <Col md={6} sm={12}>
           <Card className="shadow bg-light">
-            <Card.Header as="h5" className="bg-primary text-white">
-              Customer Details
-            </Card.Header>
+            <Card.Header as="h5">Customer Details</Card.Header>
             <Card.Body>
               <Card.Title>{receipt.customer.name}</Card.Title>
               <Card.Text>
@@ -394,9 +420,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
         {/* Service Details Card */}
         <Col md={6} sm={12}>
           <Card className="shadow bg-light">
-            <Card.Header as="h5" className="bg-primary text-white">
-              Service Details
-            </Card.Header>
+            <Card.Header as="h5">Service Details</Card.Header>
             <Card.Body className="fw-bold">
               <Card.Title className="m-2 ">
                 {receipt.repair.serviceTypeId.name}
@@ -425,6 +449,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
             <Form.Group className="mb-3">
               <Form.Label>Discount</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="number"
                 step={0.01}
                 placeholder="Enter Discount"
@@ -436,6 +461,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
             <Form.Group className="mb-3" controlId="expectedServiceCharge">
               <Form.Label>Service Charge</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 step={0.01}
                 type="number"
                 placeholder="Enter Expected Service Charge"
@@ -467,6 +493,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
                     onChange={() => handleCheckboxChange("cash")}
                   >
                     <Form.Check.Input
+                      className="rounded-pill"
                       type="checkbox"
                       value="cash"
                       name="paymentMethod"
@@ -478,6 +505,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
 
                   {selectedMethods.cash && (
                     <Form.Control
+                      className="rounded-pill"
                       type="number"
                       placeholder="Enter cash Amount"
                       required={selectedMethods.cash}
@@ -490,13 +518,13 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
                 </div>
                 <div>
                   <Form.Check
-                    className=""
                     type="checkbox"
                     aria-label="Card"
                     checked={selectedMethods.card}
                     onChange={() => handleCheckboxChange("card")}
                   >
                     <Form.Check.Input
+                      className="rounded-pill"
                       type="checkbox"
                       value="card"
                       name="paymentMethod"
@@ -508,6 +536,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
 
                   {selectedMethods.card && (
                     <Form.Control
+                      className="rounded-pill"
                       type="number"
                       placeholder="Enter Card Amount"
                       required={selectedMethods.card}
@@ -522,33 +551,15 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
             </Form.Group>
 
             <div className="d-flex justify-content-end gap-2">
-              <Button className="shadow" type="submit">
-                Submit receipt
+              <Button className="shadow" variant={"primary"} type="submit">
+                {__state.loading ? (
+                  <i className="fa fa-spinner fa-spin"></i>
+                ) : (
+                  "Save"
+                )}
               </Button>
             </div>
           </Form>
-
-          <div className="d-flex gap-2 ">
-            <Button variant="success" onClick={() => setOpenEmailDialog(true)}>
-              Send Email
-            </Button>
-            <Button
-              className="shadow"
-              variant={"primary"}
-              onClick={handleInvoice}
-              disabled={receipt.issuesWithPrice.length < 1}
-            >
-              Print Invoice
-            </Button>
-            <Button
-              className="shadow"
-              variant="warning"
-              onClick={handlePrint}
-              disabled={receipt.issuesWithPrice.length < 1}
-            >
-              Print Receipt
-            </Button>
-          </div>
 
           <div ref={componentRef}>
             <PrintPage data={receipt} />
@@ -608,6 +619,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
         </Modal>
 
         <Modal
+          scrollable
           show={viewRemarks}
           onHide={() => setViewRemarks(false)}
           centered

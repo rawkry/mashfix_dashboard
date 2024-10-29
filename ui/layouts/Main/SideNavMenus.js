@@ -37,7 +37,7 @@ function CustomToggle({ children, eventKey, index }) {
         <div
           className={`d-flex text-start justify-content-start align-items-center p-0 bg-zapp-gradient${
             index % 2 === 0 ? "-alt" : ""
-          } text-white rounded-0 border border-1 border-zapp`}
+          } font-zapp-bold   rounded-0 border border-1 border-zapp`}
         >
           {children}
           <i

@@ -150,7 +150,7 @@ export default function Index({
   return (
     <Main
       title={`Mashfix Users (${!fetched ? "" : total})`}
-      icon="fa-solid fa-useres"
+      icon="fa-solid fa-users-gear"
       profile={myProfile}
     >
       {!fetched ? (
@@ -166,7 +166,7 @@ export default function Index({
         </div>
       ) : (
         <>
-          <div className="d-flex justify-content-between">
+          {/* <div className="d-flex justify-content-between">
             <Form onSubmit={(e) => e.preventDefault()}>
               <Form.Group
                 className="d-flex align-items-center w-100 gap-5"
@@ -212,7 +212,7 @@ export default function Index({
                 <Limit limit={limit} />
               </div>
             </div>
-          </div>
+          </div> */}
 
           <Table responsive="xl" bordered striped className="shadow">
             <thead className="bg-secondary shadow">
@@ -265,21 +265,23 @@ export default function Index({
                     <td>
                       <ButtonGroup size="sm">
                         <Button
+                          variant="outline-primary"
+                          title={"Update User"}
                           size="sm"
-                          variant="warning"
                           as={Link}
                           href={`/users/${user._id}/update`}
                         >
-                          <i className="fas fa-pen me-1"></i> Edit
+                          <i className="fas fa-edit me-1 text-primary"></i>
                         </Button>
 
                         <Button
+                          title={"Update Password"}
                           size="sm"
-                          variant="success"
+                          variant="outline-primary"
                           as={Link}
                           href={`/users/${user._id}/update-password`}
                         >
-                          <i className="fas fa-key me-1"></i> Password
+                          <i className="fas fa-key me-1"></i>
                         </Button>
                       </ButtonGroup>
                     </td>

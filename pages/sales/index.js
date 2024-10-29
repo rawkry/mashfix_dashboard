@@ -168,13 +168,16 @@ export default function Index({
     >
       <Modal
         title={"Select Last Active Date Range"}
+        className="d-flex justify-content-center align-items-center p-4"
+        centered
         show={activemodalShow}
+        size="lg"
         onHide={() => {
           setActiveModalShow(false);
         }}
       >
         <DateRange dates={dates} setDates={setDates} />
-        <div className="d-flex justify-content-end gap-4 mt-4">
+        <div className="d-flex justify-content-end gap-4 m-2">
           <div>
             <Button
               onClick={() => {
@@ -200,16 +203,11 @@ export default function Index({
         </div>
       ) : (
         <>
-          <div className="d-flex justify-content-between align-items-center w-100">
-            <Form.Group
-              className="d-flex align-items-center gap-2"
-              style={{
-                marginBottom: "1rem",
-              }}
-            >
+          <div className="d-flex flex-wrap justify-content-between align-items-center w-100 ">
+            <Form.Group className="d-flex align-items-center gap-2 mb-3">
               <Form.Control
                 type="search"
-                placeholder=" name"
+                placeholder="Name"
                 defaultValue={router.query.name || ""}
                 onChange={debounce(
                   (e) =>
@@ -221,10 +219,11 @@ export default function Index({
                     ),
                   500
                 )}
+                className="rounded-pill"
               />
               <Form.Control
                 type="search"
-                placeholder=" phone"
+                placeholder="Phone"
                 defaultValue={router.query.phone || ""}
                 onChange={debounce(
                   (e) =>
@@ -236,47 +235,30 @@ export default function Index({
                     ),
                   500
                 )}
+                className="rounded-pill"
               />
               <FloatingLabel
                 controlId="floatingSelect"
                 label="Payment Method"
-                style={{
-                  width: "100%",
-                }}
+                className="w-100 rounded-pill"
               >
                 <select
-                  className="form-select form-select-sm"
+                  className="form-select form-select-xl"
                   defaultValue={router.query.paymentMethod || "All"}
                   onChange={(e) => {
                     const { value } = e.target;
-
+                    const query = { ...router.query };
                     if (value === "All") {
-                      const { paymentMethod, ...query } = router.query;
-                      router.push({
-                        pathname: router.pathname,
-                        query,
-                      });
-                      return;
+                      delete query.paymentMethod;
+                    } else {
+                      query.paymentMethod = value;
                     }
-
-                    router.push({
-                      pathname: router.pathname,
-                      query: {
-                        ...router.query,
-                        paymentMethod: value,
-                      },
-                    });
+                    router.push({ pathname: router.pathname, query });
                   }}
                 >
                   <option value="All">All</option>
                   {["cash", "card"].map((item, index) => (
-                    <option
-                      key={index}
-                      value={item}
-                      style={{
-                        width: "100%",
-                      }}
-                    >
+                    <option key={index} value={item}>
                       {item}
                     </option>
                   ))}
@@ -284,56 +266,39 @@ export default function Index({
               </FloatingLabel>
             </Form.Group>
 
-            <div className="d-flex gap-2 mb-2 align-items-center">
-              <div>
-                <Form.Group>
-                  <div className="d-flex align-items-center  justify-content-center">
-                    <div
-                      onClick={() => {
-                        setActiveModalShow(true);
-                      }}
-                      className="border-zapp-alt p-2 text-zapp hover"
-                    >
-                      <i className="fas fa-calendar-alt"></i>
-                      {router.query.fromDate && toTrend(router.query.fromDate)}
-                      <small className="font-zapp-bold "> - To - </small>
-                      <i className="fas fa-calendar-alt"></i>
-                      {router.query.toDate && toTrend(router.query.toDate)}
-                    </div>
-                    {(router.query.fromDate || router.query.toDate) && (
-                      <span
-                        className="m-2"
-                        onClick={() => {
-                          const { fromDate, toDate, ...query } = router.query;
-                          router.push({
-                            pathname: router.pathname,
-                            query: { ...query },
-                          });
-                        }}
-                      >
-                        <i className="fas fa-times-circle text-danger hover ">
-                          {" "}
-                        </i>
-                      </span>
-                    )}
-                  </div>
-                </Form.Group>
+            <div className="d-flex gap-2 align-items-center mb-3">
+              <div className="d-flex align-items-center">
+                <div
+                  onClick={() => setActiveModalShow(true)}
+                  className="border-zapp-alt p-2 text-zapp hover d-flex align-items-center"
+                >
+                  <i className="fas fa-calendar-alt"></i>
+                  {router.query.fromDate && toTrend(router.query.fromDate)}
+                  <small className="font-zapp-bold mx-1"> - To - </small>
+                  <i className="fas fa-calendar-alt"></i>
+                  {router.query.toDate && toTrend(router.query.toDate)}
+                </div>
+                {(router.query.fromDate || router.query.toDate) && (
+                  <span
+                    className="m-2 text-danger hover"
+                    onClick={() => {
+                      const { fromDate, toDate, ...query } = router.query;
+                      router.push({ pathname: router.pathname, query });
+                    }}
+                  >
+                    <i className="fas fa-times-circle"></i>
+                  </span>
+                )}
               </div>
 
-              <div>
-                <Limit limit={limit} />
-              </div>
               <Button
+                className="rounded-pill"
+                title={"Export to Excel"}
+                size="sm"
+                variant="outline-primary"
                 onClick={() => exportToExcel()}
-                className="shadow-sm rounded"
-                style={{
-                  border: "none ",
-                  marginLeft: "10px",
-                  padding: "10px 20px",
-                  color: "#c344ff",
-                }}
               >
-                <i className="fas fa-file-excel"></i> Export
+                <i className="fas fa-file-export text-primary "></i>
               </Button>
             </div>
           </div>
@@ -368,7 +333,7 @@ export default function Index({
                       </span>
                     </td>
 
-                    <td>{receipts.paymentMethod}</td>
+                    <td>{receipts.paymentMethod.join(", ")}</td>
                     <td>{receipts.servicetype.name}</td>
 
                     <td>$ {receipts.expectedServiceCharge}</td>
@@ -385,8 +350,12 @@ export default function Index({
                         <Link
                           href={`/repair/${receipts.repair._id}/view-receipt`}
                         >
-                          <Button size="sm">
-                            <i className="fas fa-eye me-1"></i> View
+                          <Button
+                            variant="outline-primary"
+                            size="sm"
+                            title={"View"}
+                          >
+                            <i className="fas fa-eye me-1"></i>
                           </Button>
                         </Link>
                       </ButtonGroup>
@@ -408,6 +377,7 @@ export default function Index({
             currentPage={currentPage}
             pages={pages}
           />
+          <Limit limit={limit} />
         </>
       )}
     </Main>

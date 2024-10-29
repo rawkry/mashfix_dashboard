@@ -161,15 +161,22 @@ export default function Index({
               </div>
             </div>
 
-            <div className=" flex bg-white p-2 rounded shadow-sm text-center ">
+            <div className=" flex bg-white p-2  text-center ">
               <Button onClick={() => setShowStats(!showStats)}>
-                <i className="fa-solid fa-eye hover"></i>
+                {showStats ? (
+                  <i className="fa-solid fa-eye hover"></i>
+                ) : (
+                  <i className="fa-solid fa-eye-slash hover"></i>
+                )}
               </Button>
             </div>
           </div>
 
           <div className="d-flex  align-items-center   gap-3 p-3 rounded text-dark m-2  ">
-            <div className="d-flex bg-white justify-content-between  p-2 rounded shadow-sm text-center flex-fill ">
+            <Link
+              href="/repair"
+              className="d-flex bg-white justify-content-between  p-2 rounded shadow-sm text-center flex-fill text-decoration-none"
+            >
               <div className="d-flex flex-column">
                 <h4>Repairs</h4>
                 <h2 className="text-success ">{repairTotal}</h2>
@@ -177,8 +184,11 @@ export default function Index({
               <div>
                 <i className="fa-solid fa-building fa-xl  "></i>
               </div>
-            </div>
-            <div className="d-flex bg-white justify-content-between  p-2 rounded shadow-sm text-center flex-fill ">
+            </Link>
+            <Link
+              href="/quotes?approved=no"
+              className="d-flex bg-white justify-content-between  p-2 rounded shadow-sm text-center flex-fill text-decoration-none"
+            >
               <div className="d-flex flex-column">
                 <h4>Quotes</h4>
                 <h2 className="text-success ">{quoteTotal}</h2>
@@ -186,8 +196,11 @@ export default function Index({
               <div>
                 <i className="fa-solid fa-message  fa-xl  "></i>
               </div>
-            </div>
-            <div className="d-flex bg-white justify-content-between  p-2 rounded shadow-sm text-center flex-fill ">
+            </Link>
+            <Link
+              href="/customers"
+              className="d-flex bg-white justify-content-between  p-2 rounded shadow-sm text-center flex-fill text-decoration-none"
+            >
               <div className="d-flex flex-column">
                 <h4>Customers</h4>
                 <h2 className="text-success ">{customerTotal}</h2>
@@ -195,7 +208,7 @@ export default function Index({
               <div>
                 <i className="fa-solid fa-users  fa-xl  "></i>
               </div>
-            </div>
+            </Link>
           </div>
           <Bar data={salesStats} />
         </div>
@@ -430,9 +443,9 @@ export default function Index({
         show={showLocker}
         onHide={() => (passwordCorrect ? setShowLocker(false) : null)} // Prevent closing if password is incorrect
         centered
-        size="lg"
+        size="md"
       >
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title>Enter Password</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -442,15 +455,14 @@ export default function Index({
               className="d-flex flex-column w-75"
             >
               <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label>Password</Form.Label>
                 <Form.Control
                   type="password"
-                  placeholder="Enter password"
+                  placeholder="password"
                   {...register("password", { required: true })}
                 />
               </Form.Group>
               <Button variant="primary" type="submit">
-                Submit
+                Enter
               </Button>
             </Form>
           </div>

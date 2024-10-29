@@ -101,8 +101,8 @@ export default function Add({ __state, myProfile, customer, roles, branch }) {
   });
   return (
     <Main
-      title={`Customer || Edit - ${customer.name} `}
-      icon="fa-solid fa-users"
+      title={`User || Edit - ${customer.name} `}
+      icon="fa-solid fa-users-gear"
       profile={myProfile}
     >
       <div className="container-fluid pb-3 ">
@@ -111,7 +111,7 @@ export default function Add({ __state, myProfile, customer, roles, branch }) {
           size="md"
           onClick={() => router.back()}
         >
-          <i className="fa-solid fa-arrow-left mr-2"></i>Back
+          <i className="fa-solid fa-arrow-left mr-2"></i>
         </Button>
       </div>
       <div>
@@ -185,8 +185,8 @@ export default function Add({ __state, myProfile, customer, roles, branch }) {
             </Form.Group>
 
             <div className="d-flex justify-content-end">
-              <Button className="shadow" type="submit">
-                Update Customer
+              <Button className="shadow" type="submit" variant={"primary"}>
+                Update
               </Button>
             </div>
           </Form>

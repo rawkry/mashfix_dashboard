@@ -83,7 +83,7 @@ export default function Add({ __state, roles, branch, myProfile }) {
   return (
     <Main
       title="User || Update Password "
-      icon="fa-solid fa-users"
+      icon="fa-solid fa-users-gear"
       profile={myProfile}
     >
       <div className="container-fluid pb-3 ">
@@ -92,7 +92,7 @@ export default function Add({ __state, roles, branch, myProfile }) {
           size="md"
           onClick={() => router.back()}
         >
-          <i className="fa-solid fa-arrow-left mr-2"></i>Back
+          <i className="fa-solid fa-arrow-left mr-2"></i>
         </Button>
       </div>
       <div>
@@ -101,6 +101,7 @@ export default function Add({ __state, roles, branch, myProfile }) {
             <Form.Group className="mb-3" controlId="Password">
               <Form.Label>Password</Form.Label>
               <Form.Control
+                className="rounded-pill"
                 type="text"
                 placeholder="Enter Password "
                 {...register("password", {
@@ -113,7 +114,7 @@ export default function Add({ __state, roles, branch, myProfile }) {
             </Form.Group>
 
             <div className="d-flex justify-content-end">
-              <Button className="shadow" type="submit">
+              <Button className="shadow" type="submit" variant="primary">
                 update
               </Button>
             </div>

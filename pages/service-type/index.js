@@ -132,7 +132,7 @@ export default function Index({
   return (
     <Main
       title={`Services (${!fetched ? "" : total})`}
-      icon="fa-solid fa-useres"
+      icon="fa-solid fa-hand-holding-heart"
       profile={myProfile}
     >
       {!fetched ? (
@@ -148,7 +148,7 @@ export default function Index({
         </div>
       ) : (
         <>
-          <div className="d-flex justify-content-between">
+          {/* <div className="d-flex justify-content-between">
             <Form onSubmit={(e) => e.preventDefault()}>
               <Form.Group
                 className="d-flex align-items-center w-100 gap-5"
@@ -211,6 +211,17 @@ export default function Index({
                 <Limit limit={limit} />
               </div>
             </div>
+          </div> */}
+          <div className="d-flex justify-content-end mb-3">
+            <Button
+              title={"Add Service Type"}
+              variant="primary"
+              as={Link}
+              href="/service-type/add"
+              className="btn btn-sm btn-primary"
+            >
+              <i className="fa-solid fa-plus"></i>
+            </Button>
           </div>
 
           <Table responsive="xl" bordered striped className="shadow">
@@ -249,13 +260,13 @@ export default function Index({
                     <td>
                       <ButtonGroup size="sm">
                         <Link href={`/service-type/show/${service._id}`}>
-                          <Button size="sm">
-                            <i className="fas fa-eye me-1"></i> View
+                          <Button size="sm" variant="outline-primary">
+                            <i className="fas fa-eye me-1"></i>
                           </Button>
                         </Link>
                         <Link href={`/service-type/edit/${service._id}`}>
-                          <Button size="sm" variant="info">
-                            <i className="fas fa-edit me-1"></i> Edit
+                          <Button size="sm" variant="outline-primary">
+                            <i className="fas fa-edit me-1 text-primary"></i>
                           </Button>
                         </Link>
 

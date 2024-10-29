@@ -48,6 +48,7 @@ export default function Add({ __state, myProfile, receipt }) {
   const router = useRouter();
   const [openEmailDialog, setOpenEmailDialog] = useState(false);
   const [pdf, setPdf] = useState(null);
+  const [viewRemarks, setViewRemarks] = useState(false);
   const [issuesWithPrice, setIssuesWithPrice] = useState(
     receipt.issuesWithPrice
   );
@@ -116,22 +117,64 @@ export default function Add({ __state, myProfile, receipt }) {
       icon="fa-solid fa-users"
       profile={myProfile}
     >
-      <div className="container-fluid pb-3 ">
+      <div className="container-fluid pb-3 d-flex justify-content-between">
         <Button
           variant="outline-primary"
           size="md"
           onClick={() => router.back()}
         >
-          <i className="fa-solid fa-arrow-left mr-2"></i>Back
+          <i className="fa-solid fa-arrow-left mr-2"></i>
         </Button>
+
+        <div className="d-flex gap-2 border ">
+          <Button
+            title={"Send Email"}
+            variant={"primary"}
+            onClick={() => setOpenEmailDialog(true)}
+          >
+            <i className="fa-solid fa-envelope mr-2"></i>
+          </Button>
+          <Button
+            className="shadow"
+            variant={"primary"}
+            onClick={handleInvoice}
+            title={"Print Invoice"}
+            // disabled={receipt.issuesWithPrice.length < 1}
+          >
+            <i className="fa-solid fa-file-invoice mr-2 text-danger"></i>
+          </Button>
+          <Button
+            title={"Print Receipt"}
+            variant={"primary"}
+            className="shadow"
+            onClick={handlePrint}
+            // disabled={receipt.issuesWithPrice.length < 1}
+          >
+            <i className="fa-solid fa-print mr-2 text-primary"></i>
+          </Button>
+          <Button
+            title={"View Remarks"}
+            variant="outline-primary"
+            size="md"
+            onClick={() => setViewRemarks(true)}
+          >
+            <i className="fa-solid fa-comment mr-2 text-success"></i>
+          </Button>
+          {shouldShowButton && (
+            <Link href={`/repair/${router.query.id}/edit-receipt`}>
+              <Badge title="Edit" as={Button} variant={"primary"}>
+                {" "}
+                <i className="fas fa-edit" />
+              </Badge>
+            </Link>
+          )}
+        </div>
       </div>
       <Row className=" mb-3">
         {/* Customer Details Card */}
         <Col md={6} sm={12}>
           <Card className="shadow bg-light">
-            <Card.Header as="h5" className="bg-primary text-white">
-              Customer Details
-            </Card.Header>
+            <Card.Header as="h5">Customer Details</Card.Header>
             <Card.Body>
               <Card.Title>{receipt.customer.name}</Card.Title>
               <Card.Text>
@@ -154,9 +197,7 @@ export default function Add({ __state, myProfile, receipt }) {
         {/* Service Details Card */}
         <Col md={6} sm={12}>
           <Card className="shadow bg-light">
-            <Card.Header as="h5" className="bg-primary text-white">
-              Service Details
-            </Card.Header>
+            <Card.Header as="h5">Service Details</Card.Header>
             <Card.Body className="fw-bold">
               <Card.Title className="m-2 ">
                 {receipt.repair.serviceTypeId.name}
@@ -209,6 +250,7 @@ export default function Add({ __state, myProfile, receipt }) {
             <Form.Label>Discount</Form.Label>
             <Form.Control
               readOnly
+              className="rounded-pill"
               type="text"
               placeholder="Enter Discount"
               {...register("discount")}
@@ -218,6 +260,7 @@ export default function Add({ __state, myProfile, receipt }) {
             <Form.Label>Service Charge</Form.Label>
             <Form.Control
               readOnly
+              className="rounded-pill"
               type="number"
               placeholder="Enter Expected Service Charge"
               {...register("expectedServiceCharge")}
@@ -230,6 +273,7 @@ export default function Add({ __state, myProfile, receipt }) {
             <Form.Label>Charge Paid</Form.Label>
             <Form.Control
               readOnly
+              className="rounded-pill"
               type="number"
               placeholder="Enter  Charge Paid"
               {...register("chargePaid")}
@@ -238,47 +282,12 @@ export default function Add({ __state, myProfile, receipt }) {
           <Form.Group className="mb-3" controlId="paymentMethod">
             <Form.Label>Payment Method</Form.Label>
             <Form.Control
+              className="rounded-pill"
               readOnly
               aria-label="Payment Method"
               {...register("paymentMethod")}
             />
           </Form.Group>
-
-          <div className="d-flex justify-content-between">
-            <div>
-              {shouldShowButton && (
-                <Link href={`/repair/${router.query.id}/edit-receipt`}>
-                  <Badge as={Button} variant={"warning"}>
-                    {" "}
-                    edit <i className="fas fa-pen" />
-                  </Badge>
-                </Link>
-              )}
-            </div>
-            <div className="d-flex gap-2">
-              <Button
-                variant="success"
-                onClick={() => setOpenEmailDialog(true)}
-              >
-                Send Email
-              </Button>
-              <Button
-                className="shadow"
-                variant={"primary"}
-                onClick={handleInvoice}
-                disabled={receipt.issuesWithPrice.length < 1}
-              >
-                Print Invoice
-              </Button>
-              <Button
-                className="shadow"
-                onClick={handlePrint}
-                disabled={receipt.issuesWithPrice.length < 1}
-              >
-                Print Receipt
-              </Button>
-            </div>
-          </div>
         </Card>
         <div ref={componentRef}>
           <PrintPage data={receipt} />
@@ -304,6 +313,49 @@ export default function Add({ __state, myProfile, receipt }) {
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={sendEmail}>Send Email</Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        scrollable
+        show={viewRemarks}
+        onHide={() => setViewRemarks(false)}
+        centered
+        size="xl"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Remarks</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>User</th>
+                <th>Description</th>
+                <th>Changes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {receipt.repair.remarks.map((remark, index) => (
+                <tr key={index}>
+                  <td>{remark.date}</td>
+                  <td>{remark.time}</td>
+                  <td>{remark.status}</td>
+                  <td>{remark.by}</td>
+                  <td>{remark.description}</td>
+                  <td>{remark.changes}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => setViewRemarks(false)}>
+            Close
+          </Button>
         </Modal.Footer>
       </Modal>
     </Main>

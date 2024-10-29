@@ -78,7 +78,7 @@ export default function Show({ __state, myProfile, repairs, customer }) {
           size="md"
           onClick={() => router.back()}
         >
-          <i className="fa-solid fa-arrow-left mr-2"></i>Back
+          <i className="fa-solid fa-arrow-left mr-2"></i>
         </Button>
       </div>
       <Table
@@ -145,43 +145,48 @@ export default function Show({ __state, myProfile, repairs, customer }) {
                 <td>
                   <ButtonGroup size="sm">
                     <Link href={`/repair/show/${repair._id}`}>
-                      <Button size="sm">
-                        <i className="fas fa-eye me-1"></i> View
+                      <Button
+                        size="sm"
+                        title={"View Details"}
+                        variant="outlined"
+                      >
+                        <i className="fas fa-eye me-1"></i>
                       </Button>
                     </Link>
 
                     <Button
+                      title={"Edit"}
                       size="sm"
-                      variant="warning"
+                      variant="outlined"
                       as={Link}
                       href={`/repair/edit/${repair._id}`}
                     >
-                      <i className="fas fa-pen me-1"></i> Edit
+                      <i className="fas fa-edit me-1 text-primary"></i>
                     </Button>
                     <Button
+                      title={"Edit Receipt"}
                       as={Link}
                       href={`/repair/${repair._id}/edit-receipt`}
                       size="sm"
-                      variant="success"
+                      variant="outlined"
                     >
                       <i
-                        className="fas fa-money-bill me-1
+                        className="fas fa-money-bill me-1 text-success
                           "
                       ></i>{" "}
-                      Cost Update
                     </Button>
 
                     <Button
+                      title={"View Receipt"}
                       size="sm"
-                      variant="danger"
+                      variant="outlined"
                       as={Link}
                       href={`/repair/${repair._id}/view-receipt`}
                     >
                       <i
-                        className="fas fa-print me-1
+                        className="fas fa-print me-1 text-danger
                           "
                       ></i>{" "}
-                      View Receipt
                     </Button>
                   </ButtonGroup>
                 </td>
