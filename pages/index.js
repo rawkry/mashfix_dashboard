@@ -1,5 +1,4 @@
 import {
-  Button,
   ButtonGroup,
   Card,
   FloatingLabel,
@@ -18,6 +17,7 @@ import { IsoDateString, toHuman } from "@/helpers/clients";
 import { Bar } from "@/reuseables";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { Button } from "@/ui";
 
 // const { url_one, url_two, headers } = JSON.parse(
 //   process.env.NEXT_PUBLIC_BUSINESS_INTERNAL_BASE_SERVICE
@@ -73,29 +73,10 @@ export default function Index({
   stats,
   salesStats,
 }) {
-  const dashboardShortcuts = [
-    {
-      name: "Customers",
-      link: "/customers",
-      icon: "fa-solid fa-users",
-      total: customerTotal,
-    },
-    {
-      name: "Quotes",
-      link: "/quotes?approved=no",
-      icon: "fas fa-message",
-      total: quoteTotal,
-    },
-    {
-      name: "Repairs",
-      link: "/repair",
-      icon: "fa-solid fa-building",
-      total: repairTotal,
-    },
-  ];
   const [showStats, setShowStats] = useState(false);
-  const [showLocker, setShowLocker] = useState(true);
+  const [showLocker, setShowLocker] = useState(false);
   const [passwordCorrect, setPasswordCorrect] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const {
     register,
     handleSubmit,
@@ -105,17 +86,28 @@ export default function Index({
   const onSubmit = async (data) => {
     if (data.password !== "4744") {
       toast.error("Wrong password");
-      return; // Keep the modal open
+      return;
+    }
+
+    if (data.rememberMe) {
+      localStorage.setItem("rememberCode", true);
+      setRememberMe(true);
     }
 
     setPasswordCorrect(true);
-    setShowLocker(false); // Close modal only if password is correct
-    setShowStats(data.showStats); // Assuming showStats comes from the form data
+    setShowLocker(false);
+    setShowStats(data.showStats);
   };
 
   useEffect(() => {
-    // Example of ensuring that this runs on the client only
-    setShowLocker(true); // or some logic to determine if the modal should be shown
+    const rememberCode = localStorage.getItem("rememberCode");
+    if (rememberCode === "true") {
+      setShowLocker(false);
+      setRememberMe(true);
+    } else {
+      setShowLocker(true);
+      setRememberMe(false);
+    }
   }, []);
 
   return (
@@ -161,14 +153,34 @@ export default function Index({
               </div>
             </div>
 
-            <div className=" flex bg-white p-2  text-center ">
-              <Button onClick={() => setShowStats(!showStats)}>
+            <div className=" d-flex bg-white p-2  gap-2 rounded shadow-sm text-center">
+              <Button
+                title="Show stats"
+                size={"sm"}
+                onClick={() => setShowStats(!showStats)}
+                variant="link"
+              >
                 {showStats ? (
                   <i className="fa-solid fa-eye hover"></i>
                 ) : (
                   <i className="fa-solid fa-eye-slash hover"></i>
                 )}
               </Button>
+              {rememberMe && (
+                <Button
+                  variant="link"
+                  size={"sm"}
+                  title="Disable remember code"
+                  className="ml-2"
+                  onClick={() => {
+                    localStorage.removeItem("rememberCode");
+                    setRememberMe(false);
+                    toast.success("Remember code disabled");
+                  }}
+                >
+                  <i className="fa-solid fa-lock hover text-primary"></i>
+                </Button>
+              )}
             </div>
           </div>
 
@@ -441,7 +453,7 @@ export default function Index({
       </div>
       <Modal
         show={showLocker}
-        onHide={() => (passwordCorrect ? setShowLocker(false) : null)} // Prevent closing if password is incorrect
+        onHide={() => (passwordCorrect ? setShowLocker(false) : null)}
         centered
         size="md"
       >
@@ -461,6 +473,11 @@ export default function Index({
                   {...register("password", { required: true })}
                 />
               </Form.Group>
+              <Form.Check
+                type="checkbox"
+                label="remember me"
+                {...register("rememberMe")}
+              />
               <Button variant="primary" type="submit">
                 Enter
               </Button>
