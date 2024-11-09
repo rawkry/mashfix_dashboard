@@ -7,17 +7,18 @@ import {
   Row,
   Table,
 } from "react-bootstrap";
-
+import { useRouter } from "next/router";
 import { Main } from "@/layouts";
 import getMyProfile from "@/helpers/server/getMyProfile";
 import Link from "next/link";
 import { callFetch } from "@/helpers/server";
 import { useEffect, useState } from "react";
-import { IsoDateString, toHuman } from "@/helpers/clients";
+import { IsoDateString, isoDate, toHuman, toTrend } from "@/helpers/clients";
 import { Bar } from "@/reuseables";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Button } from "@/ui";
+import { DateRange } from "@/components";
 
 // const { url_one, url_two, headers } = JSON.parse(
 //   process.env.NEXT_PUBLIC_BUSINESS_INTERNAL_BASE_SERVICE
@@ -31,7 +32,8 @@ export async function getServerSideProps(context) {
     [customer_status, { customers, total: customerTotal }],
     [stats_status, stats],
     [receipt_status, { receipts }],
-    [salesStats_status, salesStats],
+    [salesStats_status, { totalSum, result: salesStats }],
+    // [salesStats_status, salesStats],
   ] = await Promise.all([
     callFetch(context, `/repairs?limit=5`, "GET"),
     callFetch(context, `/quotes?limit=5&approved=no`, "GET"),
@@ -41,8 +43,8 @@ export async function getServerSideProps(context) {
     callFetch(
       context,
       `/stats/sales?fromDate=${IsoDateString(
-        new Date().setDate(1)
-      )}&toDate=${IsoDateString(new Date())} `,
+        context.query.fromDate || new Date().setDate(1)
+      )}&toDate=${context.query.toDate || IsoDateString(new Date())} `,
       "GET"
     ),
   ]);
@@ -57,6 +59,7 @@ export async function getServerSideProps(context) {
       quoteTotal,
       customerTotal,
       myProfile,
+      totalSum,
       salesStats,
     },
   };
@@ -70,13 +73,21 @@ export default function Index({
   quoteTotal,
   repairTotal,
   customerTotal,
+  totalSum,
   stats,
   salesStats,
 }) {
+  const router = useRouter();
+  const [activemodalShow, setActiveModalShow] = useState(false);
+  console.log(totalSum);
   const [showStats, setShowStats] = useState(false);
   const [showLocker, setShowLocker] = useState(false);
   const [passwordCorrect, setPasswordCorrect] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [dates, setDates] = useState({
+    from_date: new Date(),
+    to_date: new Date(),
+  });
   const {
     register,
     handleSubmit,
@@ -98,7 +109,23 @@ export default function Index({
     setShowLocker(false);
     setShowStats(data.showStats);
   };
+  const handleDateChange = (startDate, endDate) => {
+    if (startDate === null || endDate === null) {
+      return;
+    }
+    const from_date = isoDate(startDate);
+    const to_date = isoDate(endDate);
 
+    const { ...query } = router.query;
+    router.push({
+      pathname: router.pathname,
+      query: {
+        ...query,
+        fromDate: from_date,
+        toDate: to_date,
+      },
+    });
+  };
   useEffect(() => {
     const rememberCode = localStorage.getItem("rememberCode");
     if (rememberCode === "true") {
@@ -118,7 +145,7 @@ export default function Index({
             <div className=" d-flex bg-white justify-content-between p-2 rounded shadow-sm text-center flex-fill ">
               <div className="d-flex flex-column">
                 <h4>Discount</h4>{" "}
-                <h2 className="text-warning">
+                <h2 className="text-danger">
                   $ {showStats ? stats.totalDiscount : "***"}
                 </h2>
               </div>
@@ -144,7 +171,7 @@ export default function Index({
             <div className=" d-flex bg-white justify-content-between   p-2 rounded shadow-sm text-center flex-fill ">
               <div className="d-flex flex-column">
                 <h4>Issue Price</h4>{" "}
-                <h2 className="text-success">
+                <h2 className="text-primary">
                   $ {showStats ? stats.totalIssuesPrice : "***"}{" "}
                 </h2>
               </div>
@@ -222,7 +249,54 @@ export default function Index({
               </div>
             </Link>
           </div>
-          <Bar data={salesStats} />
+          <div className="d-flex align-items-center justify-content-end mb-2">
+            <div
+              onClick={() => setActiveModalShow(true)}
+              className="border-zapp-alt p-2 text-zapp hover d-flex align-items-center"
+            >
+              <i className="fas fa-calendar-alt"></i>
+              {router.query.fromDate && toTrend(router.query.fromDate)}
+              <small className="font-zapp-bold mx-1"> - To - </small>
+              <i className="fas fa-calendar-alt"></i>
+              {router.query.toDate && toTrend(router.query.toDate)}
+            </div>
+            {(router.query.fromDate || router.query.toDate) && (
+              <span
+                className="m-2 text-danger hover"
+                onClick={() => {
+                  const { fromDate, toDate, ...query } = router.query;
+                  router.push({ pathname: router.pathname, query });
+                }}
+              >
+                <i className="fas fa-times-circle"></i>
+              </span>
+            )}
+          </div>
+          <Modal
+            title={"Select Last Active Date Range"}
+            className="d-flex justify-content-center align-items-center p-4"
+            centered
+            show={activemodalShow}
+            size="lg"
+            onHide={() => {
+              setActiveModalShow(false);
+            }}
+          >
+            <DateRange dates={dates} setDates={setDates} />
+            <div className="d-flex justify-content-end gap-4 m-2">
+              <div>
+                <Button
+                  onClick={() => {
+                    handleDateChange(dates.from_date, dates.to_date);
+                    setActiveModalShow(false);
+                  }}
+                >
+                  Ok
+                </Button>
+              </div>
+            </div>
+          </Modal>
+          <Bar data={salesStats} overallSales={totalSum} />
         </div>
       ) : null}
       <Card>
@@ -294,8 +368,8 @@ export default function Index({
                     <td>
                       <ButtonGroup size="sm">
                         <Link href={`/quotes/show/${project_inquiry._id}`}>
-                          <Button size="sm">
-                            <i className="fas fa-eye me-1"></i> View
+                          <Button size="sm" title={"View"} variant="outlined">
+                            <i className="fas fa-eye me-1"></i>
                           </Button>
                         </Link>
 
