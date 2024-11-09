@@ -15,7 +15,7 @@ function Bar({ data: sampleData, overallSales }) {
         type: "bar",
         stacked: true,
         background: "transparent",
-        toolbar: { show: false },
+        toolbar: { show: true },
       },
       colors: ["#7367F0", "#FF5733", "#28C76F", "#FF9F43"],
       dataLabels: { enabled: false },
@@ -23,7 +23,7 @@ function Bar({ data: sampleData, overallSales }) {
       grid: {
         borderColor: "#EBEBEB",
         strokeDashArray: 2,
-        xaxis: { lines: { show: false } },
+        xaxis: { lines: { show: true } },
         yaxis: { lines: { show: true } },
       },
       legend: { show: true },
@@ -33,7 +33,7 @@ function Bar({ data: sampleData, overallSales }) {
       xaxis: {
         axisBorder: { color: "#EBEBEB", show: true },
         axisTicks: { color: "#EBEBEB", show: true },
-        categories: chartData.categories,
+        // categories: sampleData.map((d) => d.date.split("-")[2]),
         labels: { offsetY: 5, style: { colors: "#9E9E9E" } },
       },
       yaxis: {

@@ -63,7 +63,6 @@ export default function Index({
   const router = useRouter();
 
   const [repair, setrepair] = useState(repairFromServer);
-  console.log(repair);
   const [viewRemarks, setViewRemarks] = useState({
     remarks: null,
     show: false,
