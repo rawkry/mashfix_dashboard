@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card } from "react-bootstrap";
+import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import dynamic from "next/dynamic";
 import { toHuman } from "@/helpers/clients";
 
@@ -8,16 +8,16 @@ const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 // Transform data for the chart
 
-function Bar({ data: sampleData }) {
+function Bar({ data: sampleData, overallSales }) {
   function useChartOptions() {
     return {
       chart: {
         type: "bar",
-        stacked: true, // Enable stacking
+        stacked: true,
         background: "transparent",
         toolbar: { show: false },
       },
-      colors: ["#7367F0", "#FF5733", "#28C76F", "#FF9F43"], // Customize colors for each series
+      colors: ["#7367F0", "#FF5733", "#28C76F", "#FF9F43"],
       dataLabels: { enabled: false },
       fill: { opacity: 1, type: "solid" },
       grid: {
@@ -27,7 +27,7 @@ function Bar({ data: sampleData }) {
         yaxis: { lines: { show: true } },
       },
       legend: { show: true },
-      plotOptions: { bar: { columnWidth: "40px", horizontal: false } }, // Ensure vertical bars
+      plotOptions: { bar: { columnWidth: "40px", horizontal: false } },
       stroke: { colors: ["transparent"], show: true, width: 1 },
       theme: { mode: "light" },
       xaxis: {
@@ -68,25 +68,69 @@ function Bar({ data: sampleData }) {
   const chartOptions = useChartOptions(sampleData);
 
   return (
-    <Card className="mb-4">
-      <Card.Header
-        action={
-          <Button color="inherit" size="small">
-            Sync
-          </Button>
-        }
-        title="Sales"
-      />
-      <Card.Body>
-        <Chart
-          height={350}
-          options={chartOptions}
-          series={chartData.series}
-          type="bar"
-          width="100%"
+    <Container className="mb-4">
+      <Row className="mb-3">
+        <Col>
+          <Card className="shadow-sm border-0 rounded-lg">
+            <Card.Body className="text-center p-4">
+              <h3 className="text-dark mb-3">Monthly Sales Summary</h3>
+              <Row>
+                <Col sm={6} md={3}>
+                  <Card className="shadow border-0 rounded-lg p-3">
+                    <Card.Body>
+                      <h5 className="text-muted">Total Issues Price</h5>
+                      <h4 className="font-weight-bold text-primary">
+                        $ {overallSales.totalIssuesPrice}
+                      </h4>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col sm={6} md={3}>
+                  <Card className="shadow border-0 rounded-lg p-3">
+                    <Card.Body>
+                      <h5 className="text-muted">Total Discount</h5>
+                      <h4 className="font-weight-bold text-danger">
+                        $ {overallSales.totalDiscount}
+                      </h4>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col sm={6} md={3}>
+                  <Card className="shadow border-0 rounded-lg p-3">
+                    <Card.Body>
+                      <h5 className="text-muted">Total Service Charge</h5>
+                      <h4 className="font-weight-bold text-success">
+                        $ {overallSales.totalExpectedServiceCharge}
+                      </h4>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      <Card className="shadow-sm border-0 rounded-lg">
+        <Card.Header
+          action={
+            <Button variant="outline-primary" size="sm">
+              Sync
+            </Button>
+          }
+          title="Sales Breakdown"
         />
-      </Card.Body>
-    </Card>
+        <Card.Body>
+          <Chart
+            height={350}
+            options={chartOptions}
+            series={chartData.series}
+            type="bar"
+            width="100%"
+          />
+        </Card.Body>
+      </Card>
+    </Container>
   );
 }
 
