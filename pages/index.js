@@ -36,7 +36,7 @@ export async function getServerSideProps(context) {
     // [salesStats_status, salesStats],
   ] = await Promise.all([
     callFetch(context, `/repairs?limit=5`, "GET"),
-    callFetch(context, `/quotes?limit=5&approved=no`, "GET"),
+    callFetch(context, `/quotes?limit=5`, "GET"),
     callFetch(context, `/customers`, "GET"),
     callFetch(context, `/receipts/stats`, "GET"),
     callFetch(context, `/receipts?limit=5`, "GET"),
@@ -79,7 +79,6 @@ export default function Index({
 }) {
   const router = useRouter();
   const [activemodalShow, setActiveModalShow] = useState(false);
-  console.log(totalSum);
   const [showStats, setShowStats] = useState(false);
   const [showLocker, setShowLocker] = useState(false);
   const [passwordCorrect, setPasswordCorrect] = useState(false);
@@ -171,7 +170,7 @@ export default function Index({
             <div className=" d-flex bg-white justify-content-between   p-2 rounded shadow-sm text-center flex-fill ">
               <div className="d-flex flex-column">
                 <h4>Issue Price</h4>{" "}
-                <h2 className="text-primary">
+                <h2 className="text-danger">
                   $ {showStats ? stats.totalIssuesPrice : "***"}{" "}
                 </h2>
               </div>

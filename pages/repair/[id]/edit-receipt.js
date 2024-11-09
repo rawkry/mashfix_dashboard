@@ -139,7 +139,6 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
         })
       );
 
-      console.log("dirty", dirty);
       setChanges(dirty);
       const paymentMethod = Object.keys(selectedMethods).filter(
         (key) => selectedMethods[key]
@@ -256,10 +255,6 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
 
   function checkDirtyValues(prev, current) {
     const dirty = {};
-    console.log({
-      prev,
-      current,
-    });
 
     const checkArrayChanges = (prevArray, currentArray, key) => {
       const changes = [];
