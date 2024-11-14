@@ -323,6 +323,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
     discount: receipt.discount,
     chargePaid: receipt.chargePaid,
     expectedServiceCharge: receipt.expectedServiceCharge,
+    actualCost: receipt.actualCost,
     issuesWithPrice: receipt.issuesWithPrice.map((issue) => ({
       description: issue.description,
       price: issue.price,
@@ -468,15 +469,15 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
                 <span className="text-danger">Provide Service Charge</span>
               )}
             </Form.Group>
-            {/* <Form.Group className="mb-3" controlId="charger_paid">
-              <Form.Label>Charge Paid</Form.Label>
+            <Form.Group className="mb-3" controlId="actuakCost">
+              <Form.Label>COGS</Form.Label>
               <Form.Control
                 step={0.01}
                 type="number"
-                placeholder="Enter  Charge Paid"
-                {...register("chargePaid")}
+                placeholder="Enter COGS"
+                {...register("actualCost", { valueAsNumber: true })}
               />
-            </Form.Group> */}
+            </Form.Group>
             <Form.Group className="mb-3" controlId="paymentMethod">
               <Form.Label>Payment Method</Form.Label>
               <div className="d-flex gap-5">
