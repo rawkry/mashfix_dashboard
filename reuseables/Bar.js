@@ -80,7 +80,7 @@ function Bar({ data: sampleData, overallSales }) {
                     <Card.Body>
                       <h5 className="text-muted">Total Issues Price</h5>
                       <h4 className="font-weight-bold text-primary">
-                        $ {overallSales.totalIssuesPrice}
+                        $ {parseFloat(overallSales.totalIssuesPrice).toFixed(2)}{" "}
                       </h4>
                     </Card.Body>
                   </Card>
@@ -90,7 +90,7 @@ function Bar({ data: sampleData, overallSales }) {
                     <Card.Body>
                       <h5 className="text-muted">Total Discount</h5>
                       <h4 className="font-weight-bold text-danger">
-                        $ {overallSales.totalDiscount}
+                        $ {parseFloat(overallSales.totalDiscount).toFixed(2)}
                       </h4>
                     </Card.Body>
                   </Card>
@@ -100,7 +100,10 @@ function Bar({ data: sampleData, overallSales }) {
                     <Card.Body>
                       <h5 className="text-muted">Total Service Charge</h5>
                       <h4 className="font-weight-bold text-success">
-                        $ {overallSales.totalExpectedServiceCharge}
+                        ${" "}
+                        {parseFloat(
+                          overallSales.totalExpectedServiceCharge
+                        ).toFixed(2)}
                       </h4>
                     </Card.Body>
                   </Card>
