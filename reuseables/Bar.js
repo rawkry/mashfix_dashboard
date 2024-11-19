@@ -8,7 +8,7 @@ const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 // Transform data for the chart
 
-function Bar({ data: sampleData, overallSales }) {
+function Bar({ data: sampleData, overallSales, showStats }) {
   function useChartOptions() {
     return {
       chart: {
@@ -80,7 +80,10 @@ function Bar({ data: sampleData, overallSales }) {
                     <Card.Body>
                       <h5 className="text-muted">Total Issues Price</h5>
                       <h4 className="font-weight-bold text-primary">
-                        $ {parseFloat(overallSales.totalIssuesPrice).toFixed(2)}{" "}
+                        ${" "}
+                        {showStats
+                          ? parseFloat(overallSales.totalIssuesPrice).toFixed(2)
+                          : "***"}{" "}
                       </h4>
                     </Card.Body>
                   </Card>
@@ -90,7 +93,10 @@ function Bar({ data: sampleData, overallSales }) {
                     <Card.Body>
                       <h5 className="text-muted">Total Discount</h5>
                       <h4 className="font-weight-bold text-danger">
-                        $ {parseFloat(overallSales.totalDiscount).toFixed(2)}
+                        ${" "}
+                        {showStats
+                          ? parseFloat(overallSales.totalDiscount).toFixed(2)
+                          : "***"}
                       </h4>
                     </Card.Body>
                   </Card>
@@ -101,9 +107,11 @@ function Bar({ data: sampleData, overallSales }) {
                       <h5 className="text-muted">Total Service Charge</h5>
                       <h4 className="font-weight-bold text-success">
                         ${" "}
-                        {parseFloat(
-                          overallSales.totalExpectedServiceCharge
-                        ).toFixed(2)}
+                        {showStats
+                          ? parseFloat(
+                              overallSales.totalExpectedServiceCharge
+                            ).toFixed(2)
+                          : "***"}
                       </h4>
                     </Card.Body>
                   </Card>

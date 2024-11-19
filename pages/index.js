@@ -295,7 +295,11 @@ export default function Index({
               </div>
             </div>
           </Modal>
-          <Bar data={salesStats} overallSales={totalSum} />
+          <Bar
+            data={salesStats}
+            overallSales={totalSum}
+            showStats={showStats}
+          />
         </div>
       ) : null}
       <Card>
