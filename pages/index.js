@@ -186,7 +186,7 @@ export default function Index({
                 </h2>
               </div>
               <div>
-                <i className="fa-solid fa-coins fa-xl"></i>
+                <i className="fa-solid fa-circle-dollar-to-slot fa-xl"></i>
               </div>
             </div>
 
