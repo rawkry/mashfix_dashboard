@@ -1,7 +1,11 @@
 import { Button } from "@/ui";
 import { Card, Col, Form, Row } from "react-bootstrap";
 
-function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
+function IssuesFormFields({
+  setIssuesWithPrice,
+  issuesWithPrice,
+  withCostPrice = false,
+}) {
   const handleAddIssues = () => {
     const newKey = Math.floor(Math.random() * 16777215).toString(16);
     setIssuesWithPrice((prev) => ({
@@ -11,6 +15,7 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
         quantity: "",
         rate: "",
         price: "",
+        actualPrice: "",
       },
     }));
   };
@@ -61,7 +66,6 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
     ) * 0.0825
   ).toFixed(2);
 
-  // Calculate Grand Total
   const grandTotal = (parseFloat(total) + parseFloat(tax)).toFixed(2);
 
   return (
@@ -74,6 +78,7 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
               <Col md={3}>
                 <Form.Label>Description</Form.Label>
                 <Form.Control
+                  readOnly={withCostPrice}
                   className="rounded-pill"
                   required
                   type="text"
@@ -88,6 +93,7 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
               <Col md={2}>
                 <Form.Label>Quantity</Form.Label>
                 <Form.Control
+                  readOnly={withCostPrice}
                   type="number"
                   className="rounded-pill"
                   placeholder="Enter quantity"
@@ -101,6 +107,7 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
               <Col md={2}>
                 <Form.Label>Rate</Form.Label>
                 <Form.Control
+                  readOnly={withCostPrice}
                   className="rounded-pill"
                   type="number"
                   placeholder="Enter quantity"
@@ -114,26 +121,50 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
               <Col md={2}>
                 <Form.Label>Amount</Form.Label>
                 <Form.Control
+                  readOnly={withCostPrice}
                   className="rounded-pill"
                   type="number"
                   placeholder="Enter price"
                   defaultValue={issue.price}
                 />
               </Col>
-              <Col
-                md={1}
-                className="text-end d-flex justify-content-center align-items-center"
-              >
-                <Button
-                  variant="waring"
-                  size="sm"
-                  className="d-inline-block rounded"
-                  onClick={() => handleRemoveIssue(key)}
+              {withCostPrice && (
+                <Col md={2}>
+                  <Form.Label>Actual Price</Form.Label>
+                  <Form.Control
+                    className="rounded-pill"
+                    type="number"
+                    placeholder="Enter price"
+                    value={issue.actualPrice}
+                    onChange={(e) => {
+                      handleChange(key, "actualPrice", e.target.value.trim());
+                    }}
+                  />
+                </Col>
+              )}
+
+              {!withCostPrice && (
+                <Col
+                  md={1}
+                  className="text-end d-flex justify-content-center align-items-center"
                 >
-                  <i className="fas fa-times text-danger" />
-                </Button>
-              </Col>
+                  <Button
+                    variant="waring"
+                    size="sm"
+                    className="d-inline-block rounded"
+                    onClick={() => handleRemoveIssue(key)}
+                  >
+                    <i className="fas fa-times text-danger" />
+                  </Button>
+                </Col>
+              )}
             </Row>
+            <div
+              class="bg-zapp-gradient mb-4 mb-sm-5"
+              style={{
+                height: "1px",
+              }}
+            ></div>
           </div>
         ))}
 
@@ -141,28 +172,33 @@ function IssuesFormFields({ setIssuesWithPrice, issuesWithPrice }) {
           <p className="text-muted">- No issues added yet -</p>
         )}
       </fieldset>
-      <div className="d-flex justify-content-between align-items-center">
-        <Button
-          variant="primary"
-          className="shadow"
-          onClick={handleAddIssues}
-          disabled={Object.values(issuesWithPrice).some(
-            (issue) =>
-              !issue.description || issue.price === "" || issue.quantity === ""
-          )}
-        >
-          Add {Object.keys(issuesWithPrice).length === 0 ? "First" : "Another"}{" "}
-          Issue
-        </Button>
+      {!withCostPrice && (
+        <div className="d-flex justify-content-between align-items-center">
+          <Button
+            variant="primary"
+            className="shadow"
+            onClick={handleAddIssues}
+            disabled={Object.values(issuesWithPrice).some(
+              (issue) =>
+                !issue.description ||
+                issue.price === "" ||
+                issue.quantity === ""
+            )}
+          >
+            Add{" "}
+            {Object.keys(issuesWithPrice).length === 0 ? "First" : "Another"}{" "}
+            Issue
+          </Button>
 
-        <div>
-          <Card.Text className="text-muted">Total: ${total}</Card.Text>
-          <Card.Text className="text-muted">Tax (8.25%): ${tax}</Card.Text>
-          <Card.Text className="text-muted">
-            Grand Total: ${grandTotal}
-          </Card.Text>
+          <div>
+            <Card.Text className="text-muted">Total: ${total}</Card.Text>
+            <Card.Text className="text-muted">Tax (8.25%): ${tax}</Card.Text>
+            <Card.Text className="text-muted">
+              Grand Total: ${grandTotal}
+            </Card.Text>
+          </div>
         </div>
-      </div>
+      )}
     </Form.Group>
   );
 }

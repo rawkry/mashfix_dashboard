@@ -19,6 +19,7 @@ import { useReactToPrint } from "react-to-print";
 import { PrintInvoice, PrintPage } from "@/components";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { IssuesFormFields } from "@/reuseables";
 
 export async function getServerSideProps(context) {
   try {
@@ -52,6 +53,7 @@ export default function Add({ __state, myProfile, receipt }) {
   const [issuesWithPrice, setIssuesWithPrice] = useState(
     receipt.issuesWithPrice
   );
+  const [updateCostPrice, setUpdateCostPrice] = useState(false);
 
   const componentRef = useRef(null);
   const handlePrint = useReactToPrint({
@@ -111,65 +113,122 @@ export default function Add({ __state, myProfile, receipt }) {
   } = useForm({
     defaultValues,
   });
+
+  const updateCost = async () => {
+    try {
+      __state.loading = true;
+      const issueswithprice = Object.entries(issuesWithPrice).map(
+        ([key, issue]) => ({
+          description: issue.description,
+          quantity: issue.quantity,
+          rate: issue.rate,
+          price: issue.price,
+          actualPrice: parseFloat(issue.actualPrice).toFixed(2),
+        })
+      );
+      const obj = {
+        ...receipt,
+        issuesWithPrice: issueswithprice,
+      };
+
+      const response = await fetch(`/api`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          path: `/receipts/${receipt._id}`,
+          method: "PUT",
+          body: obj,
+        }),
+      });
+      const json = response.json();
+      if (!response.ok) {
+        toast.error(json.message);
+      }
+      toast.success("Receipt has been successfully updated");
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      __state.loading = false;
+    }
+  };
   return (
     <Main
       title={`Receipt : ${receipt.customer.name} `}
       icon="fa-solid fa-users"
       profile={myProfile}
     >
-      <div className="container-fluid pb-3 d-flex justify-content-between">
+      <div className="container-fluid pb-3 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+        {/* Back Button */}
         <Button
           variant="outline-primary"
           size="md"
           onClick={() => router.back()}
+          className="order-2 order-md-1"
         >
           <i className="fa-solid fa-arrow-left mr-2"></i>
         </Button>
 
-        <div className="d-flex gap-2 border ">
+        {/* Action Buttons */}
+        <div className="d-flex flex-wrap justify-content-center gap-2 border p-2 rounded order-1 order-md-2">
           <Button
             title={"Send Email"}
             variant={"primary"}
             onClick={() => setOpenEmailDialog(true)}
+            className="btn-sm"
           >
             <i className="fa-solid fa-envelope mr-2"></i>
           </Button>
           <Button
-            className="shadow"
+            className="shadow btn-sm"
             variant={"primary"}
             onClick={handleInvoice}
             title={"Print Invoice"}
-            // disabled={receipt.issuesWithPrice.length < 1}
           >
             <i className="fa-solid fa-file-invoice mr-2 text-danger"></i>
           </Button>
           <Button
             title={"Print Receipt"}
             variant={"primary"}
-            className="shadow"
+            className="shadow btn-sm"
             onClick={handlePrint}
-            // disabled={receipt.issuesWithPrice.length < 1}
           >
             <i className="fa-solid fa-print mr-2 text-primary"></i>
           </Button>
           <Button
             title={"View Remarks"}
             variant="outline-primary"
-            size="md"
+            size="sm"
             onClick={() => setViewRemarks(true)}
+            className="btn-sm"
           >
             <i className="fa-solid fa-comment mr-2 text-success"></i>
           </Button>
           {shouldShowButton && (
             <Link href={`/repair/${router.query.id}/edit-receipt`}>
-              <Badge title="Edit" as={Button} variant={"primary"}>
-                {" "}
+              <Badge
+                title="Edit"
+                as={Button}
+                variant={"primary"}
+                className="btn-sm"
+              >
                 <i className="fas fa-edit" />
               </Badge>
             </Link>
           )}
+          <Button
+            title={"Update Cost Price"}
+            variant="outline-primary"
+            size="sm"
+            onClick={() => setUpdateCostPrice(true)}
+            className="btn-sm"
+          >
+            <i className="fa-solid fa-thumbtack mr-2 text-warning"></i>
+          </Button>
         </div>
       </div>
+
       <Row className=" mb-3">
         {/* Customer Details Card */}
         <Col md={6} sm={12}>
@@ -355,6 +414,30 @@ export default function Add({ __state, myProfile, receipt }) {
         <Modal.Footer>
           <Button variant="primary" onClick={() => setViewRemarks(false)}>
             Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        scrollable
+        show={updateCostPrice}
+        onHide={() => setUpdateCostPrice(false)}
+        centered
+        size="xl"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Update Cost Price</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <IssuesFormFields
+            setIssuesWithPrice={setIssuesWithPrice}
+            issuesWithPrice={issuesWithPrice}
+            withCostPrice={true}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={updateCost}>
+            Update
           </Button>
         </Modal.Footer>
       </Modal>

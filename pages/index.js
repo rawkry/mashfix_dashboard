@@ -141,6 +141,29 @@ export default function Index({
       {myProfile.role == "admin" ? (
         <div>
           <div className="d-flex  align-items-center   gap-3 p-3 rounded text-dark m-2 ">
+            <div className="d-flex bg-white justify-content-between  p-2 rounded shadow-sm text-center flex-fill ">
+              <div className="d-flex flex-column">
+                <h4>Revenue</h4>
+                <h2 className="text-primary ">
+                  {" "}
+                  $ {showStats ? stats.totalRevenue : "***"}{" "}
+                </h2>
+              </div>
+              <div>
+                <i className="fa-solid fa-bolt fa-xl  "></i>
+              </div>
+            </div>
+            <div className=" d-flex bg-white justify-content-between   p-2 rounded shadow-sm text-center flex-fill ">
+              <div className="d-flex flex-column">
+                <h4>Cost</h4>{" "}
+                <h2 className="text-danger">
+                  $ {showStats ? stats.totalCost : "***"}{" "}
+                </h2>
+              </div>
+              <div>
+                <i className="fa-solid fa-coins fa-xl"></i>
+              </div>
+            </div>
             <div className=" d-flex bg-white justify-content-between p-2 rounded shadow-sm text-center flex-fill ">
               <div className="d-flex flex-column">
                 <h4>Discount</h4>{" "}
@@ -154,24 +177,12 @@ export default function Index({
                 </div>
               </div>
             </div>
-            <div className="d-flex bg-white justify-content-between  p-2 rounded shadow-sm text-center flex-fill ">
-              <div className="d-flex flex-column">
-                <h4>Service Charge</h4>
-                <h2 className="text-success ">
-                  {" "}
-                  $ {showStats ? stats.totalExpectedServiceCharge : "***"}{" "}
-                </h2>
-              </div>
-              <div>
-                <i className="fa-solid fa-bolt fa-xl  "></i>
-              </div>
-            </div>
 
             <div className=" d-flex bg-white justify-content-between   p-2 rounded shadow-sm text-center flex-fill ">
               <div className="d-flex flex-column">
-                <h4>Issue Price</h4>{" "}
-                <h2 className="text-danger">
-                  $ {showStats ? stats.totalIssuesPrice : "***"}{" "}
+                <h4>Profit</h4>{" "}
+                <h2 className="text-success">
+                  $ {showStats ? stats.totalProfit : "***"}{" "}
                 </h2>
               </div>
               <div>

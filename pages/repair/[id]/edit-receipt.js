@@ -22,6 +22,7 @@ import { useRouter } from "next/router";
 import { PrintInvoice, PrintPage } from "../../../components";
 
 import { useReactToPrint } from "react-to-print";
+import Link from "next/link";
 
 export async function getServerSideProps(context) {
   try {
@@ -125,6 +126,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
           quantity: issue.quantity,
           rate: issue.rate,
           price: issue.price,
+          actualPrice: issue.actualPrice,
         })
       );
       const dirty = JSON.stringify(
@@ -385,6 +387,16 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
             onClick={() => setViewRemarks(true)}
           >
             <i className="fa-solid fa-comment mr-2 text-success"></i>
+          </Button>
+
+          <Button
+            title={"View Receipt"}
+            variant="outline-primary"
+            size="md"
+            as={Link}
+            href={`/repair/${receipt.repair._id}/view-receipt`}
+          >
+            <i className="fa-solid fa-eye mr-2 text-warning"></i>
           </Button>
         </div>
       </div>

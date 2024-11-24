@@ -50,17 +50,20 @@ function Bar({ data: sampleData, overallSales, showStats }) {
     categories: sampleData.map((d) => toHuman(d.date, false).split(",")[0]),
     series: [
       {
-        name: "Total Issues Price",
-        data: sampleData.map((d) => d.totalIssuesPrice),
+        name: "Total Revenue",
+        data: sampleData.map((d) => d.totalRevenue),
       },
       {
         name: "Total Discount",
         data: sampleData.map((d) => d.totalDiscount),
       },
-
       {
-        name: "Total Expected Service Charge",
-        data: sampleData.map((d) => d.totalExpectedServiceCharge),
+        name: "Total Profit",
+        data: sampleData.map((d) => d.totalProfit),
+      },
+      {
+        name: "Total Cost",
+        data: sampleData.map((d) => d.totalCost),
       },
     ],
   };
@@ -78,12 +81,25 @@ function Bar({ data: sampleData, overallSales, showStats }) {
                 <Col sm={6} md={3}>
                   <Card className="shadow border-0 rounded-lg p-3">
                     <Card.Body>
-                      <h5 className="text-muted">Total Issues Price</h5>
+                      <h5 className="text-muted">Total Revenue</h5>
                       <h4 className="font-weight-bold text-primary">
                         ${" "}
                         {showStats
-                          ? parseFloat(overallSales.totalIssuesPrice).toFixed(2)
+                          ? parseFloat(overallSales.totalRevenue).toFixed(2)
                           : "***"}{" "}
+                      </h4>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col sm={6} md={3}>
+                  <Card className="shadow border-0 rounded-lg p-3">
+                    <Card.Body>
+                      <h5 className="text-muted">Total Cost</h5>
+                      <h4 className="font-weight-bold text-danger">
+                        ${" "}
+                        {showStats
+                          ? parseFloat(overallSales.totalCost).toFixed(2)
+                          : "***"}
                       </h4>
                     </Card.Body>
                   </Card>
@@ -101,16 +117,15 @@ function Bar({ data: sampleData, overallSales, showStats }) {
                     </Card.Body>
                   </Card>
                 </Col>
+
                 <Col sm={6} md={3}>
                   <Card className="shadow border-0 rounded-lg p-3">
                     <Card.Body>
-                      <h5 className="text-muted">Total Service Charge</h5>
+                      <h5 className="text-muted">Total Profit</h5>
                       <h4 className="font-weight-bold text-success">
                         ${" "}
                         {showStats
-                          ? parseFloat(
-                              overallSales.totalExpectedServiceCharge
-                            ).toFixed(2)
+                          ? parseFloat(overallSales.totalProfit).toFixed(2)
                           : "***"}
                       </h4>
                     </Card.Body>
