@@ -49,19 +49,19 @@ function Bar({ data: sampleData, overallSales, showStats }) {
     series: [
       {
         name: "Total Revenue",
-        data: sampleData.map((d) => d.totalRevenue),
+        data: sampleData.map((d) => d.totalRevenue.toFixed(2)),
       },
       {
         name: "Total Discount",
-        data: sampleData.map((d) => d.totalDiscount),
+        data: sampleData.map((d) => d.totalDiscount.toFixed(2)),
       },
       {
         name: "Total Profit",
-        data: sampleData.map((d) => d.totalProfit),
+        data: sampleData.map((d) => d.totalProfit.toFixed(2)),
       },
       {
         name: "Total Cost",
-        data: sampleData.map((d) => d.totalCost),
+        data: sampleData.map((d) => d.totalCost.toFixed(2)),
       },
     ],
   };
@@ -70,11 +70,11 @@ function Bar({ data: sampleData, overallSales, showStats }) {
     series: [
       {
         name: "Revenue",
-        data: sampleData.map((d) => d.totalRevenue),
+        data: sampleData.map((d) => d.totalRevenue.toFixed(2)),
       },
       {
         name: "Profit",
-        data: sampleData.map((d) => d.totalProfit),
+        data: sampleData.map((d) => d.totalProfit.toFixed(2)),
       },
     ],
     categories: sampleData.map((d) => toHuman(d.date, false).split(",")[0]),
