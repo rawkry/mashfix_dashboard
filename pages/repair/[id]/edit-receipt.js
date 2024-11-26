@@ -127,6 +127,7 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
           rate: issue.rate,
           price: issue.price,
           actualPrice: issue.actualPrice,
+          sellerDetails: issue.sellerDetails,
         })
       );
       const dirty = JSON.stringify(
@@ -480,15 +481,6 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
               {errors.expectedServiceCharge && (
                 <span className="text-danger">Provide Service Charge</span>
               )}
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="actuakCost">
-              <Form.Label>COGS</Form.Label>
-              <Form.Control
-                step={0.01}
-                type="number"
-                placeholder="Enter COGS"
-                {...register("actualCost", { valueAsNumber: true })}
-              />
             </Form.Group>
             <Form.Group className="mb-3" controlId="paymentMethod">
               <Form.Label>Payment Method</Form.Label>

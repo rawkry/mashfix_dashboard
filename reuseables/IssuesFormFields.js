@@ -5,6 +5,7 @@ function IssuesFormFields({
   setIssuesWithPrice,
   issuesWithPrice,
   withCostPrice = false,
+  withSellerDetails = false,
 }) {
   const handleAddIssues = () => {
     const newKey = Math.floor(Math.random() * 16777215).toString(16);
@@ -16,6 +17,7 @@ function IssuesFormFields({
         rate: "",
         price: "",
         actualPrice: "",
+        sellerDetails: "",
       },
     }));
   };
@@ -74,8 +76,8 @@ function IssuesFormFields({
         <legend className="border-bottom pb-1 mb-2">Issues Breakdown</legend>
         {Object.entries(issuesWithPrice).map(([key, issue]) => (
           <div key={key}>
-            <Row className="mb-3">
-              <Col md={3}>
+            <Row className="mb-3 align-items-center">
+              <Col xs={12} md={3} className="mb-2 mb-md-0">
                 <Form.Label>Description</Form.Label>
                 <Form.Control
                   readOnly={withCostPrice}
@@ -83,14 +85,13 @@ function IssuesFormFields({
                   required
                   type="text"
                   placeholder="Enter specific issue"
-                  // className="text-dark"
                   value={issue.description}
                   onChange={(e) =>
                     handleChange(key, "description", e.target.value)
                   }
                 />
               </Col>
-              <Col md={2}>
+              <Col xs={6} md={2} className="mb-2 mb-md-0">
                 <Form.Label>Quantity</Form.Label>
                 <Form.Control
                   readOnly={withCostPrice}
@@ -104,24 +105,24 @@ function IssuesFormFields({
                   required
                 />
               </Col>
-              <Col md={2}>
+              <Col xs={6} md={2} className="mb-2 mb-md-0">
                 <Form.Label>Rate</Form.Label>
                 <Form.Control
                   readOnly={withCostPrice}
                   className="rounded-pill"
                   type="number"
-                  placeholder="Enter quantity"
+                  placeholder="Enter rate"
                   value={issue.rate}
-                  onChange={(e) => {
-                    handleChange(key, "rate", e.target.value.trim());
-                  }}
+                  onChange={(e) =>
+                    handleChange(key, "rate", e.target.value.trim())
+                  }
                   required
                 />
               </Col>
-              <Col md={2}>
+              <Col xs={6} md={2} className="mb-2 mb-md-0">
                 <Form.Label>Amount</Form.Label>
                 <Form.Control
-                  readOnly={withCostPrice}
+                  readOnly
                   className="rounded-pill"
                   type="number"
                   placeholder="Enter price"
@@ -129,49 +130,63 @@ function IssuesFormFields({
                 />
               </Col>
               {withCostPrice && (
-                <Col md={2}>
+                <Col xs={12} md={6} className="mt-2 mb-md-0">
                   <Form.Label>Actual Price</Form.Label>
                   <Form.Control
                     className="rounded-pill"
                     type="number"
                     placeholder="Enter price"
                     value={issue.actualPrice}
-                    onChange={(e) => {
-                      handleChange(key, "actualPrice", e.target.value.trim());
-                    }}
+                    onChange={(e) =>
+                      handleChange(key, "actualPrice", e.target.value.trim())
+                    }
                   />
                 </Col>
               )}
-
+              {withSellerDetails && (
+                <Col xs={12} md={6} className="mt-2 mb-md-0">
+                  <Form.Label>Seller Details</Form.Label>
+                  <Form.Control
+                    className="rounded-pill"
+                    type="text"
+                    placeholder="Enter seller details"
+                    value={issue.sellerDetails}
+                    onChange={(e) =>
+                      handleChange(key, "sellerDetails", e.target.value.trim())
+                    }
+                  />
+                </Col>
+              )}
               {!withCostPrice && (
                 <Col
+                  xs={12}
                   md={1}
-                  className="text-end d-flex justify-content-center align-items-center"
+                  className="text-center text-md-end d-flex justify-content-center align-items-center"
                 >
                   <Button
-                    variant="waring"
+                    variant="danger"
                     size="sm"
                     className="d-inline-block rounded"
                     onClick={() => handleRemoveIssue(key)}
                   >
-                    <i className="fas fa-times text-danger" />
+                    <i className="fas fa-times text-white" />
                   </Button>
                 </Col>
               )}
             </Row>
             <div
-              class="bg-zapp-gradient mb-4 mb-sm-5"
+              className="bg-light mb-4 mb-sm-5"
               style={{
                 height: "1px",
               }}
             ></div>
           </div>
         ))}
-
         {Object.keys(issuesWithPrice).length === 0 && (
-          <p className="text-muted">- No issues added yet -</p>
+          <p className="text-muted text-center">- No issues added yet -</p>
         )}
       </fieldset>
+
       {!withCostPrice && (
         <div className="d-flex justify-content-between align-items-center">
           <Button
