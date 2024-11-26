@@ -124,6 +124,7 @@ export default function Add({ __state, myProfile, receipt }) {
           rate: issue.rate,
           price: issue.price,
           actualPrice: parseFloat(issue.actualPrice).toFixed(2),
+          sellerDetails: issue.sellerDetails,
         })
       );
       const obj = {
@@ -199,20 +200,13 @@ export default function Add({ __state, myProfile, receipt }) {
           <Button
             title={"View Remarks"}
             variant="outline-primary"
-            size="sm"
             onClick={() => setViewRemarks(true)}
-            className="btn-sm"
           >
             <i className="fa-solid fa-comment mr-2 text-success"></i>
           </Button>
           {shouldShowButton && (
             <Link href={`/repair/${router.query.id}/edit-receipt`}>
-              <Badge
-                title="Edit"
-                as={Button}
-                variant={"primary"}
-                className="btn-sm"
-              >
+              <Badge title="Edit" as={Button} variant={"primary"}>
                 <i className="fas fa-edit" />
               </Badge>
             </Link>
@@ -220,9 +214,7 @@ export default function Add({ __state, myProfile, receipt }) {
           <Button
             title={"Update Cost Price"}
             variant="outline-primary"
-            size="sm"
             onClick={() => setUpdateCostPrice(true)}
-            className="btn-sm"
           >
             <i className="fa-solid fa-thumbtack mr-2 text-warning"></i>
           </Button>
@@ -433,6 +425,7 @@ export default function Add({ __state, myProfile, receipt }) {
             setIssuesWithPrice={setIssuesWithPrice}
             issuesWithPrice={issuesWithPrice}
             withCostPrice={true}
+            withSellerDetails={true}
           />
         </Modal.Body>
         <Modal.Footer>

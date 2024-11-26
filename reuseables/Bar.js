@@ -6,8 +6,6 @@ import { toHuman } from "@/helpers/clients";
 // Dynamically import the Chart component with no SSR
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-// Transform data for the chart
-
 function Bar({ data: sampleData, overallSales, showStats }) {
   function useChartOptions() {
     return {
@@ -16,6 +14,7 @@ function Bar({ data: sampleData, overallSales, showStats }) {
         stacked: true,
         background: "transparent",
         toolbar: { show: true },
+        zoom: { enabled: false },
       },
       colors: ["#7367F0", "#FF5733", "#28C76F", "#FF9F43"],
       dataLabels: { enabled: false },
@@ -33,7 +32,6 @@ function Bar({ data: sampleData, overallSales, showStats }) {
       xaxis: {
         axisBorder: { color: "#EBEBEB", show: true },
         axisTicks: { color: "#EBEBEB", show: true },
-        // categories: sampleData.map((d) => d.date.split("-")[2]),
         labels: { offsetY: 5, style: { colors: "#9E9E9E" } },
       },
       yaxis: {
@@ -68,7 +66,41 @@ function Bar({ data: sampleData, overallSales, showStats }) {
     ],
   };
 
-  const chartOptions = useChartOptions(sampleData);
+  const revenueProfitChartData = {
+    series: [
+      {
+        name: "Revenue",
+        data: sampleData.map((d) => d.totalRevenue),
+      },
+      {
+        name: "Profit",
+        data: sampleData.map((d) => d.totalProfit),
+      },
+    ],
+    categories: sampleData.map((d) => toHuman(d.date, false).split(",")[0]),
+  };
+
+  const revenueProfitChartOptions = {
+    chart: {
+      type: "line",
+      toolbar: { show: true },
+      background: "transparent",
+    },
+    colors: ["#7367F0", "#28C76F"],
+    dataLabels: { enabled: true },
+    stroke: { curve: "smooth", width: 2 },
+    xaxis: {
+      categories: revenueProfitChartData.categories,
+      labels: { style: { colors: "#9E9E9E" } },
+    },
+    yaxis: {
+      labels: { style: { colors: "#9E9E9E" } },
+    },
+    grid: { borderColor: "#EBEBEB" },
+    legend: { show: true },
+  };
+
+  const chartOptions = useChartOptions();
 
   return (
     <Container className="mb-4">
@@ -137,21 +169,33 @@ function Bar({ data: sampleData, overallSales, showStats }) {
         </Col>
       </Row>
 
-      <Card className="shadow-sm border-0 rounded-lg">
-        <Card.Header
-          action={
-            <Button variant="outline-primary" size="sm">
-              Sync
-            </Button>
-          }
-          title="Sales Breakdown"
-        />
+      {/* Sales Breakdown Chart */}
+      <Card className="shadow-sm border-0 rounded-lg mb-4">
+        <Card.Header>
+          <h5>Sales Breakdown</h5>
+        </Card.Header>
         <Card.Body>
           <Chart
             height={350}
             options={chartOptions}
             series={chartData.series}
             type="bar"
+            width="100%"
+          />
+        </Card.Body>
+      </Card>
+
+      {/* Revenue and Profit Chart */}
+      <Card className="shadow-sm border-0 rounded-lg">
+        <Card.Header>
+          <h5>Revenue and Profit Trends</h5>
+        </Card.Header>
+        <Card.Body>
+          <Chart
+            height={350}
+            options={revenueProfitChartOptions}
+            series={revenueProfitChartData.series}
+            type="line"
             width="100%"
           />
         </Card.Body>
