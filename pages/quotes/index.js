@@ -20,6 +20,7 @@ import { Limit, Pagination } from "@/components";
 import { searchRedirect, toHuman } from "@/helpers/clients";
 import { toast } from "react-toastify";
 import getMyProfile from "@/helpers/server/getMyProfile";
+import { set } from "date-fns";
 
 export async function getServerSideProps(context) {
   try {
@@ -147,6 +148,50 @@ export default function Index({
       setquotes((prev) =>
         prev.filter((project_inquiry) => project_inquiry._id !== quote._id)
       );
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      __state.loading = false;
+    }
+  };
+
+  const handleDeviceReceivedChange = async (quote, value) => {
+    try {
+      __state.loading = true;
+
+      const response = await fetch(`/api`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          path: `/quotes/device-received/${quote._id}`,
+          method: "PATCH",
+          body: {
+            deviceReceived: value,
+          },
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast.error(data.message);
+        return;
+      }
+
+      setquotes((prev) =>
+        prev.map((project_inquiry) => {
+          if (project_inquiry._id === quote._id) {
+            return {
+              ...project_inquiry,
+              deviceReceived: value,
+            };
+          }
+          return project_inquiry;
+        })
+      );
+      toast.info(`Device received updated successfully`);
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -308,9 +353,9 @@ export default function Index({
                 <th>DeviceName</th>
                 <th>Brand</th>
                 <th>Description</th>
+                <th>Device Received</th>
                 <th>Approved</th>
                 <th>Declined</th>
-
                 <th>Submited Date</th>
                 <th>Options</th>
               </tr>
@@ -342,7 +387,28 @@ export default function Index({
                           .join(" ")}
                       ...
                     </td>
-
+                    <td>
+                      <Form.Group className="mb-3" controlId="aproved">
+                        <Form.Check
+                          className="text-success"
+                          type="switch"
+                          checked={project_inquiry.deviceReceived}
+                          onChange={(e) => {
+                            if (
+                              confirm(
+                                "Are you sure, you want to change  status of this quote?"
+                              )
+                            ) {
+                              const value = e.target.checked;
+                              handleDeviceReceivedChange(
+                                project_inquiry,
+                                value
+                              );
+                            }
+                          }}
+                        />
+                      </Form.Group>
+                    </td>
                     <td>
                       <Form.Group className="mb-3" controlId="aproved">
                         <Form.Check
