@@ -491,7 +491,14 @@ export default function Index({
                     </td>
 
                     <td>{repair.device}</td>
-                    <td>{repair.brand}</td>
+                    <td>
+                      {repair.brand}{" "}
+                      {repair.modelNumber && (
+                        <small className="d-block ellipsisText">
+                          M :{repair.modelNumber}
+                        </small>
+                      )}
+                    </td>
 
                     <td>
                       {repair.problemDescription &&

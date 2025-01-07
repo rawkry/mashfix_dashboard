@@ -13,7 +13,13 @@ body {
 p {
   margin-bottom: 0.2rem;
 }
-
+.ellipsisText {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 10ch; /* Adjust this to the desired character width */
+}
 .font-zapp {
   font-family: "Montserrat", sans-serif;
   font-weight: 400;
