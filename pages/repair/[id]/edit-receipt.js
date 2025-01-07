@@ -440,7 +440,9 @@ export default function Add({ __state, myProfile, receipt: serverReceipt }) {
               <Card.Text className="m-2">
                 Brand: {receipt.repair.brand}
               </Card.Text>
-
+              <Card.Text className="m-2">
+                Model: {receipt.repair.modelNumber}
+              </Card.Text>
               <Card.Text className="m-2">
                 Problem: {receipt.repair.problemDescription}
               </Card.Text>

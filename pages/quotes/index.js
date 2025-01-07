@@ -100,6 +100,7 @@ export default function Index({
               device: quote.device,
               brand: quote.brand,
               problemDescription: quote.problemDescription,
+              modelNumber: quote.modelNumber,
               origin: "quote",
             },
           }),
@@ -378,14 +379,18 @@ export default function Index({
                     <td>{project_inquiry.branch}</td>
                     <td>{project_inquiry.service.name}</td>
                     <td>{project_inquiry.device}</td>
-                    <td>{project_inquiry.brand}</td>
                     <td>
-                      {project_inquiry.problemDescription &&
-                        project_inquiry.problemDescription
-                          .split(" ")
-                          .slice(0, 10)
-                          .join(" ")}
-                      ...
+                      {project_inquiry.brand}{" "}
+                      {project_inquiry.modelNumber && (
+                        <small className="d-block ellipsisText">
+                          M :{project_inquiry.modelNumber}
+                        </small>
+                      )}
+                    </td>
+                    <td>
+                      <span className="d-block ellipsisText">
+                        {project_inquiry.problemDescription}
+                      </span>
                     </td>
                     <td>
                       <Form.Group className="mb-3" controlId="aproved">
